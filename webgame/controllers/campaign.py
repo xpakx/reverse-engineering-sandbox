@@ -1,3 +1,4 @@
+from controllers.heroes import getHeroById
 
 
 def startMission(request, temp):
@@ -13,7 +14,10 @@ def startMission(request, temp):
 
     response['userId'] = temp['userId']
     response['typeId'] = 1
-    response['attackers'] = {7: getTestHero(3)}  # TODO
+    response['attackers'] = {}
+    for heroId in heroesIds:
+        response['attackers'][heroId] = getTestHero(heroId)
+
     response['defenders'] = getWavesForMission(missionId)
     response['effects'] = []
 
@@ -65,30 +69,7 @@ def getBaseEnemy(id):
 
 
 def getTestHero(id):
-    hero = {}
-    hero['id'] = id
-    hero['xp'] = 233
-    hero['level'] = 5
-    hero['color'] = 2
-    hero['slots'] = []
-    hero['skills'] = {"421": 3, "422": 3}
-    hero['power'] = 535
-    hero['star'] = 1
-    hero['runes'] = [0, 0, 0, 0, 0]
-    hero['skins'] = []
-    hero['currentSkin'] = 0
-    hero['titanGiftLevel'] = 0
-    hero['titanCoinsSpent'] = None
-    hero['artifacts'] = [
-                {"level": 1, "star": 0},
-                {"level": 1, "star": 0},
-                {"level": 1, "star": 0}
-                ]
-    hero['scale'] = 1
-    hero['petId'] = 0
-    hero['type'] = 'hero'
-    hero['perks'] = [9, 5, 1, 14]
-    hero['ascensions'] = []
+    hero = getHeroById(id)
     hero['agility'] = 27
     hero['intelligence'] = 52
     hero['hp'] = 700
