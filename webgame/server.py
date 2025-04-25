@@ -60,6 +60,8 @@ class SimpleHTTPServerWithRoutes(HTTPServer):
 if __name__ == '__main__':
     def api_handler(request_handler):
         responses = []
+        temp = {}
+
         try:
             content_length = int(request_handler.headers.get('Content-Length', 0))
             raw_body = request_handler.rfile.read(content_length)
@@ -67,11 +69,11 @@ if __name__ == '__main__':
             body_data = json.loads(raw_body)
             if 'calls' in body_data:
                 for call in body_data['calls']:
-                    data = processors.process(call)
+                    data = processors.process(call, temp)
                     if data:
                         responses.append(data)
             else:
-                data = processors.process(body_data)
+                data = processors.process(body_data, temp)
                 if data:
                     responses.append(data)
             # print(body_data)

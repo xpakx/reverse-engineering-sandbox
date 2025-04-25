@@ -1,11 +1,14 @@
-def process(request):
+from controllers.user import register, getInfo
+
+
+def process(request, temp):
     call = request['name']
     if (call == 'userMergeGetStatus'):
-        return registration(request)
+        return registration(request, temp)
     if (call == 'registration'):
-        return registration(request)
+        return registration(request, temp)
     if (call == 'userGetInfo'):
-        return userInfo(request)
+        return userInfo(request, temp)
     if (call == 'friendsGetInfo'):
         return friends(request)
     if (call == 'billingGetAll'):
@@ -187,16 +190,18 @@ def process(request):
     return None
 
 
-def registration(request):
-    return {
-            "ident": "body",
-            "result": {
-                       "response": {
-                           "isNewUser": False,
-                           "userId": "1"
-                           }
-                       }
-            }
+def registration(request, temp):
+    response = {}
+    response['ident'] = 'body'
+    response['result'] = {"response": register(request, temp)}
+    return response
+
+
+def userInfo(request, temp):
+    response = {}
+    response['ident'] = 'userGetInfo'
+    response['result'] = {"response": getInfo(request, temp)}
+    return response
 
 
 def friends(request):
@@ -209,50 +214,6 @@ def friends(request):
                     }
                 }
             }
-
-
-def userInfo(request):
-    result = {
-            "ident": "userGetInfo",
-            "result": {
-                       "response": {
-                           "id": "1",
-                           "name": "Sir Rocinante",
-                           "lastLoginTime": "1745545266",
-                           "serverId": "1",
-                           "level": "68",
-                           "clanId": "1",
-                           "clanRole": "2",
-                           "commander": False,
-                           "avatarId": "608",
-                           "isChatModerator": False,
-                           "frameId": 5,
-                           "leagueId": 2,
-                           "allowPm": "all",
-                           "accountId": "149848381",
-                           "timeZone": 2,
-                           "starMoney": 520000,
-                           "vipPoints": "5",
-                           "gold": 1824851,
-                           "refillable": [],
-                           "flags": "8",
-                           "tutorialStep": "9999",
-                           "nextDayTs": 1745550000,
-                           "nextServerDayTs": 1745546400,
-                           "experience": "253",
-                           "maxLevel": 130,
-                           "useEnergyBuyLimit": False,
-                           "vkPayIsActive": False,
-                           "registrationTime": "1743459278",
-                           "isCasualStart": False,
-                           "maxSumPower": { "heroes": 98580, "titans": 12916, "pets": 37490 }
-                       }
-                   }
-            }
-    for i in range(1, 61):
-        result['result']['response']['refillable'].append({"id": i, "amount": 20, "lastRefill": 1745545328, "boughtToday": 0})
-
-    return result
 
 
 def billing(request):
