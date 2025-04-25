@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+	<title>Hero Wars | Online action game | RPG</title>
+        <script src="./data.js"></script>
+        
+        <!-- CSRF Token -->
+        <meta name="csrf-token" content="3QFYKLIXvgx3MRIH0GCqMBIgxAaCluMTcc4wGe45">
+
+        <link media="all" href="./css/game-adaptive.css" rel="stylesheet">
+        <script src="./game.js"></script>
+<!--
+        <meta name="msvalidate.01" content="D9A574C15AC142532529AF2B7F22839C" />
+-->
+    
+    <body>
+        <div id="app">
+            <Game inline-template>
+                <div class="app game init-bg_color_0"
+                        :class="backgroundCssClass">
+                    <section class="layout">
+                        <main class="layout_content">
+                            <div id="flash-wrapper" ref="gameWrapper"
+                                class="layout_content--game_client">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="layout_content--game_client--aspect_ratio"
+                                    width="1000"
+                                    height="640"
+                                    viewBox="0 0 1000 640">
+                                        <text text-anchor="middle"
+                                            class="layout_content--game_client--aspect_ratio--text">
+                                            Loading...
+                                        </text>
+                                </svg>
+                                <div id="flash-loader">
+                                    <Game-Loader></Game-Loader>
+                                </div>
+                                <div id="flash-content" ref="game">
+
+                                </div>
+                            </div>
+                        </main>
+                    </section>
+                </div>
+            </Game>
+        </div>
+	<!-- 
+    <script type="text/javascript"  src="/0AUjp/I-/bw/InV7/wbmXh4y/m2haVDQrSwhf9D/ZRlOJA/Hwdq/UQtTEQ8C"></script>
+    -->
+    </body>
+</html>
