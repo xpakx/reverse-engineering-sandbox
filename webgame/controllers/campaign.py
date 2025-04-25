@@ -29,11 +29,17 @@ def startMission(request, temp):
 
 
 def getWavesForMission(missionId):
-    return [
-            {1: getBaseEnemy(1000)},
-            {2: getBaseEnemy(1000)},
-            {3: getBaseEnemy(1000)}
-        ]
+    mission = missions[missionId] if missionId in missions else missions[1]
+    print(mission)
+    enemies = []
+    index = 1
+    for wave in mission:
+        waveEnemies = {}
+        for enemy in wave:
+            waveEnemies[index] = getBaseEnemy(enemy)
+            index += 1
+        enemies.append(waveEnemies)
+    return enemies
 
 
 def getBaseEnemy(id):
@@ -93,3 +99,12 @@ def endMission(request, temp):
     response = {}
     response['reward'] = reward
     return response
+
+
+
+
+
+missions = {
+        1: [[1000], [1001, 1001], [1000, 20]],
+        2: [[1000, 1001], [1004, 1001, 1001], [1000, 1001, 1002]],
+        }
