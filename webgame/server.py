@@ -2,6 +2,8 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 import json
 import processors
 
+logs = False
+
 
 class CustomHandler(SimpleHTTPRequestHandler):
     def handle_route(self, method):
@@ -96,9 +98,22 @@ if __name__ == '__main__':
             '{error: 0}'
         )
 
+    def logs_handler(request_handler):
+        print('error')
+        if logs:
+            content_length = int(request_handler.headers.get('Content-Length', 0))
+            raw_body = request_handler.rfile.read(content_length)
+            print(raw_body)
+        return (
+            200,
+            {'Content-Type': 'application/json'},
+            '{error: 0}'
+        )
+
     server = SimpleHTTPServerWithRoutes(('localhost', 8081))
     server.add_route('GET', '/api/clientStat/', stash_handler)
     server.add_route('POST', '/api/', api_handler)
+    server.add_route('POST', '/client-tech-logs', logs_handler)
 
     print("Starting server on http://localhost:8000")
     server.serve_forever()
