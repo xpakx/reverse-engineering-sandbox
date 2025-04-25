@@ -17,7 +17,7 @@ def startMission(request, temp):
     response['defenders'] = getWavesForMission(missionId)
     response['effects'] = []
 
-    response['reward'] = {'experience': 13, 'heroXp': {'7': 4}, 'gear': {'3': 1}, 'gold': 523}  # TODO
+    response['reward'] = {'experience': 13, 'heroXp': {'3': 4}, 'gear': {'3': 1}, 'gold': 523}  # TODO
     response['seed'] = 301709962
     response['startTime'] = 1745606343
     response['type'] = 'mission'
@@ -101,3 +101,14 @@ def getTestHero(id):
     hero['favorPetId'] = 0
     hero['favorPower'] = 0
     return hero
+
+
+def endMission(request, temp):
+    reward = {}
+    reward['experience'] = 13
+    reward['heroXp'] = {'3': 4}
+    reward['gear'] = {'3': 1}
+    reward['gold'] = 523
+    response = {}
+    response['reward'] = reward
+    return response

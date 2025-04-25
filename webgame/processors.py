@@ -1,5 +1,5 @@
 from controllers.user import register, getInfo
-from controllers.campaign import startMission
+from controllers.campaign import startMission, endMission
 
 
 def process(request, temp):
@@ -188,6 +188,8 @@ def process(request, temp):
         return specialBattlePass(request)
     if (call == "missionStart"):
         return missionStart(request, temp)
+    if (call == "missionEnd"):
+        return missionEnd(request, temp)
 
     print("Unknown command:", call)
     return None
@@ -211,6 +213,13 @@ def missionStart(request, temp):
     response = {}
     response['ident'] = 'body'
     response['result'] = {'quests': [], 'response': startMission(request, temp)}
+    return response
+
+
+def missionEnd(request, temp):
+    response = {}
+    response['ident'] = 'body'
+    response['result'] = {'quests': [], 'response': endMission(request, temp)}
     return response
 
 
