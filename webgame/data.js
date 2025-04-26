@@ -22,7 +22,7 @@ window.NXFlashVars = {
 		asset_index:
 		"https://heroesweb-a.akamaihd.net/wb/assets/index.assets.980f007acd893999034d008a374f5fbd.json.gz",
 		lib_index:
-		"http://heroesweb-a.akamaihd.net/wb/lib/index.lib.c4f58c95d4f3c1f7113aae3c9d49d2d3.json.gz",
+		"http://localhost:8081/indices/index.lib.json.gz",
 	},
 	static_url: "https://heroesweb-a.akamaihd.net/wb/",
 	static_urls: [
