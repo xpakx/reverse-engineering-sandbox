@@ -20,7 +20,7 @@ window.NXFlashVars = {
 		client_index:
 		"http://localhost:8081/indices/index.client.json",
 		asset_index:
-		"https://heroesweb-a.akamaihd.net/wb/assets/index.assets.980f007acd893999034d008a374f5fbd.json.gz",
+		"http://localhost:8081/indices/index.assets.json",
 		lib_index:
 		"http://localhost:8081/indices/index.lib.json.gz",
 	},
