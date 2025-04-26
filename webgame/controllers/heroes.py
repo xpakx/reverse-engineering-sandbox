@@ -1,7 +1,9 @@
+userHeroes = [3]
+
 
 def getHeroById(id):
     return {
-            "id": 3,
+            "id": id,
             "xp": 300105,
             "level": 68,
             "color": 9,
@@ -32,3 +34,10 @@ def getHeroById(id):
             "perks": [6, 1],
             "ascensions": {"1": [0, 1, 2, 3]}
         }
+
+
+def getUserHeroes(request, temp):
+    result = {}
+    for id in userHeroes:
+        result[str(id)] = getHeroById(id)
+    return result

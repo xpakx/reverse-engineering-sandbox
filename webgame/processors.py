@@ -1,6 +1,6 @@
 from controllers.user import register, getInfo
 from controllers.campaign import startMission, endMission
-from controllers.heroes import getHeroById
+from controllers.heroes import getHeroById, getUserHeroes
 
 
 def process(request, temp):
@@ -18,7 +18,7 @@ def process(request, temp):
     if (call == 'inventoryGet'):
         return inventory(request)
     if (call == 'heroGetAll'):
-        return heroes(request)
+        return heroes(request, temp)
     if (call == 'titanGetAll'):
         return titans(request)
     if (call == 'titanSpiritGetAll'):
@@ -224,15 +224,11 @@ def missionEnd(request, temp):
     return response
 
 
-def heroes(request):
-    return {
-                "ident": "heroGetAll",
-                "result": {
-                    "response": {
-                        "3": getHeroById(3)
-                    }
-                }
-            }
+def heroes(request, temp):
+    response = {}
+    response['ident'] = 'heroGetAll'
+    response['result'] = {"response": getUserHeroes(request, temp)}
+    return response
 
 
 def friends(request):
@@ -305,11 +301,42 @@ def teamBanners(request):
 
 
 def quests(request):
-    return {"ident":"questGetAll","result":{"response":[{"id":791,"state":1,"progress":0,"reward":{"starmoney":50},"createTime":1743459278}]}}
+    result = {"ident":"questGetAll","result":{"response":[]}}
+    result['result']['response'].append({
+    "id": 23151,
+    "state": 2,
+    "progress": 3,
+    "reward": {
+        "gold": 30000,
+        "fragmentHero": {
+            "60": 3
+        }
+    },
+    "createTime": 1745104656
+        })
+    return result
 
 
 def questEvents(request):
-    return {"ident":"questGetEvents","result":{"response":[{"id":"1209000548","sortOrder":9,"eventReward":None,"eventLoopData":None,"clientData":None,"icon":"event_icon_001","hideCompleted":None,"questChains":[791],"background":"event_background_001.jpg","localeKey":"LIB_SPECIAL_QUEST_EVENT_NAME_13","desc_localeKey":"LIB_SPECIAL_QUEST_EVENT_DESC_13","name_localeKey":"LIB_SPECIAL_QUEST_EVENT_NAME_13","notification_localeKey":"","startTime":1745460000,"endTime":1745805600}]}}
+    result = {"ident":"questGetEvents","result":{"response":[]}}
+    result['result']['response'].append({
+        "id": 68,
+        "sortOrder": 1,
+        "eventReward": None,
+        "eventLoopData": None,
+        "clientData": None,
+        "icon": "event_icon_001",
+        "hideCompleted": None,
+        "questChains": None,
+        "background": "event_background_001.jpg",
+        "localeKey": "LIB_SPECIAL_QUEST_EVENT_NAME_3",
+        "desc_localeKey": "LIB_SPECIAL_QUEST_EVENT_DESC_3",
+        "name_localeKey": "LIB_SPECIAL_QUEST_EVENT_NAME_3",
+        "notification_localeKey": "",
+        "startTime": 1745104656,
+        "endTime": 1745709456
+        })
+    return result
 
 
 def clanPrestige(request):
@@ -321,7 +348,7 @@ def mail(request):
 
 
 def arena(request):
-    return {"ident":"arenaGetAll","result":{"response":{"userId":"278407558","arenaPlace":"257","arenaHeroes":[],"grandPlace":"579","grandHeroes":[[],[],[]],"grandCoin":31.265900000000002,"grandCoinTime":1745545329,"arenaPower":"84873","grandPower":"122338","rewardFlag":"0","battles":45,"wins":33,"rewardTime":1745604000}}}
+    return {"ident":"arenaGetAll","result":{"response":{"userId":"1","arenaPlace":"257","arenaHeroes":[],"grandPlace":"579","grandHeroes":[[],[],[]],"grandCoin":31.265900000000002,"grandCoinTime":1745545329,"arenaPower":"84873","grandPower":"122338","rewardFlag":"0","battles":45,"wins":33,"rewardTime":1745604000}}}
 
 
 def socialQuest(request):
@@ -465,7 +492,19 @@ def titanArenaChest(request):
 
 
 def bosses(request):
-    return {"ident":"bossGetAll","result":{"response":[]}}
+    result = {"ident":"bossGetAll","result":{"response":[]}}
+    for i in range(10, 13):
+        result['result']['response'].append({
+            "id": i,
+            "bossLevel": 10,
+            "chestNum": 1,
+            "chestId": 0,
+            "lastChestReward": [],
+            "chests": [],
+            "cost": [],
+            "mayRaid": True
+            })
+    return result
 
 
 def shops(request):
