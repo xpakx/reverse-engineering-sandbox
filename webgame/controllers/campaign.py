@@ -99,3 +99,16 @@ def endMission(request, temp):
     response = {}
     response['reward'] = reward
     return response
+
+
+def raidMission(request, temp):
+    print(request)
+    # missionId = getStatAsInt(request['args'], 'id', 1)
+    attempts = getStatAsInt(request['args'], 'times', 1)
+    reward = {}
+    reward['experience'] = 13 * attempts
+    reward['gear'] = {'37': 666 * attempts}
+    reward['gold'] = 523 * attempts
+    response = {}
+    response['reward'] = reward
+    return response

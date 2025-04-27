@@ -1,6 +1,6 @@
 from controllers.user import register, getInfo
-from controllers.campaign import startMission, endMission
-from controllers.heroes import getHeroById, getUserHeroes
+from controllers.campaign import startMission, endMission, raidMission
+from controllers.heroes import getUserHeroes
 from extractors.lib import GameData
 
 
@@ -192,6 +192,8 @@ def process(request, temp, gameData: GameData):
         return missionStart(request, temp, gameData)
     if (call == "missionEnd"):
         return missionEnd(request, temp, gameData)
+    if (call == "missionRaid"):
+        return missionRaid(request, temp, gameData)
 
     print("Unknown command:", call)
     return None
@@ -222,6 +224,13 @@ def missionEnd(request, temp, gameData: GameData):
     response = {}
     response['ident'] = 'body'
     response['result'] = {'quests': [], 'response': endMission(request, temp)}
+    return response
+
+
+def missionRaid(request, temp, gameData: GameData):
+    response = {}
+    response['ident'] = 'body'
+    response['result'] = {'response': raidMission(request, temp)}
     return response
 
 
@@ -270,7 +279,7 @@ def petPotions(request):
 
 def missions(request):
     result = {"ident":"missionGetAll","result":{"response":[]}}
-    for i in range(1, 2):
+    for i in range(1, 200):
         result['result']['response'].append(
                 {"id":i,"stars":3,"triesSpent":0,"resetToday":0,"attempts":22,"wins":22}
             )
