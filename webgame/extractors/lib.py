@@ -60,6 +60,18 @@ class HeroData(NamedTuple):
     runes: Any = None
 
 
+class WaveData(NamedTuple):
+    enemies: List[HeroData] = []
+
+
+class MissionData(NamedTuple):
+    cost: Dict[str, int] = {}
+    tryCost: Dict[str, int] = {}
+    heroExp: int = 0,
+    teamExp: int = 0,
+    waves: List[WaveData] = []
+
+
 def print_keys(data):
     for key in data:
         print(key)
@@ -357,6 +369,9 @@ class Hero:
                 "type": "hero",
                 "perks": [6, 1],
                 "ascensions": [],
+                "strength": self.strength,
+                "agility": self.agility,
+                "intelligence": self.intelligence,
             }
 
 
@@ -387,6 +402,54 @@ def createEnemy(data: List[HeroData]):
     return response
 
 
+def getStatAsInt(data, stat: str, default: int = 0) -> int:
+    if stat not in data:
+        return default
+    val = data[stat]
+    if not isinstance(val, int):
+        return int(val)
+    return val
+
+
+def parseWave(data, heroes, gear) -> WaveData:
+    enemies = []
+    for enemy in data['enemies']:
+        # gid = enemy['gid']
+        id = getStatAsInt(enemy, 'id')
+        color = getStatAsInt(enemy, 'color', 1)
+        level = getStatAsInt(enemy, 'lvl')
+        stars = getStatAsInt(enemy, 'star')
+        hero = Hero(heroes[id])
+        if stars in hero.data.stars:
+            hero.applyStarsAndLevel(stars, level)
+        hero.applyColor(color)
+        enemies.append(hero)
+    return WaveData(enemies=enemies)
+
+
+def parseMissions(data, heroes, gear) -> Dict[int, MissionData]:
+    result = {}
+    for key in data:
+        item = data[key]['normalMode']
+        cost = item['cost']
+        heroExp = item['heroExp']
+        teamExp = item['teamExp']
+        tryCost = item['tryCost']
+        waves = []
+        for wave in item['waves']:
+            waveData = parseWave(wave, heroes, gear)
+            waves.append(waveData)
+        missionsEntry = MissionData(
+                cost=cost,
+                heroExp=heroExp,
+                teamExp=teamExp,
+                tryCost=tryCost,
+                waves=waves
+                )
+        result[int(key)] = missionsEntry
+    return result
+
+
 if __name__ == "__main__":
     input_file = "./indices/lib.json"
 
@@ -408,7 +471,21 @@ if __name__ == "__main__":
     print(data['titanGift']['1']['battleStatBonus']['agility'])
     # print_hero(heroes[3])
     print(heroes[1001].color[1][0])
+    print(data['mission']['1']['normalMode'])
     print(data['mission']['1']['normalMode']['waves'][0])
 
     print(createHero(heroes))
     print(createEnemy(heroes))
+
+    missions = parseMissions(data['mission'], heroes, gear)
+    print(missions[1])
+    for wave in missions[1].waves:
+        print("WAVE")
+        for hero in wave.enemies:
+            print('hero id:', hero.data.id)
+            resp = {}
+            for attr in attrs:
+                value = getattr(hero, attr)
+                resp[attr] = value
+            response = json.dumps(resp)
+            print(response)
