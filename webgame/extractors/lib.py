@@ -60,8 +60,102 @@ class HeroData(NamedTuple):
     runes: Any = None
 
 
+class Hero:
+    def __init__(self, data: HeroData):
+        self.data = data
+        base = data.baseStats
+        self.strength = base.strength
+        self.physicalCritChance = base.physicalCritChance
+        self.physicalAttack = base.physicalAttack
+        self.magicResist = base.magicResist
+        self.magicPower = base.magicPower
+        self.magicPenetration = base.magicPenetration
+        self.lifesteal = base.lifesteal
+        self.intelligence = base.intelligence
+        self.hp = base.hp
+        self.dodge = base.dodge
+        self.armorPenetration = base.armorPenetration
+        self.armor = base.armor
+        self.agility = base.agility
+        self.color = 1
+        self.level = 0
+        self.stars = 0
+        self.gear = []
+
+    def processBaseStats(self):
+        self.physicalAttack = self.physicalAttack + 2 * self.agility + self.getMainAttr()
+        self.hp = self.hp + 40 * self.strength
+        self.armor = self.armor + self.agility
+        self.magicPower = self.magicPower + 3 * self.intelligence
+        self.magicResist = self.magicResist + self.intelligence
+
+    def getMainAttr(self):
+        if not hasattr(self, self.data.mainStat):
+            return 0
+        return getattr(self, self.data.mainStat)
+
+    def update(self, stat: StatData, times: int = 1):
+        for attr in attrs:
+            if not hasattr(self, attr) or not hasattr(stat, attr):
+                continue
+            new_value = getattr(self, attr) + getattr(stat, attr) * times
+            setattr(self, attr, new_value)
+
+    def applyStarsAndLevel(self, stars: int, level: int):
+        starsData = self.data.stars[stars]
+        self.level = level
+        self.stars = stars
+        self.update(starsData, level)
+
+    def applyColor(self, color: int):
+        colorData = self.data.color[color]
+        stats = colorData[0]
+        self.color = color
+        if stats:
+            self.update(stats)
+
+    def applyGear(self, gear: List[bool]):
+        currColor = self.data.color[self.color]
+        items = currColor[1]
+        length = min(len(gear), len(items))
+        self.gear = gear
+        for i in range(0, length):
+            if gear[i]:
+                self.update(items[i].battleStats)
+
+    def getBattleData(self):
+        return {
+                "id": self.data.id,
+                "xp": 0,
+                "level": self.level,
+                "color": self.color,
+                "slots": [0, 0, 0],
+                "skills": {"432": 1},
+                "power": 19156,
+                "star": self.stars,
+                "runes": [0, 0, 0, 0, 0],
+                "skins": [],
+                "currentSkin": 3,
+                "titanGiftLevel": 0,
+                "titanCoinsSpent": None,
+                "artifacts": [
+                    {"level": 1, "star": 0},
+                    {"level": 1, "star": 0},
+                    {"level": 1, "star": 0}
+                ],
+                "scale": self.data.scale,
+                "petId": 0,
+                "type": "hero",
+                "perks": [6, 1],
+                "ascensions": [],
+                "strength": self.strength,
+                "agility": self.agility,
+                "intelligence": self.intelligence,
+            }
+
+
 class WaveData(NamedTuple):
-    enemies: List[HeroData] = []
+    enemies: List[Hero] = []
 
 
 class MissionData(NamedTuple):
@@ -281,99 +375,6 @@ def parseHeroes(data, gear) -> Dict[int, HeroData]:
     return result
 
 
-class Hero:
-    def __init__(self, data: HeroData):
-        self.data = data
-        base = data.baseStats
-        self.strength = base.strength
-        self.physicalCritChance = base.physicalCritChance
-        self.physicalAttack = base.physicalAttack
-        self.magicResist = base.magicResist
-        self.magicPower = base.magicPower
-        self.magicPenetration = base.magicPenetration
-        self.lifesteal = base.lifesteal
-        self.intelligence = base.intelligence
-        self.hp = base.hp
-        self.dodge = base.dodge
-        self.armorPenetration = base.armorPenetration
-        self.armor = base.armor
-        self.agility = base.agility
-        self.color = 1
-        self.level = 0
-        self.stars = 0
-        self.gear = []
-
-    def processBaseStats(self):
-        self.physicalAttack = self.physicalAttack + 2 * self.agility + self.getMainAttr()
-        self.hp = self.hp + 40 * self.strength
-        self.armor = self.armor + self.agility
-        self.magicPower = self.magicPower + 3 * self.intelligence
-        self.magicResist = self.magicResist + self.intelligence
-
-    def getMainAttr(self):
-        if not hasattr(self, self.data.mainStat):
-            return 0
-        return getattr(self, self.data.mainStat)
-
-    def update(self, stat: StatData, times: int = 1):
-        for attr in attrs:
-            if not hasattr(self, attr) or not hasattr(stat, attr):
-                continue
-            new_value = getattr(self, attr) + getattr(stat, attr) * times
-            setattr(self, attr, new_value)
-
-    def applyStarsAndLevel(self, stars: int, level: int):
-        starsData = self.data.stars[stars]
-        self.level = level
-        self.stars = stars
-        self.update(starsData, level)
-
-    def applyColor(self, color: int):
-        colorData = self.data.color[color]
-        stats = colorData[0]
-        self.color = color
-        if stats:
-            self.update(stats)
-
-    def applyGear(self, gear: List[bool]):
-        currColor = self.data.color[self.color]
-        items = currColor[1]
-        length = min(len(gear), len(items))
-        self.gear = gear
-        for i in range(0, length):
-            if gear[i]:
-                self.update(items[i].battleStats)
-
-    def getBattleData(self):
-        return {
-                "id": self.data.id,
-                "xp": 0,
-                "level": self.level,
-                "color": self.color,
-                "slots": [0, 0, 0],
-                "skills": {"432": 1},
-                "power": 19156,
-                "star": self.stars,
-                "runes": [0, 0, 0, 0, 0],
-                "skins": [],
-                "currentSkin": 3,
-                "titanGiftLevel": 0,
-                "titanCoinsSpent": None,
-                "artifacts": [
-                    {"level": 1, "star": 0},
-                    {"level": 1, "star": 0},
-                    {"level": 1, "star": 0}
-                ],
-                "scale": self.data.scale,
-                "petId": 0,
-                "type": "hero",
-                "perks": [6, 1],
-                "ascensions": [],
-                "strength": self.strength,
-                "agility": self.agility,
-                "intelligence": self.intelligence,
-            }
-
 
 def createHero(data: List[HeroData]):
     hero = Hero(data[3])
@@ -448,6 +449,23 @@ def parseMissions(data, heroes, gear) -> Dict[int, MissionData]:
                 )
         result[int(key)] = missionsEntry
     return result
+
+
+class GameData(NamedTuple):
+    heroes: List[HeroData] = []
+    items: List[GearData] = []
+    missions: List[MissionData] = []
+
+
+def prepareData() -> GameData:
+    input_file = "./indices/lib.json"
+
+    with open(input_file, 'r') as f:
+        data = json.load(f)
+    gear = parseItems(data['inventoryItem']['gear'])
+    heroes = parseHeroes(data['hero'], gear)
+    missions = parseMissions(data['mission'], heroes, gear)
+    return GameData(heroes=heroes, items=gear, missions=missions)
 
 
 if __name__ == "__main__":

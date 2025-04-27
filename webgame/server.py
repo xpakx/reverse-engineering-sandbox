@@ -2,8 +2,10 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 import json
 import processors
 from controllers.heroes import testHeroData
+from extractors.lib import prepareData
 
 logs = False
+gameData = prepareData()
 
 
 class CustomHandler(SimpleHTTPRequestHandler):
@@ -72,11 +74,11 @@ if __name__ == '__main__':
             body_data = json.loads(raw_body)
             if 'calls' in body_data:
                 for call in body_data['calls']:
-                    data = processors.process(call, temp)
+                    data = processors.process(call, temp, gameData)
                     if data:
                         responses.append(data)
             else:
-                data = processors.process(body_data, temp)
+                data = processors.process(body_data, temp, gameData)
                 if data:
                     responses.append(data)
             # print(body_data)

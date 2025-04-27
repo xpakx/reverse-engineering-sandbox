@@ -1,13 +1,14 @@
 from controllers.heroes import getHeroById
+from extractors.lib import GameData, MissionData, getStatAsInt
 
 
-def startMission(request, temp):
+def startMission(request, temp, gameData: GameData):
     print(request)
     print(temp)
     if 'userId' not in temp:
         temp['userId'] = 1
 
-    missionId = request['args']['id']
+    missionId = getStatAsInt(request['args'], 'id', 1)
     heroesIds = request['args']['heroes']
 
     response = {}
@@ -18,7 +19,8 @@ def startMission(request, temp):
     for heroId in heroesIds:
         response['attackers'][heroId] = getTestHero(heroId)
 
-    response['defenders'] = getWavesForMission(missionId)
+    mission = gameData.missions[missionId]
+    response['defenders'] = getWavesForMission(mission)
     response['effects'] = []
 
     response['reward'] = {'experience': 13, 'heroXp': {'3': 4}, 'gear': {'3': 1}, 'gold': 523}  # TODO
@@ -28,15 +30,13 @@ def startMission(request, temp):
     return response
 
 
-def getWavesForMission(missionId):
-    mission = missions[missionId] if missionId in missions else missions[1]
-    print(mission)
+def getWavesForMission(mission: MissionData):
     enemies = []
     index = 1
-    for wave in mission:
+    for wave in mission.waves:
         waveEnemies = {}
-        for enemy in wave:
-            waveEnemies[index] = getBaseEnemy(enemy)
+        for enemy in wave.enemies:
+            waveEnemies[index] = enemy.getBattleData()
             index += 1
         enemies.append(waveEnemies)
     return enemies
@@ -99,12 +99,3 @@ def endMission(request, temp):
     response = {}
     response['reward'] = reward
     return response
-
-
-
-
-
-missions = {
-        1: [[1000], [1001, 1001], [1000, 20]],
-        2: [[1000, 1001], [1004, 1001, 1001], [1000, 1001, 1002]],
-        }

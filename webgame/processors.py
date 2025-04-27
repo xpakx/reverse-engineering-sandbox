@@ -1,16 +1,17 @@
 from controllers.user import register, getInfo
 from controllers.campaign import startMission, endMission
 from controllers.heroes import getHeroById, getUserHeroes
+from extractors.lib import GameData
 
 
-def process(request, temp):
+def process(request, temp, gameData: GameData):
     call = request['name']
     if (call == 'userMergeGetStatus'):
-        return registration(request, temp)
+        return registration(request, temp, gameData)
     if (call == 'registration'):
-        return registration(request, temp)
+        return registration(request, temp, gameData)
     if (call == 'userGetInfo'):
-        return userInfo(request, temp)
+        return userInfo(request, temp, gameData)
     if (call == 'friendsGetInfo'):
         return friends(request)
     if (call == 'billingGetAll'):
@@ -18,7 +19,7 @@ def process(request, temp):
     if (call == 'inventoryGet'):
         return inventory(request)
     if (call == 'heroGetAll'):
-        return heroes(request, temp)
+        return heroes(request, temp, gameData)
     if (call == 'titanGetAll'):
         return titans(request)
     if (call == 'titanSpiritGetAll'):
@@ -188,43 +189,43 @@ def process(request, temp):
     if (call == "battlePass_getSpecial"):
         return specialBattlePass(request)
     if (call == "missionStart"):
-        return missionStart(request, temp)
+        return missionStart(request, temp, gameData)
     if (call == "missionEnd"):
-        return missionEnd(request, temp)
+        return missionEnd(request, temp, gameData)
 
     print("Unknown command:", call)
     return None
 
 
-def registration(request, temp):
+def registration(request, temp, gameData: GameData):
     response = {}
     response['ident'] = 'body'
     response['result'] = {"response": register(request, temp)}
     return response
 
 
-def userInfo(request, temp):
+def userInfo(request, temp, gameData: GameData):
     response = {}
     response['ident'] = 'userGetInfo'
     response['result'] = {"response": getInfo(request, temp)}
     return response
 
 
-def missionStart(request, temp):
+def missionStart(request, temp, gameData: GameData):
     response = {}
     response['ident'] = 'body'
-    response['result'] = {'quests': [], 'response': startMission(request, temp)}
+    response['result'] = {'quests': [], 'response': startMission(request, temp, gameData)}
     return response
 
 
-def missionEnd(request, temp):
+def missionEnd(request, temp, gameData: GameData):
     response = {}
     response['ident'] = 'body'
     response['result'] = {'quests': [], 'response': endMission(request, temp)}
     return response
 
 
-def heroes(request, temp):
+def heroes(request, temp, gameData: GameData):
     response = {}
     response['ident'] = 'heroGetAll'
     response['result'] = {"response": getUserHeroes(request, temp)}
@@ -360,7 +361,7 @@ def telegramQuest(request):
 
 
 def avatars(request):
-    return {"ident":"userGetAvailableAvatars","result":{"response":[1325]}}
+    return {"ident":"userGetAvailableAvatars","result":{"response":[1325, 92, 93]}}
 
 
 def avatarFrames(request):
@@ -496,7 +497,7 @@ def bosses(request):
     for i in range(10, 13):
         result['result']['response'].append({
             "id": i,
-            "bossLevel": 10,
+            "bossLevel": 1,
             "chestNum": 1,
             "chestId": 0,
             "lastChestReward": [],
