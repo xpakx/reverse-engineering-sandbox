@@ -4,7 +4,6 @@ from extractors.lib import GameData, MissionData, getStatAsInt
 
 def startMission(request, temp, gameData: GameData):
     print(request)
-    print(temp)
     if 'userId' not in temp:
         temp['userId'] = 1
 
@@ -42,38 +41,6 @@ def getWavesForMission(mission: MissionData):
     return enemies
 
 
-def getBaseEnemy(id):
-    enemy = {}
-    enemy['id'] = id
-    enemy['xp'] = 0
-    enemy['level'] = '1'
-    enemy['color'] = 1
-    enemy['slots'] = []
-    enemy['skills'] = []
-    enemy['power'] = 33
-    enemy['star'] = '1'
-    enemy['runes'] = [0, 0, 0, 0, 0]
-    enemy['skins'] = []
-    enemy['currentSkin'] = 0
-    enemy['titanGiftLevel'] = 0
-    enemy['titanCoinsSpent'] = None
-    enemy['artifacts'] = None
-    enemy['scale'] = 1
-    enemy['petId'] = 0
-    enemy['type'] = 'hero'
-    enemy['perks'] = None
-    enemy['ascensions'] = []
-    enemy['agility'] = 2
-    enemy['intelligence'] = 2
-    enemy['hp'] = 50
-    enemy['physicalAttack'] = 15
-    enemy['strength'] = 2
-    enemy['skin'] = 0
-    enemy['favorPetId'] = 0
-    enemy['favorPower'] = 0
-    return enemy
-
-
 def getTestHero(id):
     hero = getHeroById(id)
     hero['agility'] = 27
@@ -90,7 +57,8 @@ def getTestHero(id):
     return hero
 
 
-def endMission(request, temp):
+def endMission(request, temp, gameData):
+    print(request)
     reward = {}
     reward['experience'] = 13
     reward['heroXp'] = {'3': 4}
@@ -101,7 +69,7 @@ def endMission(request, temp):
     return response
 
 
-def raidMission(request, temp):
+def raidMission(request, temp, gameData):
     print(request)
     # missionId = getStatAsInt(request['args'], 'id', 1)
     attempts = getStatAsInt(request['args'], 'times', 1)

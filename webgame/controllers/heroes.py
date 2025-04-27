@@ -44,7 +44,7 @@ def getHeroById(id):
         }
 
 
-def getUserHeroes(request, temp):
+def getUserHeroes(request, temp, gameData):
     result = {}
     for id in userHeroes:
         result[str(id)] = getHeroById(id)

@@ -63,6 +63,8 @@ class SimpleHTTPServerWithRoutes(HTTPServer):
 
 
 if __name__ == '__main__':
+    processor = processors.RequestProcessor()
+
     def api_handler(request_handler):
         responses = []
         temp = {}
@@ -74,11 +76,11 @@ if __name__ == '__main__':
             body_data = json.loads(raw_body)
             if 'calls' in body_data:
                 for call in body_data['calls']:
-                    data = processors.process(call, temp, gameData)
+                    data = processor.process(call, temp, gameData)
                     if data:
                         responses.append(data)
             else:
-                data = processors.process(body_data, temp, gameData)
+                data = processor.process(body_data, temp, gameData)
                 if data:
                     responses.append(data)
             # print(body_data)

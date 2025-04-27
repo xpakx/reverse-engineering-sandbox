@@ -2,243 +2,221 @@ from controllers.user import register, getInfo
 from controllers.campaign import startMission, endMission, raidMission
 from controllers.heroes import getUserHeroes
 from extractors.lib import GameData
+from typing import NamedTuple, Any
 
 
-def process(request, temp, gameData: GameData):
-    call = request['name']
-    if (call == 'userMergeGetStatus'):
-        return registration(request, temp, gameData)
-    if (call == 'registration'):
-        return registration(request, temp, gameData)
-    if (call == 'userGetInfo'):
-        return userInfo(request, temp, gameData)
-    if (call == 'friendsGetInfo'):
-        return friends(request)
-    if (call == 'billingGetAll'):
-        return billing(request)
-    if (call == 'inventoryGet'):
-        return inventory(request)
-    if (call == 'heroGetAll'):
-        return heroes(request, temp, gameData)
-    if (call == 'titanGetAll'):
-        return titans(request)
-    if (call == 'titanSpiritGetAll'):
-        return titanSpirits(request)
-    if (call == 'pet_getAll'):
-        return pets(request)
-    if (call == 'pet_getPotionDailyBuyCount'):
-        return petPotions(request)
-    if (call == 'missionGetAll'):
-        return missions(request)
-    if (call == 'missionGetReplace'):
-        return missionReplace(request)
-    if (call == 'dailyBonusGetInfo'):
-        return dailyBonus(request)
-    if (call == 'getTime'):
-        return time(request)
-    if (call == 'teamGetAll'):
-        return team(request)
-    if (call == 'teamGetFavor'):
-        return teamFavor(request)
-    if (call == 'team_getBanners'):
-        return teamBanners(request)
-    if (call == 'clan_prestigeGetInfo'):
-        return clanPrestige(request)
-    if (call == 'questGetAll'):
-        return quests(request)
-    if (call == 'questGetEvents'):
-        return questEvents(request)
-    if (call == 'mailGetAll'):
-        return mail(request)
-    if (call == 'arenaGetAll'):
-        return arena(request)
-    if (call == 'socialQuestGetInfo'):
-        return socialQuest(request)
-    if (call == 'telegramQuestGetInfo'):
-        return telegramQuest(request)
-    if (call == 'userGetAvailableAvatars'):
-        return avatars(request)
-    if (call == 'userGetAvailableAvatarFrames'):
-        return avatarFrames(request)
-    if (call == 'userGetAvailableStickers'):
-        return stickers(request)
-    if (call == 'settingsGetAll'):
-        return settings(request)
-    if (call == 'subscriptionGetInfo'):
-        return subscription(request)
-    if (call == 'zeppelinGiftGet'):
-        return zeppelinGift(request)
-    if (call == 'tutorialGetInfo'):
-        return tutorial(request)
-    if (call == 'specialOffer_getAll'):
-        return specialOffer(request)
-    if (call == 'splitGetAll'):
-        return splits(request)
-    if (call == 'billingGetLast'):
-        return billing(request)
-    if (call == 'artifactGetChestLevel'):
-        return artifactChest(request)
-    if (call == 'titanArtifactGetChest'):
-        return titanArtifactChest(request)
-    if (call == 'titanGetSummoningCircle'):
-        return titanSummoningCircle(request)
-    if (call == 'newYearGetInfo'):
-        return newYearInfo(request)
-    if (call == "clanWarGetBriefInfo"):
-        return clanWarInfo(request)
-    if (call == "crossClanWar_getBriefInfo"):
-        return crossClanWarInfo(request)
-    if (call == "crossClanWar_getSettings"):
-        return crossClanSettings(request)
-    if (call == "clanWarGetWarlordInfo"):
-        return clanWarWarlord(request)
-    if (call == "campaignStoryGetList"):
-        return campaignStoryList(request)
-    if (call == "roleAscension_getAll"):
-        return roleAscension(request)
-    if (call == "chatsGetAll"):
-        return chats(request)
-    if (call == "chatGetTalks"):
-        return chatTalks(request)
-    if (call == "chatGetInfo"):
-        return chatInfo(request)
-    if (call == "clanGetInfo"):
-        return clan(request)
-    if (call == "clanGetActivityRewardTable"):
-        return clanActivityRewards(request)
-    if (call == "clanGetPrevData"):
-        return clanPrevData(request)
-    if (call == "heroesMerchantGet"):
-        return heroesMerchant(request)
-    if (call == "freebieHaveGroup"):
-        return freebie(request)
-    if (call == "pirateTreasureIsAvailable"):
-        return pirateTreasure(request)
-    if (call == "expeditionGet"):
-        return expeditions(request)
-    if (call == "hallOfFameGetTrophies"):
-        return hallOfFame(request)
-    if (call == "titanArenaCheckForgotten"):
-        return titanArena(request)
-    if (call == "titanArenaGetChestReward"):
-        return titanArenaChest(request)
-    if (call == "bossGetAll"):
-        return bosses(request)
-    if (call == "shopGetAll"):
-        return shops(request)
-    if (call == "adventure_getPassed"):
-        return adventuresPassed(request)
-    if (call == "adventure_getActiveData"):
-        return adventuresActive(request)
-    if (call == "adventure_find"):
-        return adventuresFind(request)
-    if (call == "adventureSolo_getActiveData"):
-        return adventuresSolo(request)
-    if (call == "pet_getChest"):
-        return petChest(request)
-    if (call == "playable_getAvailable"):
-        return playable(request)
-    if (call == "seasonAdventure_getInfo"):
-        return seasonAdventure(request)
-    if (call == "clanDomination_getInfo"):
-        return clanDomination(request)
-    if (call == "clanRaid_ratingInfo"):
-        return clanRaidRating(request)
-    if (call == "clanRaid_getInfo"):
-        return clanRaid(request)
-    if (call == "coopBundle_getInfo"):
-        return coopBundle(request)
-    if (call == "buffs_getInfo"):
-        return buffs(request)
-    if (call == "brawl_getInfo"):
-        return brawl(request)
-    if (call == "brawl_questGetInfo"):
-        return brawlQuests(request)
-    if (call == "epicBrawl_getBriefInfo"):
-        return epicBrawl(request)
-    if (call == "epicBrawl_getWinStreak"):
-        return epicBrawlStreak(request)
-    if (call == "stronghold_getInfo"):
-        return stronghold(request)
-    if (call == "mechanicsBan_getInfo"):
-        return mechanicsBan(request)
-    if (call == "gacha_getInfo"):
-        return gacha(request)
-    if (call == "heroRating_getInfo"):
-        return heroRating(request)
-    if (call == "offerwall_getActive"):
-        return offerwall(request)
-    if (call == "banner_getAll"):
-        return banners(request)
-    if (call == "idle_getAll"):
-        return idle(request)
-    if (call == "workshopBuff_getInfo"):
-        return workshopBuff(request)
-    if (call == "rewardedVideo_boxyGetInfo"):
-        return videos(request)
-    if (call == "newHeroNotification_get"):
-        return newHeroes(request)
-    if (call == "powerTournament_getState"):
-        return powerTournament(request)
-    if (call == "mechanicAvailability"):
-        return mechanics(request)
-    if (call == "towerGetInfo"):
-        return tower(request)
-    if (call == "battlePass_getInfo"):
-        return battlePass(request)
-    if (call == "battlePass_getSpecial"):
-        return specialBattlePass(request)
-    if (call == "missionStart"):
-        return missionStart(request, temp, gameData)
-    if (call == "missionEnd"):
-        return missionEnd(request, temp, gameData)
-    if (call == "missionRaid"):
-        return missionRaid(request, temp, gameData)
-
-    print("Unknown command:", call)
-    return None
+class Processor(NamedTuple):
+    process: Any = None
+    ident: str = 'body'
 
 
-def registration(request, temp, gameData: GameData):
-    response = {}
-    response['ident'] = 'body'
-    response['result'] = {"response": register(request, temp)}
-    return response
+class RequestProcessor:
+    def __init__(self):
+        self.processors = {}
+        self.registerBodyProcessor('missionStart', startMission)
+        self.registerBodyProcessor('missionEnd', endMission)
+        self.registerBodyProcessor('missionRaid', raidMission)
+        self.registerProcessor('registration', register)
+        self.registerProcessor('userGetInfo', getInfo)
+        self.registerProcessor('heroGetAll', getUserHeroes)
 
+    def registerProcessor(self, name, processor, ident=None):
+        id = ident if ident else name
+        self.processors[name] = Processor(process=processor, ident=id)
 
-def userInfo(request, temp, gameData: GameData):
-    response = {}
-    response['ident'] = 'userGetInfo'
-    response['result'] = {"response": getInfo(request, temp)}
-    return response
+    def registerBodyProcessor(self, name, processor):
+        self.registerProcessor(name, processor, 'body')
 
+    def callProcessor(self, processor, request, temp, gameData: GameData):
+        response = {}
+        response['ident'] = processor.ident
+        response['result'] = {"response": processor.process(request, temp, gameData)}
+        return response
 
-def missionStart(request, temp, gameData: GameData):
-    response = {}
-    response['ident'] = 'body'
-    response['result'] = {'quests': [], 'response': startMission(request, temp, gameData)}
-    return response
+    def process(self, request, temp, gameData: GameData):
+        call = request['name']
+        if call in self.processors:
+            return self.callProcessor(self.processors[call], request, temp, gameData)
 
+        if (call == 'userMergeGetStatus'):
+            return register(request, temp, gameData)
+        if (call == 'friendsGetInfo'):
+            return friends(request)
+        if (call == 'billingGetAll'):
+            return billing(request)
+        if (call == 'inventoryGet'):
+            return inventory(request)
+        if (call == 'titanGetAll'):
+            return titans(request)
+        if (call == 'titanSpiritGetAll'):
+            return titanSpirits(request)
+        if (call == 'pet_getAll'):
+            return pets(request)
+        if (call == 'pet_getPotionDailyBuyCount'):
+            return petPotions(request)
+        if (call == 'missionGetAll'):
+            return missions(request)
+        if (call == 'missionGetReplace'):
+            return missionReplace(request)
+        if (call == 'dailyBonusGetInfo'):
+            return dailyBonus(request)
+        if (call == 'getTime'):
+            return time(request)
+        if (call == 'teamGetAll'):
+            return team(request)
+        if (call == 'teamGetFavor'):
+            return teamFavor(request)
+        if (call == 'team_getBanners'):
+            return teamBanners(request)
+        if (call == 'clan_prestigeGetInfo'):
+            return clanPrestige(request)
+        if (call == 'questGetAll'):
+            return quests(request)
+        if (call == 'questGetEvents'):
+            return questEvents(request)
+        if (call == 'mailGetAll'):
+            return mail(request)
+        if (call == 'arenaGetAll'):
+            return arena(request)
+        if (call == 'socialQuestGetInfo'):
+            return socialQuest(request)
+        if (call == 'telegramQuestGetInfo'):
+            return telegramQuest(request)
+        if (call == 'userGetAvailableAvatars'):
+            return avatars(request)
+        if (call == 'userGetAvailableAvatarFrames'):
+            return avatarFrames(request)
+        if (call == 'userGetAvailableStickers'):
+            return stickers(request)
+        if (call == 'settingsGetAll'):
+            return settings(request)
+        if (call == 'subscriptionGetInfo'):
+            return subscription(request)
+        if (call == 'zeppelinGiftGet'):
+            return zeppelinGift(request)
+        if (call == 'tutorialGetInfo'):
+            return tutorial(request)
+        if (call == 'specialOffer_getAll'):
+            return specialOffer(request)
+        if (call == 'splitGetAll'):
+            return splits(request)
+        if (call == 'billingGetLast'):
+            return billing(request)
+        if (call == 'artifactGetChestLevel'):
+            return artifactChest(request)
+        if (call == 'titanArtifactGetChest'):
+            return titanArtifactChest(request)
+        if (call == 'titanGetSummoningCircle'):
+            return titanSummoningCircle(request)
+        if (call == 'newYearGetInfo'):
+            return newYearInfo(request)
+        if (call == "clanWarGetBriefInfo"):
+            return clanWarInfo(request)
+        if (call == "crossClanWar_getBriefInfo"):
+            return crossClanWarInfo(request)
+        if (call == "crossClanWar_getSettings"):
+            return crossClanSettings(request)
+        if (call == "clanWarGetWarlordInfo"):
+            return clanWarWarlord(request)
+        if (call == "campaignStoryGetList"):
+            return campaignStoryList(request)
+        if (call == "roleAscension_getAll"):
+            return roleAscension(request)
+        if (call == "chatsGetAll"):
+            return chats(request)
+        if (call == "chatGetTalks"):
+            return chatTalks(request)
+        if (call == "chatGetInfo"):
+            return chatInfo(request)
+        if (call == "clanGetInfo"):
+            return clan(request)
+        if (call == "clanGetActivityRewardTable"):
+            return clanActivityRewards(request)
+        if (call == "clanGetPrevData"):
+            return clanPrevData(request)
+        if (call == "heroesMerchantGet"):
+            return heroesMerchant(request)
+        if (call == "freebieHaveGroup"):
+            return freebie(request)
+        if (call == "pirateTreasureIsAvailable"):
+            return pirateTreasure(request)
+        if (call == "expeditionGet"):
+            return expeditions(request)
+        if (call == "hallOfFameGetTrophies"):
+            return hallOfFame(request)
+        if (call == "titanArenaCheckForgotten"):
+            return titanArena(request)
+        if (call == "titanArenaGetChestReward"):
+            return titanArenaChest(request)
+        if (call == "bossGetAll"):
+            return bosses(request)
+        if (call == "shopGetAll"):
+            return shops(request)
+        if (call == "adventure_getPassed"):
+            return adventuresPassed(request)
+        if (call == "adventure_getActiveData"):
+            return adventuresActive(request)
+        if (call == "adventure_find"):
+            return adventuresFind(request)
+        if (call == "adventureSolo_getActiveData"):
+            return adventuresSolo(request)
+        if (call == "pet_getChest"):
+            return petChest(request)
+        if (call == "playable_getAvailable"):
+            return playable(request)
+        if (call == "seasonAdventure_getInfo"):
+            return seasonAdventure(request)
+        if (call == "clanDomination_getInfo"):
+            return clanDomination(request)
+        if (call == "clanRaid_ratingInfo"):
+            return clanRaidRating(request)
+        if (call == "clanRaid_getInfo"):
+            return clanRaid(request)
+        if (call == "coopBundle_getInfo"):
+            return coopBundle(request)
+        if (call == "buffs_getInfo"):
+            return buffs(request)
+        if (call == "brawl_getInfo"):
+            return brawl(request)
+        if (call == "brawl_questGetInfo"):
+            return brawlQuests(request)
+        if (call == "epicBrawl_getBriefInfo"):
+            return epicBrawl(request)
+        if (call == "epicBrawl_getWinStreak"):
+            return epicBrawlStreak(request)
+        if (call == "stronghold_getInfo"):
+            return stronghold(request)
+        if (call == "mechanicsBan_getInfo"):
+            return mechanicsBan(request)
+        if (call == "gacha_getInfo"):
+            return gacha(request)
+        if (call == "heroRating_getInfo"):
+            return heroRating(request)
+        if (call == "offerwall_getActive"):
+            return offerwall(request)
+        if (call == "banner_getAll"):
+            return banners(request)
+        if (call == "idle_getAll"):
+            return idle(request)
+        if (call == "workshopBuff_getInfo"):
+            return workshopBuff(request)
+        if (call == "rewardedVideo_boxyGetInfo"):
+            return videos(request)
+        if (call == "newHeroNotification_get"):
+            return newHeroes(request)
+        if (call == "powerTournament_getState"):
+            return powerTournament(request)
+        if (call == "mechanicAvailability"):
+            return mechanics(request)
+        if (call == "towerGetInfo"):
+            return tower(request)
+        if (call == "battlePass_getInfo"):
+            return battlePass(request)
+        if (call == "battlePass_getSpecial"):
+            return specialBattlePass(request)
 
-def missionEnd(request, temp, gameData: GameData):
-    response = {}
-    response['ident'] = 'body'
-    response['result'] = {'quests': [], 'response': endMission(request, temp)}
-    return response
-
-
-def missionRaid(request, temp, gameData: GameData):
-    response = {}
-    response['ident'] = 'body'
-    response['result'] = {'response': raidMission(request, temp)}
-    return response
-
-
-def heroes(request, temp, gameData: GameData):
-    response = {}
-    response['ident'] = 'heroGetAll'
-    response['result'] = {"response": getUserHeroes(request, temp)}
-    return response
+        print("Unknown command:", call)
+        return None
 
 
 def friends(request):
@@ -279,7 +257,7 @@ def petPotions(request):
 
 def missions(request):
     result = {"ident":"missionGetAll","result":{"response":[]}}
-    for i in range(1, 200):
+    for i in range(1, 10):
         result['result']['response'].append(
                 {"id":i,"stars":3,"triesSpent":0,"resetToday":0,"attempts":22,"wins":22}
             )
