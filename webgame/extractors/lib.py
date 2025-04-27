@@ -286,6 +286,10 @@ class Hero:
         self.armorPenetration = base.armorPenetration
         self.armor = base.armor
         self.agility = base.agility
+        self.color = 1
+        self.level = 0
+        self.stars = 0
+        self.gear = []
 
     def processBaseStats(self):
         self.physicalAttack = self.physicalAttack + 2 * self.agility + self.getMainAttr()
@@ -308,19 +312,72 @@ class Hero:
 
     def applyStarsAndLevel(self, stars: int, level: int):
         starsData = self.data.stars[stars]
+        self.level = level
+        self.stars = stars
         self.update(starsData, level)
 
     def applyColor(self, color: int):
         colorData = self.data.color[color]
         stats = colorData[0]
+        self.color = color
         if stats:
             self.update(stats)
 
+    def applyGear(self, gear: List[bool]):
+        currColor = self.data.color[self.color]
+        items = currColor[1]
+        length = min(len(gear), len(items))
+        self.gear = gear
+        for i in range(0, length):
+            if gear[i]:
+                self.update(items[i].battleStats)
 
-def createHero(data: HeroData, level: int, stars: int):
-    hero = Hero(data)
-    hero.applyStarsAndLevel(stars, level)
+    def getBattleData(self):
+        return {
+                "id": self.data.id,
+                "xp": 0,
+                "level": self.level,
+                "color": self.color,
+                "slots": [0, 0, 0],
+                "skills": {"432": 1},
+                "power": 19156,
+                "star": self.stars,
+                "runes": [0, 0, 0, 0, 0],
+                "skins": [],
+                "currentSkin": 3,
+                "titanGiftLevel": 0,
+                "titanCoinsSpent": None,
+                "artifacts": [
+                    {"level": 1, "star": 0},
+                    {"level": 1, "star": 0},
+                    {"level": 1, "star": 0}
+                ],
+                "scale": self.data.scale,
+                "petId": 0,
+                "type": "hero",
+                "perks": [6, 1],
+                "ascensions": [],
+            }
+
+
+def createHero(data: List[HeroData]):
+    hero = Hero(data[3])
+    hero.applyStarsAndLevel(2, 5)
     hero.applyColor(2)
+    hero.applyGear([True, True, True])
+    hero.processBaseStats()
+    resp = {}
+    for attr in attrs:
+        value = getattr(hero, attr)
+        resp[attr] = value
+    response = json.dumps(resp)
+    return response
+
+
+def createEnemy(data: List[HeroData]):
+    hero = Hero(data[1001])
+    hero.applyStarsAndLevel(1, 1)
+    hero.applyColor(1)
     hero.processBaseStats()
     resp = {}
     for attr in attrs:
@@ -337,24 +394,21 @@ if __name__ == "__main__":
         data = json.load(f)
     # print_keys(data)
 
-    heroes = get_heroes(data)
-    print_keys(heroes[1])
-    hero = heroes[2]
-    print(hero['skill'])
-    print(hero['perk'])
+    # heroes = get_heroes(data)
+    # print_keys(heroes[1])
+    # hero = heroes[2]
+    # print(hero['skill'])
+    # print(hero['perk'])
 
     gear = parseItems(data['inventoryItem']['gear'])
     print(gear[1])
 
-    white = [1, 2, 3, 8, 14, 20]
-    for item in white:
-        gearEntry = gear[item]
-        print(item)
-        gearEntry.battleStats.print()
-    # quest, mission
     print()
-    # print_hero(heroes[2])
     heroes = parseHeroes(data['hero'], gear)
-    #print_keys(heroes)
+    print(data['titanGift']['1']['battleStatBonus']['agility'])
+    # print_hero(heroes[3])
+    print(heroes[1001].color[1][0])
+    print(data['mission']['1']['normalMode']['waves'][0])
 
-    print(createHero(heroes[3], 5, 2))
+    print(createHero(heroes))
+    print(createEnemy(heroes))
