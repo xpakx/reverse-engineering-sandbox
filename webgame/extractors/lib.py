@@ -375,7 +375,6 @@ def parseHeroes(data, gear) -> Dict[int, HeroData]:
     return result
 
 
-
 def createHero(data: List[HeroData]):
     hero = Hero(data[3])
     hero.applyStarsAndLevel(2, 5)

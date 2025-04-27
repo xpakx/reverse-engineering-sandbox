@@ -1,7 +1,6 @@
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import json
 import processors
-from controllers.heroes import testHeroData
 from extractors.lib import prepareData
 
 logs = False
@@ -115,18 +114,10 @@ if __name__ == '__main__':
             '{error: 0}'
         )
 
-    def hero_handler(request_handler):
-        return (
-            200,
-            {'Content-Type': 'application/json'},
-            testHeroData(3, 1, 1)
-        )
-
     server = SimpleHTTPServerWithRoutes(('localhost', 8081))
     server.add_route('GET', '/api/clientStat/', stash_handler)
     server.add_route('POST', '/api/', api_handler)
     server.add_route('POST', '/client-tech-logs', logs_handler)
-    server.add_route('GET', '/hero_test', hero_handler)
 
     print("Starting server on http://localhost:8000")
     server.serve_forever()

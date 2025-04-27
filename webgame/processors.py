@@ -259,7 +259,7 @@ def petPotions(request):
 
 def missions(request):
     result = {"ident":"missionGetAll","result":{"response":[]}}
-    for i in range(1, 10):
+    for i in range(1, 2):
         result['result']['response'].append(
                 {"id":i,"stars":3,"triesSpent":0,"resetToday":0,"attempts":22,"wins":22}
             )

@@ -1,5 +1,4 @@
-from controllers.heroes import getHeroById
-from extractors.lib import GameData, MissionData, getStatAsInt
+from extractors.lib import GameData, MissionData, getStatAsInt, Hero
 
 
 def startMission(request, temp, gameData: GameData):
@@ -16,7 +15,7 @@ def startMission(request, temp, gameData: GameData):
     response['typeId'] = 1
     response['attackers'] = {}
     for heroId in heroesIds:
-        response['attackers'][heroId] = getTestHero(heroId)
+        response['attackers'][heroId] = getTestHero(gameData, heroId)
 
     mission = gameData.missions[missionId]
     response['defenders'] = getWavesForMission(mission)
@@ -41,20 +40,36 @@ def getWavesForMission(mission: MissionData):
     return enemies
 
 
-def getTestHero(id):
-    hero = getHeroById(id)
-    hero['agility'] = 27
-    hero['intelligence'] = 52
-    hero['hp'] = 700
-    hero['physicalAttack'] = 50
-    hero['strength'] = 32
-    hero['armor'] = 25
-    hero['magicPower'] = 25
-    hero['magicResist'] = 25
-    hero['skin'] = 0
-    hero['favorPetId'] = 0
-    hero['favorPower'] = 0
-    return hero
+def getTestHero(data: GameData, id: int, lvl: int = 1, stars: int = 1, color: int = 1) -> Hero:
+    heroData = data.heroes[id]
+    hero = Hero(heroData)
+    hero.applyStarsAndLevel(stars, lvl)
+    hero.applyColor(color)
+    # hero.applyGear([True, True, True])
+    battleData = hero.getBattleData()
+
+    battleData["skills"] = {"432": 1}
+    battleData["power"] = 241
+    battleData["runes"] = [0, 0, 0, 0, 0]
+    battleData["skins"] = {"3": 1}
+    battleData["currentSkin"] = 3
+    battleData["titanGiftLevel"] = 0
+    battleData["titanCoinsSpent"] = None
+    battleData["artifacts"] = [
+        {"level": 1, "star": 0},
+        {"level": 1, "star": 0},
+        {"level": 1, "star": 0}
+        ]
+    battleData["perks"] = [6, 1]
+    battleData["ascensions"] = None
+    battleData['physicalAttack'] = hero.physicalAttack
+    battleData['armor'] = hero.armor
+    battleData['magicPower'] = hero.magicPower
+    battleData['magicResist'] = hero.magicResist
+    battleData['skin'] = 0
+    battleData['favorPetId'] = 0
+    battleData['favorPower'] = 0
+    return battleData
 
 
 def endMission(request, temp, gameData):
