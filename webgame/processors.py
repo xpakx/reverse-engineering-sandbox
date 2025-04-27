@@ -30,6 +30,8 @@ class RequestProcessor:
     def callProcessor(self, processor, request, temp, gameData: GameData):
         response = {}
         response['ident'] = processor.ident
+        if request['ident'] != 'body':
+            response['ident'] = request['ident']
         response['result'] = {"response": processor.process(request, temp, gameData)}
         return response
 
