@@ -6,7 +6,7 @@ from controllers.gacha import summonHero
 from extractors.lib import GameData
 from typing import NamedTuple, Any
 from controllers.calendar import getTime, getDailyBonus, farmDaily
-from controllers.quest import farmQuest
+from controllers.quest import farmQuest, getQuests, getQuestEvents
 
 
 class Processor(NamedTuple):
@@ -31,6 +31,8 @@ class RequestProcessor:
         self.registerBodyProcessor('gacha_open', summonHero)
         self.registerBodyProcessor('questFarm', farmQuest)
         self.registerBodyProcessor('dailyBonusFarm', farmDaily)
+        self.registerProcessor('questGetAll', getQuests)
+        self.registerProcessor('questGetEvents', getQuestEvents)
 
     def registerProcessor(self, name, processor, ident=None):
         id = ident if ident else name
@@ -78,10 +80,6 @@ class RequestProcessor:
             return teamBanners(request)
         if (call == 'clan_prestigeGetInfo'):
             return clanPrestige(request)
-        if (call == 'questGetAll'):
-            return quests(request)
-        if (call == 'questGetEvents'):
-            return questEvents(request)
         if (call == 'mailGetAll'):
             return mail(request)
         if (call == 'arenaGetAll'):
@@ -282,45 +280,6 @@ def teamFavor(request):
 
 def teamBanners(request):
     return {"ident":"team_getBanners","result":{"response":{"mission":None,"arena_def":None,"arena":None,"tower":None,"boss_11":None,"boss_12":None,"boss_10":None,"dungeon_water":None,"dungeon_hero":None,"dungeon_neutral":None,"dungeon_fire":None,"clanDefence_heroes":None,"clanDefence_titans":None,"adventure_hero":None,"dungeon_earth":None,"clan_pvp_hero":None,"clan_pvp_titan":None,"crossClanDefence_heroes":[None,None,None],"crossClanDefence_titans":[None,None,None],"grand_def":[None,None,None],"titan_arena":None,"clan_global_pvp_titan":None,"clan_global_pvp":None,"grand":[None,None,None]}}}
-
-
-def quests(request):
-    result = {"ident":"questGetAll","result":{"response":[]}}
-    result['result']['response'].append({
-    "id": 23151,
-    "state": 2,
-    "progress": 3,
-    "reward": {
-        "gold": 30000,
-        "fragmentHero": {
-            "60": 3
-        }
-    },
-    "createTime": 1745104656
-        })
-    return result
-
-
-def questEvents(request):
-    result = {"ident":"questGetEvents","result":{"response":[]}}
-    result['result']['response'].append({
-        "id": 68,
-        "sortOrder": 1,
-        "eventReward": None,
-        "eventLoopData": None,
-        "clientData": None,
-        "icon": "event_icon_001",
-        "hideCompleted": None,
-        "questChains": None,
-        "background": "event_background_001.jpg",
-        "localeKey": "LIB_SPECIAL_QUEST_EVENT_NAME_3",
-        "desc_localeKey": "LIB_SPECIAL_QUEST_EVENT_DESC_3",
-        "name_localeKey": "LIB_SPECIAL_QUEST_EVENT_NAME_3",
-        "notification_localeKey": "",
-        "startTime": 1745104656,
-        "endTime": 1745709456
-        })
-    return result
 
 
 def clanPrestige(request):
