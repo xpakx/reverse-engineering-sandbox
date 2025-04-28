@@ -84,14 +84,25 @@ def endMission(request, temp, gameData):
     return response
 
 
+def getRewardsForMission(gameData: GameData, missionId: int):
+    reward = {}
+    reward['experience'] = 13
+    reward['gear'] = {'37': 6}
+    reward['gold'] = 523
+    return reward
+
+
 def raidMission(request, temp, gameData):
     print(request)
-    # missionId = getStatAsInt(request['args'], 'id', 1)
+    missionId = getStatAsInt(request['args'], 'id', 1)
     attempts = getStatAsInt(request['args'], 'times', 1)
-    reward = {}
-    reward['experience'] = 13 * attempts
-    reward['gear'] = {'37': 666 * attempts}
-    reward['gold'] = 523 * attempts
     response = {}
-    response['reward'] = reward
+    for i in range(attempts):
+        reward = getRewardsForMission(gameData, missionId)
+        id = str(i)
+        response[id] = reward
+
+    raidReward = {}
+    raidReward['consumable'] = {'9': 2*attempts}
+    response['raid'] = raidReward
     return response
