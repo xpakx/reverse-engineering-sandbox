@@ -1,7 +1,7 @@
 from controllers.user import register, getInfo
 from controllers.campaign import startMission, endMission, raidMission
 from controllers.heroes import getUserHeroes
-from controllers.items import buyStamina, useStaminaItem
+from controllers.items import buyStamina, useStaminaItem, inventory
 from controllers.gacha import summonHero
 from extractors.lib import GameData
 from typing import NamedTuple, Any
@@ -21,6 +21,7 @@ class RequestProcessor:
         self.registerProcessor('registration', register)
         self.registerProcessor('userGetInfo', getInfo)
         self.registerProcessor('heroGetAll', getUserHeroes)
+        self.registerProcessor('inventoryGet', inventory)
         self.registerBodyProcessor('refillableBuyStamina', buyStamina)
         self.registerBodyProcessor('consumableUseStamina', useStaminaItem)
         self.registerBodyProcessor('gacha_open', summonHero)
@@ -51,8 +52,6 @@ class RequestProcessor:
             return friends(request)
         if (call == 'billingGetAll'):
             return billing(request)
-        if (call == 'inventoryGet'):
-            return inventory(request)
         if (call == 'titanGetAll'):
             return titans(request)
         if (call == 'titanSpiritGetAll'):
@@ -240,10 +239,6 @@ def friends(request):
 
 def billing(request):
     return {"ident":"billingGetAll","result":{"response":{"billings":[],"bundle":[]}}}
-
-
-def inventory(request):
-    return {"ident":"inventoryGet","result":{"response":{"consumable":{"14":1},"gear":{},"fragmentHero":{},"scroll":{},"coin":{},"fragmentGear":{},"fragmentScroll":{},"fragmentArtifact":{},"fragmentTitan":{},"fragmentTitanArtifact":{},"ascensionGear":{},"fragmentPet":{},"petGear":{}}}}
 
 
 def titans(request):

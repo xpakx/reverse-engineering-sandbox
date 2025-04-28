@@ -1,4 +1,5 @@
 import random
+from controllers.items import addToInventory
 
 
 def summonHero(request, temp, gameData):
@@ -29,6 +30,7 @@ def summonHero(request, temp, gameData):
         if id not in fragmentList:
             fragmentList[id] = 0
         fragmentList[id] = fragmentList[id] + 5
+        addToInventory(temp, 'fragmentHero', reward, 5)
 
     response['reward'] = {}
     if len(rareFragments) > 0:

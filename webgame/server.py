@@ -2,9 +2,13 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 import json
 import processors
 from extractors.lib import prepareData
+from controllers.items import getTestInventory
 
 logs = False
 gameData = prepareData()
+tempState = {
+        'inventory': getTestInventory()
+        }
 
 
 class CustomHandler(SimpleHTTPRequestHandler):
@@ -66,7 +70,6 @@ if __name__ == '__main__':
 
     def api_handler(request_handler):
         responses = []
-        temp = {}
 
         try:
             content_length = int(request_handler.headers.get('Content-Length', 0))
@@ -75,11 +78,11 @@ if __name__ == '__main__':
             body_data = json.loads(raw_body)
             if 'calls' in body_data:
                 for call in body_data['calls']:
-                    data = processor.process(call, temp, gameData)
+                    data = processor.process(call, tempState, gameData)
                     if data:
                         responses.append(data)
             else:
-                data = processor.process(body_data, temp, gameData)
+                data = processor.process(body_data, tempState, gameData)
                 if data:
                     responses.append(data)
             # print(body_data)
