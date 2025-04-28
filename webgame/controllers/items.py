@@ -8,6 +8,6 @@ def buyStamina(request, temp, gameData):
 
 def useStaminaItem(request, temp, gameData):
     print(request)
-    itemId = getStatAsInt(request, 'libId')
-    amount = getStatAsInt(request, 'amount')
+    itemId = getStatAsInt(request['args'], 'libId')
+    amount = getStatAsInt(request['args'], 'amount')
     return []

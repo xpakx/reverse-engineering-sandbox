@@ -2,6 +2,7 @@ from controllers.user import register, getInfo
 from controllers.campaign import startMission, endMission, raidMission
 from controllers.heroes import getUserHeroes
 from controllers.items import buyStamina, useStaminaItem
+from controllers.gacha import summonHero
 from extractors.lib import GameData
 from typing import NamedTuple, Any
 
@@ -22,6 +23,7 @@ class RequestProcessor:
         self.registerProcessor('heroGetAll', getUserHeroes)
         self.registerBodyProcessor('refillableBuyStamina', buyStamina)
         self.registerBodyProcessor('consumableUseStamina', useStaminaItem)
+        self.registerBodyProcessor('gacha_open', summonHero)
 
     def registerProcessor(self, name, processor, ident=None):
         id = ident if ident else name
