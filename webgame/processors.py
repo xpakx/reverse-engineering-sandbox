@@ -1,6 +1,7 @@
 from controllers.user import register, getInfo
 from controllers.campaign import startMission, endMission, raidMission
 from controllers.heroes import getUserHeroes
+from controllers.items import buyStamina, useStaminaItem
 from extractors.lib import GameData
 from typing import NamedTuple, Any
 
@@ -19,6 +20,8 @@ class RequestProcessor:
         self.registerProcessor('registration', register)
         self.registerProcessor('userGetInfo', getInfo)
         self.registerProcessor('heroGetAll', getUserHeroes)
+        self.registerBodyProcessor('refillableBuyStamina', buyStamina)
+        self.registerBodyProcessor('consumableUseStamina', useStaminaItem)
 
     def registerProcessor(self, name, processor, ident=None):
         id = ident if ident else name
