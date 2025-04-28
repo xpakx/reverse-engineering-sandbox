@@ -5,6 +5,7 @@ from controllers.items import buyStamina, useStaminaItem, inventory
 from controllers.gacha import summonHero
 from extractors.lib import GameData
 from typing import NamedTuple, Any
+from controllers.calendar import getTime, getDailyBonus
 
 
 class Processor(NamedTuple):
@@ -22,6 +23,8 @@ class RequestProcessor:
         self.registerProcessor('userGetInfo', getInfo)
         self.registerProcessor('heroGetAll', getUserHeroes)
         self.registerProcessor('inventoryGet', inventory)
+        self.registerProcessor('getTime', getTime)
+        self.registerProcessor('dailyBonusGetInfo', getDailyBonus)
         self.registerBodyProcessor('refillableBuyStamina', buyStamina)
         self.registerBodyProcessor('consumableUseStamina', useStaminaItem)
         self.registerBodyProcessor('gacha_open', summonHero)
@@ -64,10 +67,6 @@ class RequestProcessor:
             return missions(request)
         if (call == 'missionGetReplace'):
             return missionReplace(request)
-        if (call == 'dailyBonusGetInfo'):
-            return dailyBonus(request)
-        if (call == 'getTime'):
-            return time(request)
         if (call == 'teamGetAll'):
             return team(request)
         if (call == 'teamGetFavor'):
@@ -268,14 +267,6 @@ def missions(request):
 
 def missionReplace(request):
     return {"ident":"missionGetReplace","result":{"response":None}}
-
-
-def dailyBonus(request):
-    return {"ident":"dailyBonusGetInfo","result":{"response":{"year":"2025","month":4,"currentDay":"11","availableToday":False,"availableVip":True,"daysInMonth":30,"heroId":3}}}
-
-
-def time(request):
-    return {"ident":"getTime","result":{"response":1745545329}}
 
 
 def team(request):
