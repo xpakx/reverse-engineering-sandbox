@@ -1,5 +1,6 @@
-from typing import NamedTuple, Dict, List, Any, Tuple
+from typing import NamedTuple, Dict, List, Any, Tuple, Optional
 import json
+from datetime import time, datetime
 
 attrs = ["strength", "agility", "intelligence", "hp",
          "physicalCritChance", "physicalAttack",
@@ -450,10 +451,79 @@ def parseMissions(data, heroes, gear) -> Dict[int, MissionData]:
     return result
 
 
+class QuestEventData(NamedTuple):
+    id: int = 0
+    sortOrder: int = 1
+    eventReward: Optional[Any] = None
+    eventLoopData: Optional[Any] = None
+    clientData: Optional[Any] = None
+    icon: str = "event_icon_001"
+    hideCompleted: Optional[bool] = None
+    questChains: Optional[Any] = None
+    background: str = ""
+    localeKey: str = ""
+    descLocale: str = ""
+    nameLocale: str = ""
+    notifLocale: str = ""
+
+    def getForDate(self, startDate, endDate):
+        result = {}
+        result['id'] = self.id
+        result["sortOrder"] = self.sortOrder
+        result["eventReward"] = self.eventReward
+        result["eventLoopData"] = self.eventLoopData
+        result["clientData"] = self.clientData
+        result["icon"] = self.icon
+        result["hideCompleted"] = self.hideCompleted
+        result["questChains"] = self.questChains
+        result["background"] = self.background
+        result["localeKey"] = self.localeKey
+        result["desc_localeKey"] = self.descLocale
+        result["name_localeKey"] = self.nameLocale
+        result["notification_localeKey"] = self.notifLocale
+        startTime = datetime.combine(startDate, time.min)
+        endTime = datetime.combine(endDate, time.min)
+        result["startTime"] = int(startTime.timestamp())
+        result["endTime"] = int(endTime.timestamp())
+        return result
+
+
 class GameData(NamedTuple):
-    heroes: List[HeroData] = []
-    items: List[GearData] = []
-    missions: List[MissionData] = []
+    heroes: Dict[int, HeroData] = {}
+    items: Dict[int, GearData] = {}
+    missions: Dict[int, MissionData] = {}
+    questEvents: Dict[int, QuestEventData] = {}
+
+
+def getOrDefault(data, stat: str, default: Any = None) -> Any:
+    if stat not in data:
+        return default
+    val = data[stat]
+    return val
+
+
+def parseQuestEvents(data) -> Dict[int, QuestEventData]:
+    result = {}
+    for item in data:
+        eventEntry = data[item]
+        id = getStatAsInt(eventEntry, 'id')
+        event = QuestEventData(
+                id=id,
+                sortOrder=getOrDefault(eventEntry, 'sortOrder', 1),
+                eventReward=getOrDefault(eventEntry, 'eventReward'),
+                eventLoopData=getOrDefault(eventEntry, 'eventLoopData'),
+                clientData=getOrDefault(eventEntry, 'clientData'),
+                icon=getOrDefault(eventEntry, 'icon', ''),
+                hideCompleted=getOrDefault(eventEntry, 'hideCompleted'),
+                questChains=getOrDefault(eventEntry, 'questChains'),
+                background=getOrDefault(eventEntry, 'background', ''),
+                localeKey=getOrDefault(eventEntry, 'localeKey', ''),
+                descLocale=getOrDefault(eventEntry, 'desc_localeKey', ''),
+                nameLocale=getOrDefault(eventEntry, 'name_localeKey', ''),
+                notifLocale=getOrDefault(eventEntry, 'notification_localeKey', '')
+                )
+        result[id] = event
+    return result
 
 
 def prepareData() -> GameData:
@@ -464,7 +534,13 @@ def prepareData() -> GameData:
     gear = parseItems(data['inventoryItem']['gear'])
     heroes = parseHeroes(data['hero'], gear)
     missions = parseMissions(data['mission'], heroes, gear)
-    return GameData(heroes=heroes, items=gear, missions=missions)
+    questEvents = parseQuestEvents(data['specialQuestEvent']['type'])
+    return GameData(
+            heroes=heroes,
+            items=gear,
+            missions=missions,
+            questEvents=questEvents
+            )
 
 
 if __name__ == "__main__":
@@ -472,37 +548,16 @@ if __name__ == "__main__":
 
     with open(input_file, 'r') as f:
         data = json.load(f)
-    # print_keys(data)
-
-    # heroes = get_heroes(data)
-    # print_keys(heroes[1])
-    # hero = heroes[2]
-    # print(hero['skill'])
-    # print(hero['perk'])
-
-    gear = parseItems(data['inventoryItem']['gear'])
-    print(gear[1])
-
+    quests = data['quest']
+    print_keys(data)
+    print_keys(quests)
     print()
-    heroes = parseHeroes(data['hero'], gear)
-    print(data['titanGift']['1']['battleStatBonus']['agility'])
-    # print_hero(heroes[3])
-    print(heroes[1001].color[1][0])
-    print(data['mission']['1']['normalMode'])
-    print(data['mission']['1']['normalMode']['waves'][0])
+    print_keys(data['specialQuestEvent'])
+    print()
+    print(quests['special']['23149'])  # chain: 338
+    print(data['specialQuestEvent']['chain']['338'])
+    print(data['specialQuestEvent']['type']['68'])
 
-    print(createHero(heroes))
-    print(createEnemy(heroes))
-
-    missions = parseMissions(data['mission'], heroes, gear)
-    print(missions[1])
-    for wave in missions[1].waves:
-        print("WAVE")
-        for hero in wave.enemies:
-            print('hero id:', hero.data.id)
-            resp = {}
-            for attr in attrs:
-                value = getattr(hero, attr)
-                resp[attr] = value
-            response = json.dumps(resp)
-            print(response)
+    quests = parseQuestEvents(data['specialQuestEvent']['type'])
+    print(quests[68])
+    #23149/68

@@ -1,5 +1,6 @@
 from controllers.items import addMultToInventory
-from extractors.lib import getStatAsInt
+from extractors.lib import getStatAsInt, GameData
+from datetime import datetime
 
 
 rewards = {
@@ -42,23 +43,9 @@ def getQuests(request, temp, gameData):
     return response
 
 
-def getQuestEvents(request, temp, gameData):
+def getQuestEvents(request, temp, gameData: GameData):
     response = []
-    response.append({
-        "id": 68,
-        "sortOrder": 1,
-        "eventReward": None,
-        "eventLoopData": None,
-        "clientData": None,
-        "icon": "event_icon_001",
-        "hideCompleted": None,
-        "questChains": None,
-        "background": "event_background_001.jpg",
-        "localeKey": "LIB_SPECIAL_QUEST_EVENT_NAME_3",
-        "desc_localeKey": "LIB_SPECIAL_QUEST_EVENT_DESC_3",
-        "name_localeKey": "LIB_SPECIAL_QUEST_EVENT_NAME_3",
-        "notification_localeKey": "",
-        "startTime": 1745104656,
-        "endTime": 1745709456
-        })
+    event = gameData.questEvents[68]
+    response.append(event.getForDate(datetime(2025, 4, 1), datetime(2025, 4, 30)))
+    print(response)
     return response
