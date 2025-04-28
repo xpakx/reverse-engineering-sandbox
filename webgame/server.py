@@ -3,7 +3,9 @@ import json
 import processors
 from extractors.lib import prepareData
 from controllers.items import getTestInventory
+import os
 
+versioned_root = './'
 logs = False
 gameData = prepareData()
 tempState = {
@@ -39,6 +41,20 @@ class CustomHandler(SimpleHTTPRequestHandler):
             super().do_GET()
         else:
             self.send_error(404, f"Endpoint {path} not found")
+
+    def translate_path(self, path):
+        original_path = super().translate_path(path)
+
+        if versioned_root == './':
+            return original_path
+
+        rel_path = os.path.relpath(original_path, start=os.getcwd())
+
+        if rel_path in ['.', '/', 'favicon.ico', 'css/game-adaptive.css', 'data.js']:
+            return original_path
+
+        versioned_path = os.path.join(os.getcwd(), versioned_root, rel_path)
+        return versioned_path
 
     def do_GET(self):
         self.handle_route('GET')
