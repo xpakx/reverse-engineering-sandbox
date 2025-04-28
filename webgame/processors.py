@@ -6,6 +6,7 @@ from controllers.gacha import summonHero
 from extractors.lib import GameData
 from typing import NamedTuple, Any
 from controllers.calendar import getTime, getDailyBonus
+from controllers.quest import farmQuest
 
 
 class Processor(NamedTuple):
@@ -28,6 +29,7 @@ class RequestProcessor:
         self.registerBodyProcessor('refillableBuyStamina', buyStamina)
         self.registerBodyProcessor('consumableUseStamina', useStaminaItem)
         self.registerBodyProcessor('gacha_open', summonHero)
+        self.registerBodyProcessor('questFarm', farmQuest)
 
     def registerProcessor(self, name, processor, ident=None):
         id = ident if ident else name

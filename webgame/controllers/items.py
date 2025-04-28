@@ -56,3 +56,11 @@ def addToInventory(temp, category: str, id: int, amount: int):
 
     cat[strId] = cat[strId] + amount
 
+
+def addMultToInventory(temp, reward):
+    for category in reward:
+        items = reward[category]
+        if isinstance(items, dict):
+            for item in items:
+                id = int(item)
+                addToInventory(temp, category, id, items[item])
