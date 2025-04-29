@@ -111,6 +111,23 @@ def downloadExternalLibsFromIndex(index, hash):
             )
 
 
+def extractGameUrl(data):
+    pattern = re.compile(
+        r'https?://[^"]+?/game\.js',
+        re.IGNORECASE
+    )
+
+    url = pattern.search(data)
+    return url.group()
+
+
+def downloadGameJs(url, hash):
+    name = 'game'
+    filename = "game.js"
+    filepath = Path(hash) / filename
+    downloadFile(name, filename, filepath, url)
+
+
 def readData(filename):
     with open(filename, 'r') as f:
         data = f.read()
@@ -124,6 +141,9 @@ def readData(filename):
         downloadFromIndex('client', hashToDir)
         downloadLibFromIndex('lib', hashToDir)
         downloadExternalLibsFromIndex('assets', hashToDir)
+        gameJs = extractGameUrl(data)
+        print(gameJs)
+        downloadGameJs(gameJs, hashToDir)
 
 
 readData('hero.html')
