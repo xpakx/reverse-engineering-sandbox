@@ -4,6 +4,7 @@ from pathlib import Path
 from asset_downloader import process_entries, process_entries_select
 from asset_downloader import process_entries_js
 import gzip
+from typing import List, Set
 
 
 def extractIndexHashes(data):
@@ -128,7 +129,64 @@ def downloadGameJs(url, hash):
     downloadFile(name, filename, filepath, url)
 
 
-def readData(filename):
+def findJsImports(filename):
+    with open(filename, 'r', encoding='utf-8') as file:
+        content = file.read()
+    pattern = r'[\'"]([^\'"]+\.js)[\'"]'
+    matches = re.findall(pattern, content)
+    return matches
+
+
+def getJsUrl(imports: List[str]):
+    for imp in imports:
+        if imp.endswith('apps.js'):
+            return imp.rsplit('/', 1)[0]
+
+
+def downloadAppAndTranslate(imports: List[str], hash: str, jsUrl: str) -> Set:
+    nums = set()
+    for imp in imports:
+        if imp.endswith('apps.js'):
+            name = 'apps'
+            filename = "apps.js"
+            dir = Path(f'{hash}/akamaihd')
+            filepath = dir / filename
+            url = f'{jsUrl}/{filename}'
+            downloadFile(name, filename, filepath, url)
+        elif imp.endswith('autoGenerateTranslate.js'):
+            name = 'autoGenerateTranslate'
+            filename = "autoGenerateTranslate.js"
+            dir = Path(f'{hash}/js/locale/en')
+            dir.mkdir(exist_ok=True, parents=True)
+            filepath = dir / filename
+            url = f'{jsUrl}/locale/en/{filename}'
+            downloadFile(name, filename, filepath, url)
+        else:
+            if '/' in imp:
+                nums.add(imp.rsplit('/', 1)[1])
+            else:
+                nums.add(imp)
+    return nums
+
+
+def addToNums(nums: Set[str], imports: List[str]):
+    for imp in imports:
+        if '/' in imp:
+            nums.add(imp.rsplit('/', 1)[1])
+        else:
+            nums.add(imp)
+
+
+def downloadNums(nums: Set[str], hash: str, jsUrl: str):
+    for num in nums:
+        name = num
+        filename = num
+        filepath = Path(f'{hash}/js') / filename
+        url = f'{jsUrl}/{filename}'
+        downloadFile(name, filename, filepath, url)
+
+
+def readData(filename) -> str:
     with open(filename, 'r') as f:
         data = f.read()
         heroHash = extractHeroHash(data)
@@ -144,6 +202,17 @@ def readData(filename):
         gameJs = extractGameUrl(data)
         print(gameJs)
         downloadGameJs(gameJs, hashToDir)
+        imports = findJsImports(f'{hashToDir}/game.js')
+        print(imports)
+        jsUrl = getJsUrl(imports)
+        print(jsUrl)
+        nums = downloadAppAndTranslate(imports, hashToDir, jsUrl)
+        print(nums)
+        imports = findJsImports(f'{hashToDir}/akamaihd/apps.js')
+        addToNums(nums, imports)
+        print(nums)
+        downloadNums(nums, hashToDir, jsUrl)
+        return hashToDir
 
 
-readData('hero.html')
+hash = readData('hero.html')
