@@ -54,7 +54,7 @@ class CustomHandler(SimpleHTTPRequestHandler):
             return original_path
 
         if 'assets/' in rel_path:
-            if '.js' in rel_path:
+            if '.js' in rel_path and '.json' not in rel_path:
                 rel_path = rel_path.replace('assets/', 'akamaihd/')
             else:
                 return original_path
