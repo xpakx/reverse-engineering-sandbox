@@ -5,7 +5,7 @@ from extractors.lib import prepareData
 from controllers.items import getTestInventory
 import os
 
-versioned_root = './'
+versioned_root = './91c10ca0'
 logs = False
 gameData = prepareData()
 tempState = {
@@ -50,8 +50,14 @@ class CustomHandler(SimpleHTTPRequestHandler):
 
         rel_path = os.path.relpath(original_path, start=os.getcwd())
 
-        if rel_path in ['.', '/', 'favicon.ico', 'css/game-adaptive.css', 'data.js']:
+        if rel_path in ['.', '/', 'favicon.ico', 'css/game-adaptive.css']:
             return original_path
+
+        if 'assets/' in rel_path:
+            if '.js' in rel_path:
+                rel_path = rel_path.replace('assets/', 'akamaihd/')
+            else:
+                return original_path
 
         versioned_path = os.path.join(os.getcwd(), versioned_root, rel_path)
         return versioned_path
