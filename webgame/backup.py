@@ -3,6 +3,7 @@ import requests
 from pathlib import Path
 from asset_downloader import process_entries, process_entries_select
 from asset_downloader import process_entries_js
+from asset_renamer import flatten_and_prepend_paths
 import gzip
 from typing import List, Set
 
@@ -242,8 +243,9 @@ def patchGameJs(hash):
 
 def patchFiles(hash):
     patchGameJs(hash)
+    flatten_and_prepend_paths(f"{hash}/indices/index.client.json", "../akamaihd")
+    flatten_and_prepend_paths(f"{hash}/indices/index.assets.json", '../assets')
 
 
-# hash = readData('hero.html')
-hash = '91c10ca0'
+hash = readData('hero.html')
 patchFiles(hash)
