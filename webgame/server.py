@@ -5,9 +5,10 @@ from extractors.lib import prepareData
 from controllers.items import getTestInventory
 import os
 
-versioned_root = './91c10ca0'
+hash = '91c10ca0'
+versioned_root = f'./{hash}'
 logs = False
-gameData = prepareData()
+gameData = prepareData(hash)
 tempState = {
         'inventory': getTestInventory()
         }

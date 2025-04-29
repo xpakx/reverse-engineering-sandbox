@@ -244,14 +244,14 @@ def patchGameJs(hash):
 
 def replaceDataJsHash(data, fullHash) -> str:
     return data.replace(
-        'aa71bdf0ae8a59ae077f387fdb147ba5',
+        '{HEROES_HASH}',
         fullHash,
         1
     )
 
 
 def addDataJs(hash, fullHash):
-    orig = './data.js'
+    orig = './data.template.js'
     filename = f'{hash}/data.js'
     path = Path(orig)
     data = path.read_text()

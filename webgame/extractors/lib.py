@@ -526,8 +526,8 @@ def parseQuestEvents(data) -> Dict[int, QuestEventData]:
     return result
 
 
-def prepareData() -> GameData:
-    input_file = "./indices/lib.json"
+def prepareData(hash) -> GameData:
+    input_file = f"./{hash}/indices/lib.json"
 
     with open(input_file, 'r') as f:
         data = json.load(f)
@@ -544,7 +544,7 @@ def prepareData() -> GameData:
 
 
 if __name__ == "__main__":
-    input_file = "./indices/lib.json"
+    input_file = "./91c10ca0/indices/lib.json"
 
     with open(input_file, 'r') as f:
         data = json.load(f)

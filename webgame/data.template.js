@@ -33,7 +33,7 @@ window.NXFlashVars = {
 	client_version: "469",
 	client_log_url: "http://localhost:8081/client-tech-logs",
 	preloader_js:
-	"akamaihd/heroes.aa71bdf0ae8a59ae077f387fdb147ba5.js",
+	"akamaihd/heroes.{HEROES_HASH}.js",
 	playable_js:
 	"https://heroesweb-a.akamaihd.net/wb/client/heroes_playable.8d8c82ef416aea7e044be0b3014ca376.js",
 	videojsFirstLaunchPreloader: 0,
