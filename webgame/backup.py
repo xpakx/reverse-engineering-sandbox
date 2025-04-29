@@ -215,4 +215,35 @@ def readData(filename) -> str:
         return hashToDir
 
 
-hash = readData('hero.html')
+def replaceAppsJsUrl(data) -> str:
+    return re.sub(
+        r'https?://[^"]+?/js/apps\.js',
+        "./akamaihd/apps.js",
+        data
+    )
+
+
+def replaceBaseJsUrl(data) -> str:
+    return re.sub(
+        r'https?://[^"]+?/hw-web/v2/[0-9]{7}',
+        "http://localhost:8081",
+        data
+    )
+
+
+def patchGameJs(hash):
+    filename = f'{hash}/game.js'
+    path = Path(filename)
+    data = path.read_text()
+    data = replaceAppsJsUrl(data)
+    data = replaceBaseJsUrl(data)
+    path.write_text(data)
+
+
+def patchFiles(hash):
+    patchGameJs(hash)
+
+
+# hash = readData('hero.html')
+hash = '91c10ca0'
+patchFiles(hash)
