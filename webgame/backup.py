@@ -2,6 +2,7 @@ import re
 import requests
 from pathlib import Path
 from asset_downloader import process_entries, process_entries_select
+from asset_downloader import process_entries_js
 import gzip
 
 
@@ -100,6 +101,16 @@ def downloadLibFromIndex(index, hash):
             )
 
 
+def downloadExternalLibsFromIndex(index, hash):
+    extractIndex(index, hash)
+
+    process_entries_js(
+            f'{hash}/indices/index.{index}.json',
+            f'https://heroesweb-a.akamaihd.net/wb/{index}/',
+            f'./{hash}/akamaihd'
+            )
+
+
 def readData(filename):
     with open(filename, 'r') as f:
         data = f.read()
@@ -112,7 +123,7 @@ def readData(filename):
             downloadIndex(hash, hashes[hash], hashToDir)
         downloadFromIndex('client', hashToDir)
         downloadLibFromIndex('lib', hashToDir)
-        downloadLibFromIndex('assets', hashToDir)
+        downloadExternalLibsFromIndex('assets', hashToDir)
 
 
 readData('hero.html')
