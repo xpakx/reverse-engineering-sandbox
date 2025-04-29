@@ -192,6 +192,7 @@ def readData(filename) -> str:
         data = f.read()
         heroHash = extractHeroHash(data)
         hashToDir = createVerDir(heroHash)
+        addDataJs(hashToDir, heroHash)
 
         hashes = extractIndexHashes(data)
         print(hashes)
@@ -238,6 +239,25 @@ def patchGameJs(hash):
     data = path.read_text()
     data = replaceAppsJsUrl(data)
     data = replaceBaseJsUrl(data)
+    path.write_text(data)
+
+
+def replaceDataJsHash(data, fullHash) -> str:
+    return data.replace(
+        'aa71bdf0ae8a59ae077f387fdb147ba5',
+        fullHash,
+        1
+    )
+
+
+def addDataJs(hash, fullHash):
+    orig = './data.js'
+    filename = f'{hash}/data.js'
+    path = Path(orig)
+    data = path.read_text()
+    data = replaceDataJsHash(data, fullHash)
+    filename = f'{hash}/data.js'
+    path = Path(filename)
     path.write_text(data)
 
 
