@@ -1,0 +1,118 @@
+import re
+import requests
+from pathlib import Path
+from asset_downloader import process_entries, process_entries_select
+import gzip
+
+
+def extractIndexHashes(data):
+    pattern = re.compile(
+        r'https?:\\/\\/[^"]+?\\/index\.(client|assets|lib)\.[a-f0-9]{32}\.json\.gz',
+        re.IGNORECASE
+    )
+
+    hashes = {}
+    for url in pattern.finditer(data):
+        parts = url.group().split('/')[-1].split('.')
+        if len(parts) >= 4:
+            hash_type = parts[1]
+            hash_value = parts[2]
+            hashes[hash_type] = hash_value
+    return hashes
+
+
+def extractHeroHash(data):
+    pattern = re.compile(
+        r'https?:\\/\\/[^"]+?\\/heroes\.[a-f0-9]{32}\.js',
+        re.IGNORECASE
+    )
+
+    url = pattern.search(data)
+    parts = url.group().split('/')[-1].split('.')
+    if len(parts) >= 3:
+        return parts[1]
+    return ""
+
+
+def createVerDir(hash):
+    shortHash = hash[:8]
+    versionDir = Path(shortHash)
+    versionDir.mkdir(exist_ok=True)
+
+    indices = versionDir / "indices"
+    indices.mkdir(exist_ok=True)
+    return shortHash
+
+
+def downloadFile(name, filename, filepath, url):
+    print(f"Downloading {name}...")
+    try:
+        response = requests.get(url, stream=True, timeout=10)
+        response.raise_for_status()
+
+        with open(filepath, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+        print(f"Saved {filename} to {dir}")
+    except Exception as e:
+        print(f"Failed to download {filename}: {str(e)}")
+
+
+def downloadIndex(index, hash, dir):
+    baseUrl = "https://heroesweb-a.akamaihd.net/wb"
+    url = f"{baseUrl}/{index}/index.{index}.{hash}.json.gz"
+    filename = f"index.{index}.json.gz"
+    filepath = Path(dir) / "indices" / filename
+    downloadFile(index, filename, filepath, url)
+
+
+def extractIndex(index, hash):
+    index_gz = f'{hash}/indices/index.{index}.json.gz'
+    index_json = f'{hash}/indices/index.{index}.json'
+
+    with gzip.open(index_gz, 'rb') as gz_file:
+        with open(index_json, 'wb') as out_file:
+            out_file.write(gz_file.read())
+
+
+def downloadFromIndex(index, hash):
+    js = f'{hash}/akamaihd'
+    js = Path(js)
+    js.mkdir(exist_ok=True)
+
+    extractIndex(index, hash)
+
+    process_entries(
+            f'{hash}/indices/index.{index}.json',
+            f'https://heroesweb-a.akamaihd.net/wb/{index}/',
+            f'./{hash}/akamaihd'
+            )
+
+
+def downloadLibFromIndex(index, hash):
+    extractIndex(index, hash)
+
+    process_entries_select(
+            f'{hash}/indices/index.{index}.json',
+            f'https://heroesweb-a.akamaihd.net/wb/{index}/',
+            f'./{hash}/indices',
+            ['en.json.gz', 'lib.json.gz']
+            )
+
+
+def readData(filename):
+    with open(filename, 'r') as f:
+        data = f.read()
+        heroHash = extractHeroHash(data)
+        hashToDir = createVerDir(heroHash)
+
+        hashes = extractIndexHashes(data)
+        print(hashes)
+        for hash in hashes:
+            downloadIndex(hash, hashes[hash], hashToDir)
+        downloadFromIndex('client', hashToDir)
+        downloadLibFromIndex('lib', hashToDir)
+        downloadLibFromIndex('assets', hashToDir)
+
+
+readData('hero.html')

@@ -65,6 +65,20 @@ def process_entries(json_file, url, assets_dir):
         time.sleep(1)
 
 
+def process_entries_select(json_file, url, assets_dir, keys):
+    os.makedirs(assets_dir, exist_ok=True)
+    with open(json_file, 'r') as f:
+        data = json.load(f)
+
+    for entry_key in keys:
+        entry_data = data[entry_key]
+        success = download_file(url, entry_data, assets_dir)
+        if not success:
+            continue
+
+        time.sleep(1)
+
+
 if __name__ == "__main__":
     print("Warning: This will download ~4GB of assets. Ctrl+C to abort in 5s…")
     time.sleep(5)
