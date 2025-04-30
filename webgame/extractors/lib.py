@@ -481,7 +481,6 @@ def parseMissions(data, heroes, gear) -> Dict[int, MissionData]:
                 drops=drops,
                 )
         result[int(key)] = missionsEntry
-    print(result[1])
     return result
 
 

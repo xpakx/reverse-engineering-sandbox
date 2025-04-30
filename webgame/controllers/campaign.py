@@ -1,4 +1,5 @@
 from extractors.lib import GameData, MissionData, getStatAsInt, Hero
+import random
 
 
 def startMission(request, temp, gameData: GameData):
@@ -74,21 +75,38 @@ def getTestHero(data: GameData, id: int, lvl: int = 1, stars: int = 1, color: in
 
 def endMission(request, temp, gameData):
     print(request)
-    reward = {}
-    reward['experience'] = 13
-    reward['heroXp'] = {'3': 4}
-    reward['gear'] = {'3': 1}
-    reward['gold'] = 523
+    missionId = getStatAsInt(request['args'], 'id', 1)
+    mission = gameData.missions[missionId]
+    reward = getRewardsForMission(gameData, missionId)
+    reward['heroXp'] = {'3': mission.heroExp}
     response = {}
     response['reward'] = reward
     return response
 
 
 def getRewardsForMission(gameData: GameData, missionId: int):
+    mission = gameData.missions[missionId]
     reward = {}
-    reward['experience'] = 13
-    reward['gear'] = {'37': 6}
-    reward['gold'] = 523
+    for dropData in mission.drops:
+        if dropData.chance == 0:
+            continue
+        if dropData.chance != 100:
+            roll = random.random()*100
+            if roll > dropData.chance:
+                continue
+
+        for drop in dropData.reward:
+            if drop == 'gold':
+                reward['gold'] = dropData.reward['gold']
+            if drop in ['gear', 'fragmentHero', 'consumable']:
+                if drop not in reward:
+                    reward[drop] = {}
+                for key in dropData.reward[drop]:
+                    value = dropData.reward[drop][key]
+                    if key not in reward[drop]:
+                        reward[drop][key] = 0
+                    reward[drop][key] = reward[drop][key] + value
+    reward['experience'] = mission.teamExp
     return reward
 
 
