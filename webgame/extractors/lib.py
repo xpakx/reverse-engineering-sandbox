@@ -154,6 +154,38 @@ class Hero:
                 "intelligence": self.intelligence,
             }
 
+    def getProfileData(self):
+        skills = {}
+        for skill in self.data.heroSkills:
+            skills[str(skill)] = self.level
+        return {
+            "id": self.data.id,
+            "xp": 0,
+            "level": self.level,
+            "color": self.color,
+            "slots": [0, 0, 0],
+            "skills": skills,
+            "power": 19156,
+            "star": self.stars,
+            "runes": [0, 0, 0, 0, 0],
+            "skins": {str(self.data.id): 40},
+            "currentSkin": self.data.id,
+            "titanGiftLevel": 0,
+            "titanCoinsSpent": {
+                "consumable": {"24": 0}
+                },
+            "artifacts": [
+                {"level": 1, "star": 0},
+                {"level": 1, "star": 0},
+                {"level": 1, "star": 0}
+                ],
+            "scale": 1,
+            "petId": 0,
+            "type": "hero",
+            "perks": self.data.perk,
+            "ascensions": []
+        }
+
 
 class WaveData(NamedTuple):
     enemies: List[Hero] = []
