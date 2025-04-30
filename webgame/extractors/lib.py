@@ -159,12 +159,18 @@ class WaveData(NamedTuple):
     enemies: List[Hero] = []
 
 
+class DropData(NamedTuple):
+    chance: int
+    reward: Any
+
+
 class MissionData(NamedTuple):
     cost: Dict[str, int] = {}
     tryCost: Dict[str, int] = {}
     heroExp: int = 0,
     teamExp: int = 0,
     waves: List[WaveData] = []
+    drops: List[DropData] = []
 
 
 def print_keys(data):
@@ -428,6 +434,28 @@ def parseWave(data, heroes, gear) -> WaveData:
     return WaveData(enemies=enemies)
 
 
+def parseWaveDrops(wave) -> List[DropData]:
+    drops = []
+    for enemy in wave['enemies']:
+        if 'drop' not in enemy:
+            continue
+        drop = enemy['drop']
+        if len(drop) > 0:
+            for item in drop:
+                drops.append(item)
+    if len(drops) == 0:
+        return []
+
+    result = []
+    for drop in drops:
+        if 'reward' not in drop:
+            continue
+        chance = getStatAsInt(drop, 'chance')
+        dropData = DropData(chance=chance, reward=drop['reward'])
+        result.append(dropData)
+    return result
+
+
 def parseMissions(data, heroes, gear) -> Dict[int, MissionData]:
     result = {}
     for key in data:
@@ -437,17 +465,23 @@ def parseMissions(data, heroes, gear) -> Dict[int, MissionData]:
         teamExp = item['teamExp']
         tryCost = item['tryCost']
         waves = []
+        drops = []
         for wave in item['waves']:
             waveData = parseWave(wave, heroes, gear)
             waves.append(waveData)
+            waveDrops = parseWaveDrops(wave)
+            if len(waveDrops) > 0:
+                drops.extend(waveDrops)
         missionsEntry = MissionData(
                 cost=cost,
                 heroExp=heroExp,
                 teamExp=teamExp,
                 tryCost=tryCost,
-                waves=waves
+                waves=waves,
+                drops=drops,
                 )
         result[int(key)] = missionsEntry
+    print(result[1])
     return result
 
 
@@ -548,16 +582,27 @@ if __name__ == "__main__":
 
     with open(input_file, 'r') as f:
         data = json.load(f)
-    quests = data['quest']
-    print_keys(data)
-    print_keys(quests)
-    print()
-    print_keys(data['specialQuestEvent'])
-    print()
-    print(quests['special']['23149'])  # chain: 338
-    print(data['specialQuestEvent']['chain']['338'])
-    print(data['specialQuestEvent']['type']['68'])
+    # quests = data['quest']
+    # print_keys(data)
+    # print_keys(quests)
+    # print()
+    # print_keys(data['specialQuestEvent'])
+    # print()
+    # print(quests['special']['23149'])  # chain: 338
+    # print(data['specialQuestEvent']['chain']['338'])
+    # print(data['specialQuestEvent']['type']['68'])
 
-    quests = parseQuestEvents(data['specialQuestEvent']['type'])
-    print(quests[68])
-    #23149/68
+    # quests = parseQuestEvents(data['specialQuestEvent']['type'])
+    # print(quests[68])
+    # 23149/68
+    missions = data['mission']
+    mission = missions['1']
+    normalMode = mission['normalMode']
+    print_keys(normalMode)
+    for wave in normalMode['waves']:
+        for enemy in wave['enemies']:
+            if 'drop' not in enemy:
+                continue
+            drop = enemy['drop']
+            if len(drop) > 0:
+                print(drop)
