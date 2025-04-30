@@ -16,8 +16,8 @@ def summonHero(request, temp, gameData):
     response["guaranteedOfferCount"] = []
     response['wishlist'] = [3, 3, 3, 3, 3]
 
-    rareFragments = {}
-    commonFragments = {}
+    rareFragments = []
+    commonFragments = []
     fragmentList = None
 
     for _ in range(summons):
@@ -26,21 +26,24 @@ def summonHero(request, temp, gameData):
             fragmentList = rareFragments
         else:
             fragmentList = commonFragments
-        id = str(reward)
-        if id not in fragmentList:
-            fragmentList[id] = 0
-        fragmentList[id] = fragmentList[id] + 5
+        rew = {}
+        rew[str(reward)] = 5
+        fragmentList.append(rew)
         addToInventory(temp, 'fragmentHero', reward, 5)
 
-    response['reward'] = {}
-    if len(rareFragments) > 0:
-        response['reward']['rare'] = {
-                'fragmentHero': rareFragments
-            }
-    if len(commonFragments) > 0:
-        response['reward']['common'] = {
-                'fragmentHero': commonFragments
-            }
+    rare = []
+    common = []
+    response['rewards'] = {}
+    response['rewards']['rare'] = rare
+    response['rewards']['common'] = common
+    for frag in rareFragments:
+        rare.append({
+                'fragmentHero': frag
+            })
+    for frag in commonFragments:
+        common.append({
+                'fragmentHero': frag
+            })
 
     return response
 
