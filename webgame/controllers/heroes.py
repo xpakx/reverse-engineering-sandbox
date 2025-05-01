@@ -1,6 +1,5 @@
 from extractors.lib import GameData, Hero
-
-userHeroes = [3]
+from typing import List, Any, NamedTuple
 
 
 def getHeroById(id: int, data: GameData):
@@ -13,6 +12,32 @@ def getHeroById(id: int, data: GameData):
 
 def getUserHeroes(request, temp, gameData: GameData):
     result = {}
-    for id in userHeroes:
-        result[str(id)] = getHeroById(id, gameData)
+    userHeroes = temp['heroes']
+    for hero in userHeroes:
+        result[str(hero.data.id)] = hero.getProfileData()
+    return result
+
+
+class UserHero(NamedTuple):
+    id: int = 0
+    stars: int = 1
+    level: int = 1
+    color: int = 1
+
+
+def getTestHeroes() -> List[UserHero]:
+    return [
+            UserHero(id=3, level=5),
+            UserHero(id=4, level=8, stars=2),
+        ]
+
+
+def applyHeroes(userData: List[UserHero], data: GameData):
+    result = []
+    for userHero in userData:
+        heroData = data.heroes[userHero.id]
+        hero = Hero(heroData)
+        hero.applyStarsAndLevel(userHero.stars, userHero.level)
+        hero.applyColor(userHero.color)
+        result.append(hero)
     return result

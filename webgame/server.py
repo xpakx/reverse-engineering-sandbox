@@ -3,6 +3,7 @@ import json
 import processors
 from extractors.lib import prepareData
 from controllers.items import getTestInventory
+from controllers.heroes import getTestHeroes, applyHeroes
 import os
 
 hash = '91c10ca0'
@@ -10,7 +11,8 @@ versioned_root = f'./{hash}'
 logs = False
 gameData = prepareData(hash)
 tempState = {
-        'inventory': getTestInventory()
+        'inventory': getTestInventory(),
+        'heroes': applyHeroes(getTestHeroes(), gameData),
         }
 
 
