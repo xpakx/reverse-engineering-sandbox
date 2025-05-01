@@ -1,6 +1,6 @@
 from controllers.user import register, getInfo
 from controllers.campaign import startMission, endMission, raidMission
-from controllers.heroes import getUserHeroes
+from controllers.heroes import getUserHeroes, upgradeSkill
 from controllers.items import buyStamina, useStaminaItem, inventory
 from controllers.gacha import summonHero
 from extractors.lib import GameData
@@ -33,6 +33,7 @@ class RequestProcessor:
         self.registerBodyProcessor('dailyBonusFarm', farmDaily)
         self.registerProcessor('questGetAll', getQuests)
         self.registerProcessor('questGetEvents', getQuestEvents)
+        self.registerBodyProcessor('heroUpgradeSkill', upgradeSkill)
 
     def registerProcessor(self, name, processor, ident=None):
         id = ident if ident else name

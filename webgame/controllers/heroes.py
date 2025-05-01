@@ -1,5 +1,5 @@
-from extractors.lib import GameData, Hero
-from typing import List, Any, NamedTuple
+from extractors.lib import GameData, Hero, getStatAsInt
+from typing import List, NamedTuple, Optional
 
 
 def getHeroById(id: int, data: GameData):
@@ -39,5 +39,20 @@ def applyHeroes(userData: List[UserHero], data: GameData):
         hero = Hero(heroData)
         hero.applyStarsAndLevel(userHero.stars, userHero.level)
         hero.applyColor(userHero.color)
+        hero.skills[0] = 1
         result.append(hero)
     return result
+
+
+def upgradeSkill(request, temp, gameData: GameData):
+    heroId = getStatAsInt(request['args'], 'heroId')
+    skillNum = getStatAsInt(request['args'], 'skill') - 1
+    hero: Optional[Hero] = None
+    for h in temp['heroes']:
+        if h.data.id == heroId:
+            hero = h
+            break
+    if not hero:
+        return None
+    hero.skills[skillNum] += 1
+    return None

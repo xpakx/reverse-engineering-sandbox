@@ -82,6 +82,9 @@ class Hero:
         self.level = 0
         self.stars = 0
         self.gear = []
+        self.skills = []
+        for skill in data.heroSkills:
+            self.skills.append(0)
 
     def processBaseStats(self):
         self.physicalAttack = self.physicalAttack + 2 * self.agility + self.getMainAttr()
@@ -144,10 +147,10 @@ class Hero:
                     {"level": 1, "star": 0},
                     {"level": 1, "star": 0}
                 ],
-                "scale": self.data.scale,
+                "scale": 1,
                 "petId": 0,
                 "type": "hero",
-                "perks": [6, 1],
+                "perks": self.data.perk,
                 "ascensions": [],
                 "strength": self.strength,
                 "agility": self.agility,
@@ -156,8 +159,10 @@ class Hero:
 
     def getProfileData(self):
         skills = {}
+        skillIndex = 0
         for skill in self.data.heroSkills:
-            skills[str(skill)] = self.level
+            skills[str(skill)] = self.skills[skillIndex]
+            skillIndex += 1
         return {
             "id": self.data.id,
             "xp": 0,
@@ -608,11 +613,28 @@ def prepareData(hash) -> GameData:
             )
 
 
+def detectNewHeroes(data) -> bool:
+    heroes = data['hero']
+    for heroKey in heroes:
+        hero = heroes[heroKey]
+        if hero['type'] != 'hero':
+            continue
+        if hero['id'] > 66 and hero['id'] < 7002:
+            return True
+    return False
+
+
 if __name__ == "__main__":
     input_file = "./91c10ca0/indices/lib.json"
 
     with open(input_file, 'r') as f:
         data = json.load(f)
+
+    if detectNewHeroes(data):
+        print("New heroes in data")
+    else:
+        print("No new heroes in data")
+
     # quests = data['quest']
     # print_keys(data)
     # print_keys(quests)
@@ -626,14 +648,15 @@ if __name__ == "__main__":
     # quests = parseQuestEvents(data['specialQuestEvent']['type'])
     # print(quests[68])
     # 23149/68
-    missions = data['mission']
-    mission = missions['1']
-    normalMode = mission['normalMode']
-    print_keys(normalMode)
-    for wave in normalMode['waves']:
-        for enemy in wave['enemies']:
-            if 'drop' not in enemy:
-                continue
-            drop = enemy['drop']
-            if len(drop) > 0:
-                print(drop)
+
+    # missions = data['mission']
+    # mission = missions['1']
+    # normalMode = mission['normalMode']
+    # print_keys(normalMode)
+    # for wave in normalMode['waves']:
+        # for enemy in wave['enemies']:
+            # if 'drop' not in enemy:
+                # continue
+            # drop = enemy['drop']
+            # if len(drop) > 0:
+                # print(drop)
