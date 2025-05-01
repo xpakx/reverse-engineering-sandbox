@@ -1,4 +1,5 @@
 from extractors.lib import GameData, MissionData, getStatAsInt, Hero
+from typing import List
 import random
 
 
@@ -15,8 +16,9 @@ def startMission(request, temp, gameData: GameData):
     response['userId'] = temp['userId']
     response['typeId'] = 1
     response['attackers'] = {}
+
     for heroId in heroesIds:
-        response['attackers'][heroId] = getTestHero(gameData, heroId)
+        response['attackers'][heroId] = getTestHero(gameData, temp, heroId)
 
     mission = gameData.missions[missionId]
     response['defenders'] = getWavesForMission(mission)
@@ -41,12 +43,17 @@ def getWavesForMission(mission: MissionData):
     return enemies
 
 
-def getTestHero(data: GameData, id: int, lvl: int = 1, stars: int = 1, color: int = 1) -> Hero:
-    heroData = data.heroes[id]
-    hero = Hero(heroData)
-    hero.applyStarsAndLevel(stars, lvl)
-    hero.applyColor(color)
-    # hero.applyGear([True, True, True])
+def getTestHero(data: GameData, temp, heroId: int) -> Hero:
+    heroes: List[Hero] = temp['heroes']
+
+    hero = None
+    for h in heroes:
+        if h.data.id == heroId:
+            hero = h
+            break
+    if not hero:
+        return
+
     battleData = hero.getBattleData()
 
     battleData["skills"] = {"432": 1}
