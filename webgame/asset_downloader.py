@@ -4,6 +4,7 @@ import time
 import hashlib
 import requests
 from urllib.parse import urljoin
+from pathlib import Path
 
 
 """
@@ -94,10 +95,34 @@ def process_entries_js(json_file, url, assets_dir):
         time.sleep(1)
 
 
+def process_entries_ver(json_file, url, assets_dir, parent_assets_dir):
+    os.makedirs(assets_dir, exist_ok=True)
+    with open(json_file, 'r') as f:
+        data = json.load(f)
+
+    for entry_key, entry_data in data.items():
+        filename = os.path.basename(entry_data['path'])
+        parent_file = Path(f"{parent_assets_dir}/{filename}")
+        if parent_file.exists():
+            print("File already exists. Skipping download.")
+            continue
+        current_file = Path(f"{assets_dir}/{filename}")
+        if current_file.exists():
+            print("File already exists. Skipping download.")
+            continue
+        success = download_file(url, entry_data, assets_dir)
+        if not success:
+            continue
+
+        time.sleep(1)
+
+
 if __name__ == "__main__":
     print("Warning: This will download ~4GB of assets. Ctrl+C to abort in 5s…")
     time.sleep(5)
     base_url = "https://heroesweb-a.akamaihd.net/wb/assets/"
-    json_file = "./indices/index.assets.json"
-    assets_dir = "./assets"
-    process_entries(json_file, base_url, assets_dir)
+    hash = "a58c9976"
+    json_file = f"./{hash}/indices/index.assets.json.backup"
+    assets_dir = f"./{hash}/assets"
+    parent_dir = "./assets"
+    process_entries_ver(json_file, base_url, assets_dir, parent_dir)
