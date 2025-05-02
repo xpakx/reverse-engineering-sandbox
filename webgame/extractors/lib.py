@@ -624,8 +624,16 @@ def detectNewHeroes(data) -> bool:
     return False
 
 
+def unlockHero(data, id):
+    id = str(id)
+    hero = data['hero'][id]
+    hero['lockedUntil'] = None
+    with open(f"{input_file}.test", 'w') as f:
+        json.dump(data, f, indent=2)
+
+
 if __name__ == "__main__":
-    input_file = "./91c10ca0/indices/lib.json"
+    input_file = "./a58c9976/indices/lib.json"
 
     with open(input_file, 'r') as f:
         data = json.load(f)
@@ -634,6 +642,9 @@ if __name__ == "__main__":
         print("New heroes in data")
     else:
         print("No new heroes in data")
+
+    unlockHero(data, 67)
+
 
     # quests = data['quest']
     # print_keys(data)
