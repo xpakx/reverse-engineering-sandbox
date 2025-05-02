@@ -5,8 +5,9 @@ from extractors.lib import prepareData
 from controllers.items import getTestInventory
 from controllers.heroes import getTestHeroes, applyHeroes
 import os
+from pathlib import Path
 
-hash = '91c10ca0'
+hash = 'a58c9976'
 versioned_root = f'./{hash}'
 logs = False
 gameData = prepareData(hash)
@@ -60,6 +61,10 @@ class CustomHandler(SimpleHTTPRequestHandler):
             if '.js' in rel_path and '.json' not in rel_path:
                 rel_path = rel_path.replace('assets/', 'akamaihd/')
             else:
+                versioned_path = os.path.join(os.getcwd(), versioned_root, rel_path)
+                versioned_asset = Path(versioned_path)
+                if versioned_asset.exists():
+                    return versioned_path
                 return original_path
 
         versioned_path = os.path.join(os.getcwd(), versioned_root, rel_path)
