@@ -110,7 +110,6 @@ if __name__ == '__main__':
                 data = processor.process(body_data, tempState, gameData)
                 if data:
                     responses.append(data)
-            # print(body_data)
         except ValueError:
             return (400, {'Content-Type': 'text/plain'}, 'Invalid Content-Length')
         except Exception as e:
@@ -142,10 +141,65 @@ if __name__ == '__main__':
             '{error: 0}'
         )
 
+    def success_handler(request_handler):
+        return (
+            200,
+            {'Content-Type': 'application/json'},
+            '{success: true}'
+        )
+
+    def currencies_handler(request_handler):
+        currencies = [
+                {"id": 129, "currency": "AUD"},
+                {"id": 130, "currency": "BGN"},
+                {"id": 131, "currency": "CAD"},
+                {"id": 132, "currency": "CHF"},
+                {"id": 133, "currency": "CNY"},
+                {"id": 134, "currency": "CZK"},
+                {"id": 135, "currency": "DKK"},
+                {"id": 136, "currency": "EUR"},
+                {"id": 137, "currency": "GBP"},
+                {"id": 139, "currency": "HUF"},
+                {"id": 140, "currency": "JPY"},
+                {"id": 141, "currency": "KRW"},
+                {"id": 142, "currency": "NOK"},
+                {"id": 143, "currency": "NZD"},
+                {"id": 144, "currency": "PHP"},
+                {"id": 145, "currency": "PLN"},
+                {"id": 146, "currency": "RON"},
+                {"id": 147, "currency": "RUB"},
+                {"id": 148, "currency": "SEK"},
+                {"id": 149, "currency": "USD"}
+            ]
+        return (
+            200,
+            {'Content-Type': 'application/json'},
+            json.dumps(currencies)
+
+        )
+
+    def info_handler(request_handler):
+        return (
+            200,
+            {'Content-Type': 'application/json'},
+            "{}"
+        )
+
+    def landing_handler(request_handler):
+        return (
+            200,
+            {'Content-Type': 'application/json'},
+            '{"data":{"result":true}}'
+        )
+
     server = SimpleHTTPServerWithRoutes(('localhost', 8081))
     server.add_route('GET', '/api/clientStat/', stash_handler)
     server.add_route('POST', '/api/', api_handler)
     server.add_route('POST', '/client-tech-logs', logs_handler)
+    server.add_route('POST', '/api/onesignal-token.php', success_handler)
+    server.add_route('POST', '/get_currencies', currencies_handler)
+    server.add_route('POST', '/chat/get_info', info_handler)
+    server.add_route('POST', '/landing_loaded', landing_handler)
 
     print("Starting server on http://localhost:8000")
     server.serve_forever()
