@@ -521,6 +521,18 @@ def parseMissions(data, heroes, gear) -> Dict[int, MissionData]:
     return result
 
 
+class QuestChainData(NamedTuple):
+    id: int = 0
+    startCondition: Optional[Any] = None
+    disabled: bool = False
+
+
+class SpecialQuestChainData(NamedTuple):
+    id: int = 0
+    sortOrder: int = 0
+    isInfinite: bool = False
+
+
 class QuestEventData(NamedTuple):
     id: int = 0
     sortOrder: int = 1
@@ -596,6 +608,37 @@ def parseQuestEvents(data) -> Dict[int, QuestEventData]:
     return result
 
 
+def parseQuestChains(data) -> Dict[int, QuestChainData]:
+    result = {}
+    for key in data:
+        eventEntry = data[key]
+        id = getStatAsInt(eventEntry, 'id')
+        disabled = getStatAsInt(eventEntry, 'disabled') != 0
+        event = QuestChainData(
+                id=id,
+                disabled=disabled,
+                startCondition=eventEntry['startCondition'],
+                )
+        result[id] = event
+    return result
+
+
+def parseSpecialQuestChains(data) -> Dict[int, SpecialQuestChainData]:
+    result = {}
+    for key in data:
+        eventEntry = data[key]
+        id = getStatAsInt(eventEntry, 'id')
+        sortOrder = getStatAsInt(eventEntry, 'sortOrder')
+        isInfinite = getStatAsInt(eventEntry, 'isInfinite') != 0
+        event = SpecialQuestChainData(
+                id=id,
+                isInfinite=isInfinite,
+                sortOrder=sortOrder,
+                )
+        result[id] = event
+    return result
+
+
 def prepareData(hash) -> GameData:
     input_file = f"./{hash}/indices/lib.json"
 
@@ -638,36 +681,30 @@ if __name__ == "__main__":
     with open(input_file, 'r') as f:
         data = json.load(f)
 
-    if detectNewHeroes(data):
-        print("New heroes in data")
-    else:
-        print("No new heroes in data")
+    quests = data['quest']
+    print_keys(quests['chain']['130'])
+    print(quests['chain']['130'])
+    print()
+    print_keys(data['specialQuestEvent'])
+    print(data['specialQuestEvent']['chain'])
+    print()
+    print(quests['special']['23149'])  # chain: 338
+    print(data['specialQuestEvent']['chain']['338'])
+    print(data['specialQuestEvent']['type']['68'])
 
-    unlockHero(data, 67)
+    quests = parseQuestEvents(data['specialQuestEvent']['type'])
+    chains = parseQuestChains(data['quest']['chain'])
+    print(quests[68])
+    23149/68
 
-
-    # quests = data['quest']
-    # print_keys(data)
-    # print_keys(quests)
-    # print()
-    # print_keys(data['specialQuestEvent'])
-    # print()
-    # print(quests['special']['23149'])  # chain: 338
-    # print(data['specialQuestEvent']['chain']['338'])
-    # print(data['specialQuestEvent']['type']['68'])
-
-    # quests = parseQuestEvents(data['specialQuestEvent']['type'])
-    # print(quests[68])
-    # 23149/68
-
-    # missions = data['mission']
-    # mission = missions['1']
-    # normalMode = mission['normalMode']
-    # print_keys(normalMode)
-    # for wave in normalMode['waves']:
-        # for enemy in wave['enemies']:
-            # if 'drop' not in enemy:
-                # continue
-            # drop = enemy['drop']
-            # if len(drop) > 0:
-                # print(drop)
+    missions = data['mission']
+    mission = missions['1']
+    normalMode = mission['normalMode']
+    print_keys(normalMode)
+    for wave in normalMode['waves']:
+        for enemy in wave['enemies']:
+            if 'drop' not in enemy:
+                continue
+            drop = enemy['drop']
+            if len(drop) > 0:
+                print(drop)
