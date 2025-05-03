@@ -1,4 +1,4 @@
-from typing import NamedTuple, Dict, List, Any, Tuple, Optional
+from typing import NamedTuple, Dict, List, Any, Tuple, Optional, Union
 import json
 from datetime import time, datetime
 
@@ -450,6 +450,8 @@ def getStatAsInt(data, stat: str, default: int = 0) -> int:
     if stat not in data:
         return default
     val = data[stat]
+    if not val:
+        return default
     if not isinstance(val, int):
         return int(val)
     return val
@@ -547,6 +549,7 @@ class QuestEventData(NamedTuple):
     descLocale: str = ""
     nameLocale: str = ""
     notifLocale: str = ""
+    chains: List[Union[SpecialQuestChainData, QuestChainData]] = []
 
     def getForDate(self, startDate, endDate):
         result = {}
@@ -602,7 +605,8 @@ def parseQuestEvents(data) -> Dict[int, QuestEventData]:
                 localeKey=getOrDefault(eventEntry, 'localeKey', ''),
                 descLocale=getOrDefault(eventEntry, 'desc_localeKey', ''),
                 nameLocale=getOrDefault(eventEntry, 'name_localeKey', ''),
-                notifLocale=getOrDefault(eventEntry, 'notification_localeKey', '')
+                notifLocale=getOrDefault(eventEntry, 'notification_localeKey', ''),
+                chains=[],
                 )
         result[id] = event
     return result
@@ -623,19 +627,27 @@ def parseQuestChains(data) -> Dict[int, QuestChainData]:
     return result
 
 
-def parseSpecialQuestChains(data) -> Dict[int, SpecialQuestChainData]:
+def parseSpecialQuestChains(data, questEvents: Dict[int, QuestEventData]) -> Dict[int, SpecialQuestChainData]:
     result = {}
     for key in data:
-        eventEntry = data[key]
-        id = getStatAsInt(eventEntry, 'id')
-        sortOrder = getStatAsInt(eventEntry, 'sortOrder')
-        isInfinite = getStatAsInt(eventEntry, 'isInfinite') != 0
-        event = SpecialQuestChainData(
+        chainEntry = data[key]
+        id = getStatAsInt(chainEntry, 'id')
+        sortOrder = getStatAsInt(chainEntry, 'sortOrder')
+        isInfinite = getStatAsInt(chainEntry, 'isInfinite') != 0
+        chain = SpecialQuestChainData(
                 id=id,
                 isInfinite=isInfinite,
                 sortOrder=sortOrder,
                 )
-        result[id] = event
+        result[id] = chain
+
+        if 'eventId' not in chainEntry:
+            continue
+        eventId = getStatAsInt(chainEntry, 'eventId')
+        if eventId not in questEvents:
+            continue
+        event = questEvents[eventId]
+        event.chains.append(chain)
     return result
 
 
@@ -681,30 +693,32 @@ if __name__ == "__main__":
     with open(input_file, 'r') as f:
         data = json.load(f)
 
-    quests = data['quest']
-    print_keys(quests['chain']['130'])
-    print(quests['chain']['130'])
-    print()
-    print_keys(data['specialQuestEvent'])
-    print(data['specialQuestEvent']['chain'])
-    print()
-    print(quests['special']['23149'])  # chain: 338
-    print(data['specialQuestEvent']['chain']['338'])
-    print(data['specialQuestEvent']['type']['68'])
+    # quests = data['quest']
+    # print_keys(quests['chain']['130'])
+    # print(quests['chain']['130'])
+    # print()
+    # print_keys(data['specialQuestEvent'])
+    # print(data['specialQuestEvent']['chain'])
+    # print()
+    # print(quests['special']['23149'])  # chain: 338
+    print_keys(data['specialQuestEvent']['chain']['338'])
+    # print(data['specialQuestEvent']['type']['68'])
 
     quests = parseQuestEvents(data['specialQuestEvent']['type'])
-    chains = parseQuestChains(data['quest']['chain'])
-    print(quests[68])
-    23149/68
+    # chains = parseQuestChains(data['quest']['chain'])
+    chains = parseSpecialQuestChains(data['specialQuestEvent']['chain'], quests)
 
-    missions = data['mission']
-    mission = missions['1']
-    normalMode = mission['normalMode']
-    print_keys(normalMode)
-    for wave in normalMode['waves']:
-        for enemy in wave['enemies']:
-            if 'drop' not in enemy:
-                continue
-            drop = enemy['drop']
-            if len(drop) > 0:
-                print(drop)
+    print(len(quests[68].chains))
+    print(quests[68].chains)
+
+    # missions = data['mission']
+    # mission = missions['1']
+    # normalMode = mission['normalMode']
+    # print_keys(normalMode)
+    # for wave in normalMode['waves']:
+        # for enemy in wave['enemies']:
+            # if 'drop' not in enemy:
+                # continue
+            # drop = enemy['drop']
+            # if len(drop) > 0:
+                # print(drop)
