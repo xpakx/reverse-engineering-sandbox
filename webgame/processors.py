@@ -7,6 +7,7 @@ from extractors.lib import GameData
 from typing import NamedTuple, Any
 from controllers.calendar import getTime, getDailyBonus, farmDaily
 from controllers.quest import farmQuest, getQuests, getQuestEvents
+from controllers.season import getSeason
 
 
 class Processor(NamedTuple):
@@ -34,6 +35,7 @@ class RequestProcessor:
         self.registerProcessor('questGetAll', getQuests)
         self.registerProcessor('questGetEvents', getQuestEvents)
         self.registerBodyProcessor('heroUpgradeSkill', upgradeSkill)
+        self.registerProcessor('seasonAdventure_getInfo', getSeason)
 
     def registerProcessor(self, name, processor, ident=None):
         id = ident if ident else name
@@ -171,8 +173,6 @@ class RequestProcessor:
             return petChest(request)
         if (call == "playable_getAvailable"):
             return playable(request)
-        if (call == "seasonAdventure_getInfo"):
-            return seasonAdventure(request)
         if (call == "clanDomination_getInfo"):
             return clanDomination(request)
         if (call == "clanRaid_ratingInfo"):
@@ -477,10 +477,6 @@ def petChest(request):
 
 def playable(request):
     return {"ident":"playable_getAvailable","result":{"response":[48,49,50]}}
-
-
-def seasonAdventure(request):
-    return {"ident":"seasonAdventure_getInfo","result":{"response":{"id":8,"seasonAdventure":{"id":8,"startDate":1744941600,"endDate":1746064800,"closed":False}}}}
 
 
 def clanDomination(request):
