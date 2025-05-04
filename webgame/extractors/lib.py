@@ -768,14 +768,33 @@ def compareEvents(hashOld, hashNew):
     print(newKeys)
 
 
+def compareSpecialQuests(hashOld, hashNew, questType):
+    file = f"./{hashNew}/indices/lib.json"
+    with open(file, 'r') as f:
+        data = json.load(f)
+    oldFile = f"./{hashOld}/indices/lib.json"
+    with open(oldFile, 'r') as f:
+        dataOld = json.load(f)
+
+    quests = parseQuests(data['quest'][questType], {})
+    questsOld = parseQuests(dataOld['quest'][questType], {})
+    newKeys = []
+    for key in quests:
+        if key not in questsOld:
+            newKeys.append(int(key))
+
+    print(newKeys)
+
+
 if __name__ == "__main__":
-    compareEvents('91c10ca0', 'a58c9976')
+    # compareSpecialQuests('91c10ca0', 'a58c9976', 'battlePass')
+    # compareEvents('91c10ca0', 'a58c9976')
     input_file = "./a58c9976/indices/lib.json"
 
     with open(input_file, 'r') as f:
         data = json.load(f)
 
-    print_keys(data['quest'])
+    print_keys(data['quest']['invasion']['32094'])
     print()
     print_keys(data['specialQuestEvent'])
 
