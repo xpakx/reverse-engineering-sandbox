@@ -659,13 +659,27 @@ def prepareData(hash) -> GameData:
     gear = parseItems(data['inventoryItem']['gear'])
     heroes = parseHeroes(data['hero'], gear)
     missions = parseMissions(data['mission'], heroes, gear)
+
     questEvents = parseQuestEvents(data['specialQuestEvent']['type'])
+    questChains = parseSpecialQuestChains(data['specialQuestEvent']['chain'], questEvents)
+    updateChains(questEvents, questChains)
+
     return GameData(
             heroes=heroes,
             items=gear,
             missions=missions,
             questEvents=questEvents
             )
+
+
+def updateChains(events, chains):
+    for eventKey in events:
+        event = events[eventKey]
+        if not event.questChains:
+            continue
+        for id in event.questChains:
+            if id in chains:
+                event.chains.append(chains[id])
 
 
 def detectNewHeroes(data) -> bool:
@@ -697,19 +711,34 @@ if __name__ == "__main__":
     # print_keys(quests['chain']['130'])
     # print(quests['chain']['130'])
     # print()
-    # print_keys(data['specialQuestEvent'])
+    print_keys(data['specialQuestEvent'])
     # print(data['specialQuestEvent']['chain'])
-    # print()
-    # print(quests['special']['23149'])  # chain: 338
+    print()
+    print(data['quest']['special']['23149'])  # chain: 338
     print_keys(data['specialQuestEvent']['chain']['338'])
-    # print(data['specialQuestEvent']['type']['68'])
+    print(data['specialQuestEvent']['chain']['338']['specialQuests'])
 
     quests = parseQuestEvents(data['specialQuestEvent']['type'])
     # chains = parseQuestChains(data['quest']['chain'])
     chains = parseSpecialQuestChains(data['specialQuestEvent']['chain'], quests)
 
-    print(len(quests[68].chains))
     print(quests[68].chains)
+    updateChains(quests, chains)
+    print(quests[68].chains)
+
+    # input_file = "./91c10ca0/indices/lib.json"
+    # with open(input_file, 'r') as f:
+        # dataOld = json.load(f)
+
+    # questsOld = parseQuestEvents(dataOld['specialQuestEvent']['type'])
+    # newKeys = []
+    # for key in quests:
+        # if key not in questsOld:
+            # newKeys.append(int(key))
+
+    # for key in newKeys:
+        # print(key)
+        # print(quests[key].chains)
 
     # missions = data['mission']
     # mission = missions['1']
