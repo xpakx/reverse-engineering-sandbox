@@ -523,6 +523,17 @@ def parseMissions(data, heroes, gear) -> Dict[int, MissionData]:
     return result
 
 
+class SpecialQuestData(NamedTuple):
+    id: int = 0
+    chainId: int = 0
+    sortOrder: int = 0
+    farmCondition: Any = None
+    rewardSorting: Optional[int] = None
+    disabled: bool = False
+    daily: bool = False
+    autoFarm: bool = False
+
+
 class QuestChainData(NamedTuple):
     id: int = 0
     startCondition: Optional[Any] = None
@@ -533,6 +544,7 @@ class SpecialQuestChainData(NamedTuple):
     id: int = 0
     sortOrder: int = 0
     isInfinite: bool = False
+    quests: List[QuestChainData] = []
 
 
 class QuestEventData(NamedTuple):
@@ -578,6 +590,7 @@ class GameData(NamedTuple):
     items: Dict[int, GearData] = {}
     missions: Dict[int, MissionData] = {}
     questEvents: Dict[int, QuestEventData] = {}
+    quests: Dict[int, SpecialQuestData] = {}
 
 
 def getOrDefault(data, stat: str, default: Any = None) -> Any:
@@ -638,6 +651,7 @@ def parseSpecialQuestChains(data, questEvents: Dict[int, QuestEventData]) -> Dic
                 id=id,
                 isInfinite=isInfinite,
                 sortOrder=sortOrder,
+                quests=[],
                 )
         result[id] = chain
 
@@ -649,6 +663,39 @@ def parseSpecialQuestChains(data, questEvents: Dict[int, QuestEventData]) -> Dic
         event = questEvents[eventId]
         event.chains.append(chain)
     return result
+
+
+def parseQuests(data, questChains: Dict[int, SpecialQuestChainData]) -> Dict[int, SpecialQuestData]:
+    result = {}
+    for key in data:
+        questEntry = data[key]
+        id = getStatAsInt(questEntry, 'id')
+        sortOrder = getStatAsInt(questEntry, 'chainOrder')
+        farmCondition = questEntry['farmCondition']
+        disabled = getStatAsInt(questEntry, 'disabled') != 0
+        daily = getStatAsInt(questEntry, 'daily') != 0
+        autoFarm = getStatAsInt(questEntry, 'autoFarm') != 0
+
+        quest = SpecialQuestData(
+                id=id,
+                farmCondition=farmCondition,
+                sortOrder=sortOrder,
+                disabled=disabled,
+                daily=daily,
+                autoFarm=autoFarm,
+                )
+        result[id] = quest
+
+        if 'eventChainId' not in questEntry:
+            continue
+        chainId = getStatAsInt(questEntry, 'eventChainId')
+        if chainId not in questChains:
+            continue
+        event = questChains[chainId]
+        event.quests.append(quest)
+    return result
+
+
 
 
 def prepareData(hash) -> GameData:
@@ -663,12 +710,14 @@ def prepareData(hash) -> GameData:
     questEvents = parseQuestEvents(data['specialQuestEvent']['type'])
     questChains = parseSpecialQuestChains(data['specialQuestEvent']['chain'], questEvents)
     updateChains(questEvents, questChains)
+    quests = parseQuests(data['quest']['special'], questChains)
 
     return GameData(
             heroes=heroes,
             items=gear,
             missions=missions,
-            questEvents=questEvents
+            questEvents=questEvents,
+            quests=quests,
             )
 
 
@@ -707,24 +756,18 @@ if __name__ == "__main__":
     with open(input_file, 'r') as f:
         data = json.load(f)
 
-    # quests = data['quest']
-    # print_keys(quests['chain']['130'])
-    # print(quests['chain']['130'])
-    # print()
-    print_keys(data['specialQuestEvent'])
-    # print(data['specialQuestEvent']['chain'])
+    print_keys(data['quest'])
     print()
-    print(data['quest']['special']['23149'])  # chain: 338
-    print_keys(data['specialQuestEvent']['chain']['338'])
-    print(data['specialQuestEvent']['chain']['338']['specialQuests'])
+    print_keys(data['specialQuestEvent'])
 
     quests = parseQuestEvents(data['specialQuestEvent']['type'])
     # chains = parseQuestChains(data['quest']['chain'])
     chains = parseSpecialQuestChains(data['specialQuestEvent']['chain'], quests)
-
-    print(quests[68].chains)
     updateChains(quests, chains)
-    print(quests[68].chains)
+
+    print(chains[338].quests)
+    events = parseQuests(data['quest']['special'], chains)
+    print(chains[338].quests)
 
     # input_file = "./91c10ca0/indices/lib.json"
     # with open(input_file, 'r') as f:

@@ -10,6 +10,8 @@ rewards = {
             }
         }
 
+currentEvents = [68]
+
 
 def farmQuest(request, temp, gameData):
     print(request)
@@ -36,16 +38,20 @@ def getQuest(id):
         }
 
 
-def getQuests(request, temp, gameData):
+def getQuests(request, temp, gameData: GameData):
     response = []
-    for i in range(23149, 23155):
-        response.append(getQuest(i))
+    for eventId in currentEvents:
+        event = gameData.questEvents[eventId]
+        for chain in event.chains:
+            for quest in chain.quests:
+                response.append(getQuest(quest.id))
     return response
 
 
 def getQuestEvents(request, temp, gameData: GameData):
     response = []
-    event = gameData.questEvents[68]
-    response.append(event.getForDate(datetime(2025, 4, 1), datetime(2025, 4, 30)))
+    for id in currentEvents:
+        event = gameData.questEvents[id]
+        response.append(event.getForDate(datetime(2025, 4, 1), datetime(2025, 4, 30)))
     print(response)
     return response
