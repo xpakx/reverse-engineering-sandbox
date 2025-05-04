@@ -750,7 +750,26 @@ def unlockHero(data, id):
         json.dump(data, f, indent=2)
 
 
+def compareEvents(hashOld, hashNew):
+    file = f"./{hashNew}/indices/lib.json"
+    with open(file, 'r') as f:
+        data = json.load(f)
+    oldFile = f"./{hashOld}/indices/lib.json"
+    with open(oldFile, 'r') as f:
+        dataOld = json.load(f)
+
+    quests = parseQuestEvents(data['specialQuestEvent']['type'])
+    questsOld = parseQuestEvents(dataOld['specialQuestEvent']['type'])
+    newKeys = []
+    for key in quests:
+        if key not in questsOld:
+            newKeys.append(int(key))
+
+    print(newKeys)
+
+
 if __name__ == "__main__":
+    compareEvents('91c10ca0', 'a58c9976')
     input_file = "./a58c9976/indices/lib.json"
 
     with open(input_file, 'r') as f:
