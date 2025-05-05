@@ -8,6 +8,7 @@ from typing import NamedTuple, Any
 from controllers.calendar import getTime, getDailyBonus, farmDaily
 from controllers.quest import farmQuest, getQuests, getQuestEvents
 from controllers.season import getSeason
+from controllers.shop import getShops
 
 
 class Processor(NamedTuple):
@@ -36,6 +37,7 @@ class RequestProcessor:
         self.registerProcessor('questGetEvents', getQuestEvents)
         self.registerBodyProcessor('heroUpgradeSkill', upgradeSkill)
         self.registerProcessor('seasonAdventure_getInfo', getSeason)
+        self.registerProcessor('shopGetAll', getShops)
 
     def registerProcessor(self, name, processor, ident=None):
         id = ident if ident else name
@@ -159,8 +161,6 @@ class RequestProcessor:
             return titanArenaChest(request)
         if (call == "bossGetAll"):
             return bosses(request)
-        if (call == "shopGetAll"):
-            return shops(request)
         if (call == "adventure_getPassed"):
             return adventuresPassed(request)
         if (call == "adventure_getActiveData"):
@@ -449,10 +449,6 @@ def bosses(request):
             "mayRaid": True
             })
     return result
-
-
-def shops(request):
-    return {"ident":"shopGetAll","result":{"response":{"1":{"id":1,"slots":{"1":{"id":1,"reward":{"consumable":{"11":"45"}},"bought":0,"cost":{"gold":450000}}},"availableUntil":0,"refreshTime":1745564400}}}}
 
 
 def adventuresPassed(request):
