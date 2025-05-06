@@ -12,6 +12,7 @@ from controllers.season import getSeason
 from controllers.shop import getShops
 from controllers.tower import getTower
 from controllers.tournament import powerTournament
+from controllers.offer import getOffers
 
 
 class Processor(NamedTuple):
@@ -45,7 +46,7 @@ class RequestProcessor:
         self.registerBodyProcessor('heroEvolve', evolveHero)
         self.registerBodyProcessor('consumableUseHeroXp', addExpToHero)
         self.registerProcessor('powerTournament_getState', powerTournament)
-
+        self.registerProcessor('specialOffer_getAll', getOffers)
 
     def registerProcessor(self, name, processor, ident=None):
         id = ident if ident else name
@@ -115,8 +116,6 @@ class RequestProcessor:
             return zeppelinGift(request)
         if (call == 'tutorialGetInfo'):
             return tutorial(request)
-        if (call == 'specialOffer_getAll'):
-            return specialOffer(request)
         if (call == 'splitGetAll'):
             return splits(request)
         if (call == 'billingGetLast'):
@@ -333,10 +332,6 @@ def zeppelinGift(request):
 
 def tutorial(request):
     return {"ident":"tutorialGetInfo","result":{"response":{"chains":{"1":9999,"3":9999,"18":9999,"25":1,"2":9999,"4":9999,"5":9999,"6":9999,"7":9999,"8":9999,"9":9999,"10":0,"11":9999,"13":9999,"14":9999,"15":0,"16":0,"17":9999,"26":0,"29":0,"27":9999,"28":9999,"31":0,"33":0},"params":{"heroIcon1":"hero2","heroIcon2":"hero20","heroName1":"LIB_HERO_NAME_2","heroName2":"LIB_HERO_NAME_20","tutorialBattleEndTime":"5.46"}}}}
-
-
-def specialOffer(request):
-    return {"ident":"specialOffer_getAll","result":{"response":[]}}
 
 
 def splits(request):
