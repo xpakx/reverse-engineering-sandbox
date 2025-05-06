@@ -597,6 +597,7 @@ class GameData(NamedTuple):
     missions: Dict[int, MissionData] = {}
     questEvents: Dict[int, QuestEventData] = {}
     quests: Dict[int, SpecialQuestData] = {}
+    levelToExp: Dict[int, int] = {}
 
 
 def getOrDefault(data, stat: str, default: Any = None) -> Any:
@@ -715,6 +716,7 @@ def prepareData(hash) -> GameData:
     questChains = parseSpecialQuestChains(data['specialQuestEvent']['chain'], questEvents)
     updateChains(questEvents, questChains)
     quests = parseQuests(data['quest']['special'], questChains)
+    levelToExp = parseLevels(data['level']['hero'])
 
     return GameData(
             heroes=heroes,
@@ -722,6 +724,7 @@ def prepareData(hash) -> GameData:
             missions=missions,
             questEvents=questEvents,
             quests=quests,
+            levelToExp=levelToExp,
             )
 
 
@@ -790,6 +793,14 @@ def compareSpecialQuests(hashOld, hashNew, questType):
     print(newKeys)
 
 
+def parseLevels(data):
+    result = {}
+    for key in data:
+        exp = data[key]['exp']
+        result[int(key)] = exp
+    return result
+
+
 if __name__ == "__main__":
     # compareSpecialQuests('91c10ca0', 'a58c9976', 'battlePass')
     # compareEvents('91c10ca0', 'a58c9976')
@@ -798,41 +809,5 @@ if __name__ == "__main__":
     with open(input_file, 'r') as f:
         data = json.load(f)
 
-    print_keys(data['quest']['invasion']['32094'])
-    print()
-    print_keys(data['specialQuestEvent'])
-
-    quests = parseQuestEvents(data['specialQuestEvent']['type'])
-    # chains = parseQuestChains(data['quest']['chain'])
-    chains = parseSpecialQuestChains(data['specialQuestEvent']['chain'], quests)
-    updateChains(quests, chains)
-
-    print(chains[338].quests)
-    events = parseQuests(data['quest']['special'], chains)
-    print(chains[338].quests)
-
-    # input_file = "./91c10ca0/indices/lib.json"
-    # with open(input_file, 'r') as f:
-        # dataOld = json.load(f)
-
-    # questsOld = parseQuestEvents(dataOld['specialQuestEvent']['type'])
-    # newKeys = []
-    # for key in quests:
-        # if key not in questsOld:
-            # newKeys.append(int(key))
-
-    # for key in newKeys:
-        # print(key)
-        # print(quests[key].chains)
-
-    # missions = data['mission']
-    # mission = missions['1']
-    # normalMode = mission['normalMode']
-    # print_keys(normalMode)
-    # for wave in normalMode['waves']:
-        # for enemy in wave['enemies']:
-            # if 'drop' not in enemy:
-                # continue
-            # drop = enemy['drop']
-            # if len(drop) > 0:
-                # print(drop)
+    levelToExp = parseLevels(data['level']['hero'])
+    print(levelToExp)
