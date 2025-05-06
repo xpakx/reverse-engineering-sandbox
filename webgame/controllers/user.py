@@ -43,7 +43,7 @@ def getInfo(request, temp, gameData):
             "timeZone": 2,
             "starMoney": 520000,
             "vipPoints": "50000",
-            "gold": 1824851,
+            "gold": 500000000,
             "refillable": [],
             "flags": "8",
             "tutorialStep": "9999",

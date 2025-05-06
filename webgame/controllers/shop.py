@@ -46,8 +46,14 @@ def getTownShop():
     addItem(
             shop['slots'],
             1,
-            ItemDef(itemType='consumable', itemId=11, itemCount=45),
-            ItemDef(itemType='gold', itemCount=450000),
+            ItemDef(itemType='consumable', itemId=11, itemCount=500),
+            ItemDef(itemType='gold', itemCount=1),
+            )
+    addItem(
+            shop['slots'],
+            2,
+            ItemDef(itemType='fragmentHero', itemId=67, itemCount=500),
+            ItemDef(itemType='gold', itemCount=1),
             )
     return shop
 

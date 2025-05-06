@@ -27,8 +27,9 @@ class UserHero(NamedTuple):
 
 def getTestHeroes() -> List[UserHero]:
     return [
-            UserHero(id=3, level=5),
-            UserHero(id=4, level=8, stars=2),
+            UserHero(id=3, level=1),
+            UserHero(id=4, level=1, stars=2),
+            UserHero(id=67, level=1, stars=2),
         ]
 
 
@@ -56,3 +57,15 @@ def upgradeSkill(request, temp, gameData: GameData):
         return None
     hero.skills[skillNum] += 1
     return None
+
+
+def evolveHero(request, temp, gameData: GameData):
+    heroId = getStatAsInt(request['args'], 'heroId')
+    heroData = gameData.heroes[heroId]
+    hero = Hero(heroData)
+
+    userHeroes = temp['heroes']
+    for hero in userHeroes:
+        if hero.data.id == heroId:
+            hero.stars += 1
+    return []
