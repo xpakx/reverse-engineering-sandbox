@@ -9,6 +9,7 @@ from controllers.calendar import getTime, getDailyBonus, farmDaily
 from controllers.quest import farmQuest, getQuests, getQuestEvents
 from controllers.season import getSeason
 from controllers.shop import getShops
+from controllers.tower import getTower
 
 
 class Processor(NamedTuple):
@@ -38,6 +39,7 @@ class RequestProcessor:
         self.registerBodyProcessor('heroUpgradeSkill', upgradeSkill)
         self.registerProcessor('seasonAdventure_getInfo', getSeason)
         self.registerProcessor('shopGetAll', getShops)
+        self.registerProcessor('towerGetInfo', getTower)
 
     def registerProcessor(self, name, processor, ident=None):
         id = ident if ident else name
@@ -215,8 +217,6 @@ class RequestProcessor:
             return powerTournament(request)
         if (call == "mechanicAvailability"):
             return mechanics(request)
-        if (call == "towerGetInfo"):
-            return tower(request)
         if (call == "battlePass_getInfo"):
             return battlePass(request)
         if (call == "battlePass_getSpecial"):
@@ -557,10 +557,6 @@ def powerTournament(request):
 
 def mechanics(request):
 	return {"ident":"mechanicAvailability","result":{"response":{"titan_arena":True,"titan_arena_def":True,"titan_artifact":True,"titan_artifact_chest":True,"titan_valley":True,"titan_spirits":True,"titan_artifact_merchant":True,"titan_arena_hall_of_fame":True}}}
-
-
-def tower(request):
-	return {"ident":"towerGetInfo","result":{"response":{"userId":"278407558","teamLevel":"65","points":"62370","maySkipFloor":"26","floorNumber":"50","floorType":"chest","states":{"heroes":{"2":{"hp":17000,"energy":"1000","isDead":False,"maxHp":17000},"20":{"hp":5340,"energy":"1000","isDead":False,"maxHp":5340},"7":{"hp":22209,"energy":845,"isDead":False,"maxHp":23352},"36":{"hp":7100,"energy":"1000","isDead":False,"maxHp":7100},"6":{"hp":5820,"energy":"1000","isDead":False,"maxHp":5820},"31":{"hp":23266,"energy":1000,"isDead":False,"maxHp":34167},"1":{"hp":18444,"energy":471,"isDead":False,"maxHp":38517},"10":{"hp":9090,"energy":"1000","isDead":False,"maxHp":9090},"3":{"hp":35805,"energy":400,"isDead":False,"maxHp":35805},"13":{"hp":23100,"energy":100,"isDead":False,"maxHp":23100},"40":{"hp":16970,"energy":848,"isDead":False,"maxHp":16970},"6006":{"hp":-1,"energy":526,"isDead":False,"maxHp":None}},"mercenaries":[]},"effects":{"percentBuff_allAttacks":11,"percentBuff_magicResist":40,"percentBuff_armor":30},"floor":{"chests":[{"num":0,"opened":0},{"num":1,"opened":1,"reward":{"gold":90000},"critMultiplier":1},{"num":2,"opened":0}],"chestRewards":{"gold":{"gold":90000},"item":{"fragmentGear":{"94":"6"}},"coin":{"coin":{"3":"250"}}}},"reward":{"4":{"gold":45000},"8":{"gold":45000},"10":{"gold":45000},"14":{"gold":45000},"16":{"coin":{"3":"75"}},"20":{"fragmentGear":{"94":"4"}},"22":{"fragmentGear":{"98":"3"}},"26":{"gold":90000},"28":{"gold":90000},"32":{"coin":{"3":"150"}},"35":{"fragmentGear":{"96":"6"}},"39":{"gold":90000},"42":{"coin":{"3":300}},"46":{"gold":90000},"50":{"gold":90000}},"mayBuySkip":True,"mayFullSkip":False,"skipBought":False,"chestSkip":False,"fullSkipCost":{"starmoney":1150},"pointRewards":{"200":True,"3000":True,"10000":True,"15000":True,"20000":True,"25000":True,"35000":True,"45000":True,"60000":True}}}}
 
 
 def battlePass(request):
