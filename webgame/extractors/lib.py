@@ -82,6 +82,7 @@ class Hero:
         self.level = 0
         self.stars = 0
         self.gear = []
+        self.experience = 0
         self.skills = []
         for skill in data.heroSkills:
             self.skills.append(0)
@@ -126,6 +127,11 @@ class Hero:
         for i in range(0, length):
             if gear[i]:
                 self.update(items[i].battleStats)
+
+    def addExperience(self, experience: int):
+        # TODO
+        self.experience += experience
+        pass
 
     def getBattleData(self):
         return {
@@ -694,8 +700,6 @@ def parseQuests(data, questChains: Dict[int, SpecialQuestChainData]) -> Dict[int
         event = questChains[chainId]
         event.quests.append(quest)
     return result
-
-
 
 
 def prepareData(hash) -> GameData:

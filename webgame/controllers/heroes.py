@@ -61,11 +61,22 @@ def upgradeSkill(request, temp, gameData: GameData):
 
 def evolveHero(request, temp, gameData: GameData):
     heroId = getStatAsInt(request['args'], 'heroId')
-    heroData = gameData.heroes[heroId]
-    hero = Hero(heroData)
+    # TODO: errors, verify and deduct gold
 
     userHeroes = temp['heroes']
     for hero in userHeroes:
         if hero.data.id == heroId:
             hero.stars += 1
+    return []
+
+
+def addExpToHero(request, temp, gameData: GameData):
+    heroId = getStatAsInt(request['args'], 'heroId')
+    # consumableId = getStatAsInt(request['args'], 'libId')
+    consumableAmount = getStatAsInt(request['args'], 'amount')
+    exp = 1500 * consumableAmount
+    userHeroes = temp['heroes']
+    for hero in userHeroes:
+        if hero.data.id == heroId:
+            hero.addExperience(exp)
     return []
