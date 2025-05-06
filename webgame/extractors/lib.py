@@ -825,12 +825,11 @@ def parseLevels(data):
 
 
 if __name__ == "__main__":
-    # compareSpecialQuests('91c10ca0', 'a58c9976', 'battlePass')
-    # compareEvents('91c10ca0', 'a58c9976')
-    input_file = "./a58c9976/indices/lib.json"
+    # compareSpecialQuests('91c10ca0', 'f867035b', 'special')
+    # compareEvents('91c10ca0', 'f867035b')
+    input_file = "./f867035b/indices/lib.json"
 
     with open(input_file, 'r') as f:
         data = json.load(f)
 
-    levelToExp = parseLevels(data['level']['hero'])
-    print(levelToExp)
+    # print_keys(data['quest'])

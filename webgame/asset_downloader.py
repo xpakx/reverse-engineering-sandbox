@@ -121,7 +121,7 @@ if __name__ == "__main__":
     print("Warning: This will download ~4GB of assets. Ctrl+C to abort in 5s…")
     time.sleep(5)
     base_url = "https://heroesweb-a.akamaihd.net/wb/assets/"
-    hash = "a58c9976"
+    hash = "f867035b"
     json_file = f"./{hash}/indices/index.assets.json.backup"
     assets_dir = f"./{hash}/assets"
     parent_dir = "./assets"

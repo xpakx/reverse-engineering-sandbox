@@ -11,6 +11,7 @@ from controllers.quest import farmQuest, getQuests, getQuestEvents
 from controllers.season import getSeason
 from controllers.shop import getShops
 from controllers.tower import getTower
+from controllers.tournament import powerTournament
 
 
 class Processor(NamedTuple):
@@ -43,6 +44,8 @@ class RequestProcessor:
         self.registerProcessor('towerGetInfo', getTower)
         self.registerBodyProcessor('heroEvolve', evolveHero)
         self.registerBodyProcessor('consumableUseHeroXp', addExpToHero)
+        self.registerProcessor('powerTournament_getState', powerTournament)
+
 
     def registerProcessor(self, name, processor, ident=None):
         id = ident if ident else name
@@ -216,8 +219,6 @@ class RequestProcessor:
             return videos(request)
         if (call == "newHeroNotification_get"):
             return newHeroes(request)
-        if (call == "powerTournament_getState"):
-            return powerTournament(request)
         if (call == "mechanicAvailability"):
             return mechanics(request)
         if (call == "battlePass_getInfo"):
@@ -475,7 +476,7 @@ def petChest(request):
 
 
 def playable(request):
-    return {"ident":"playable_getAvailable","result":{"response":[48,49,50]}}
+    return {"ident":"playable_getAvailable","result":{"response":[25,48,49,50]}}
 
 
 def clanDomination(request):
@@ -552,10 +553,6 @@ def videos(request):
 
 def newHeroes(request):
 	{"ident":"newHeroNotification_get","result":{"response":None}}
-
-
-def powerTournament(request):
-    return {"ident":"powerTournament_getState","result":{"response":{"id":4,"startTime":1745287200,"endTime":1745719199,"state":1,"type":"heroes","currentDayRewards":[{"id":9,"points":300,"reward":{"gold":600000},"isFarmed":1},{"id":10,"points":1000,"reward":{"consumable":{"11":50}},"isFarmed":0},{"id":11,"points":2200,"reward":{"consumable":{"339":2}},"isFarmed":1},{"id":12,"points":4000,"reward":{"consumable":{"51":40}},"isFarmed":1}],"currentDailyPoints":17196,"currentTournamentPoints":47688,"statueLevel":2,"finalRewardFarmed":0}}}
 
 
 def mechanics(request):

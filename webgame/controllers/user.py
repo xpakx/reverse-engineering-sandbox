@@ -36,7 +36,7 @@ def getInfo(request, temp, gameData):
             "commander": False,
             "avatarId": "608",
             "isChatModerator": False,
-            "frameId": 92,
+            "frameId": 193,
             "leagueId": 2,
             "allowPm": "all",
             "accountId": "149848381",

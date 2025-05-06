@@ -7,7 +7,7 @@ from controllers.heroes import getTestHeroes, applyHeroes
 import os
 from pathlib import Path
 
-hash = 'a58c9976'
+hash = 'f867035b'
 versioned_root = f'./{hash}'
 logs = False
 gameData = prepareData(hash)
