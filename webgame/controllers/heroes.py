@@ -75,8 +75,8 @@ def addExpToHero(request, temp, gameData: GameData):
     # consumableId = getStatAsInt(request['args'], 'libId')
     consumableAmount = getStatAsInt(request['args'], 'amount')
     exp = 1500 * consumableAmount
-    userHeroes = temp['heroes']
+    userHeroes: List[Hero] = temp['heroes']
     for hero in userHeroes:
         if hero.data.id == heroId:
-            hero.addExperience(exp)
+            hero.addExperience(exp, gameData.levelToExp)
     return []

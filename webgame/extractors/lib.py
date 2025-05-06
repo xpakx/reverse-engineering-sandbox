@@ -106,11 +106,22 @@ class Hero:
             new_value = getattr(self, attr) + getattr(stat, attr) * times
             setattr(self, attr, new_value)
 
+    def revert(self, stat: StatData, times: int = 1):
+        for attr in attrs:
+            if not hasattr(self, attr) or not hasattr(stat, attr):
+                continue
+            new_value = getattr(self, attr) - getattr(stat, attr) * times
+            setattr(self, attr, new_value)
+
     def applyStarsAndLevel(self, stars: int, level: int):
         starsData = self.data.stars[stars]
         self.level = level
         self.stars = stars
         self.update(starsData, level)
+
+    def revertStarsAndLevel(self, stars: int, level: int):
+        starsData = self.data.stars[stars]
+        self.revert(starsData, level)
 
     def applyColor(self, color: int):
         colorData = self.data.color[color]
@@ -128,15 +139,27 @@ class Hero:
             if gear[i]:
                 self.update(items[i].battleStats)
 
-    def addExperience(self, experience: int):
-        # TODO
+    def addExperience(self, experience: int, levelToExp: Dict[int, int]):
         self.experience += experience
-        pass
+        if (self.level + 1) not in levelToExp:
+            return
+        oldLevel = self.level
+
+        levelExperience = levelToExp[self.level+1]
+        while self.experience >= levelExperience:
+            self.level += 1
+            if self.level+1 not in levelToExp:
+                break
+            levelExperience = levelToExp[self.level+1]
+
+        if self.level > oldLevel:
+            self.revertStarsAndLevel(self.stars, oldLevel)
+            self.applyStarsAndLevel(self.stars, self.level)
 
     def getBattleData(self):
         return {
                 "id": self.data.id,
-                "xp": 0,
+                "xp": self.experience,
                 "level": self.level,
                 "color": self.color,
                 "slots": [0, 0, 0],
@@ -171,7 +194,7 @@ class Hero:
             skillIndex += 1
         return {
             "id": self.data.id,
-            "xp": 0,
+            "xp": self.experience,
             "level": self.level,
             "color": self.color,
             "slots": [0, 0, 0],
