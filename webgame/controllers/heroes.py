@@ -80,3 +80,12 @@ def addExpToHero(request, temp, gameData: GameData):
         if hero.data.id == heroId:
             hero.addExperience(exp, gameData.levelToExp)
     return []
+
+
+def getHeroRatings(request, temp, gameData: GameData):
+    response = {}
+    response['userRating'] = []
+    response['rating'] = {}
+    for i in range(1, 67):
+        response['rating'][str(i)] = 4.00
+    return response

@@ -1,7 +1,7 @@
 from controllers.user import register, getInfo
 from controllers.campaign import startMission, endMission, raidMission
 from controllers.heroes import getUserHeroes, upgradeSkill, evolveHero
-from controllers.heroes import addExpToHero
+from controllers.heroes import addExpToHero, getHeroRatings
 from controllers.items import buyStamina, useStaminaItem, inventory
 from controllers.gacha import summonHero
 from extractors.lib import GameData
@@ -47,6 +47,7 @@ class RequestProcessor:
         self.registerBodyProcessor('consumableUseHeroXp', addExpToHero)
         self.registerProcessor('powerTournament_getState', powerTournament)
         self.registerProcessor('specialOffer_getAll', getOffers)
+        self.registerProcessor('heroRating_getInfo', getHeroRatings)
 
     def registerProcessor(self, name, processor, ident=None):
         id = ident if ident else name
@@ -204,8 +205,6 @@ class RequestProcessor:
             return mechanicsBan(request)
         if (call == "gacha_getInfo"):
             return gacha(request)
-        if (call == "heroRating_getInfo"):
-            return heroRating(request)
         if (call == "offerwall_getActive"):
             return offerwall(request)
         if (call == "banner_getAll"):
@@ -520,10 +519,6 @@ def mechanicsBan(request):
 
 def gacha(request):
     return {"ident":"gacha_getInfo","result":{"response":{"nextRefill":1745550000,"wishlist":[40,40,40],"onceRolled":{"super":[4002,4005]},"openings":{"count":31,"last":25,"next":35,"reward":{"consumable":{"11":"30"},"gold":350000}},"guaranteedOfferCount":[]}}}
-
-
-def heroRating(request):
-    return {"ident":"heroRating_getInfo","result":{"response":{"userRating":[],"rating":{"1":4.827589077996817,"2":4.79506316007455,"3":4.710327455919395,"4":4.786494934782253,"5":4.480123743232792,"6":4.66074530680863,"7":4.7484863787375415,"8":4.5022778192681105,"9":4.794512471655328,"10":4.598105813193991,"11":4.472053372868792,"12":4.778655650228075,"13":4.830326821252511,"14":4.348677056904675,"15":4.593706179683679,"16":4.880622813636052,"17":4.71444645368696,"18":4.5843417611159545,"19":4.452919020715631,"20":4.553611977542109,"21":4.516604378003203,"22":4.454574049803408,"23":4.678326752747839,"24":4.719842190763519,"25":4.741841937539834,"26":4.4697183098591555,"27":4.531221198156683,"28":4.677473627987715,"29":4.720522310475319,"30":4.609442313366775,"31":4.660379450535912,"32":4.694522354901416,"33":4.678319642300094,"34":4.646717052432687,"35":4.68855811749842,"36":4.675132914451425,"37":4.776520698394819,"38":4.529679272379129,"39":4.480375782881002,"40":4.8040503956684715,"41":4.75010256773007,"42":4.791933562014804,"43":4.8218412199661875,"44":4.618315467075038,"45":4.6025180819716045,"46":4.8732917719433155,"47":4.631421754882036,"48":4.8456363459858265,"49":4.848857644991212,"50":4.771879621889267,"51":4.717578393224994,"52":4.805082628550365,"53":4.471843817787419,"54":4.508896070760334,"55":4.868098857584998,"56":4.788419432090318,"57":4.711688311688312,"58":4.708006579296439,"59":4.765730063342537,"60":4.7278191873046405,"61":4.690721649484536,"62":4.722096015618067,"63":4.661246075028921,"64":4.759112434041402,"65":4.631867076000094,"66":4.62811251152782}}}}
 
 
 def offerwall(request):
