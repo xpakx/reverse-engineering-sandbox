@@ -9,7 +9,7 @@ from typing import NamedTuple, Any
 from controllers.calendar import getTime, getDailyBonus, farmDaily
 from controllers.quest import farmQuest, getQuests, getQuestEvents
 from controllers.season import getSeason
-from controllers.shop import getShops
+from controllers.shop import getShops, buy
 from controllers.tower import getTower
 from controllers.tournament import powerTournament
 from controllers.offer import getOffers
@@ -54,6 +54,7 @@ class RequestProcessor:
         self.registerProcessor('adventure_getActiveData', adventuresActive)
         self.registerProcessor('adventure_find', adventuresFind)
         self.registerProcessor('adventureSolo_getActiveData', adventuresSolo)
+        self.registerBodyProcessor('shopBuy', buy)
 
     def registerProcessor(self, name, processor, ident=None):
         id = ident if ident else name

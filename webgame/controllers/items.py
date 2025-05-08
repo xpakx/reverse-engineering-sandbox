@@ -63,4 +63,5 @@ def addMultToInventory(temp, reward):
         if isinstance(items, dict):
             for item in items:
                 id = int(item)
-                addToInventory(temp, category, id, items[item])
+                amount = int(items[item])
+                addToInventory(temp, category, id, amount)

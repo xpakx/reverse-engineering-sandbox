@@ -1,15 +1,32 @@
 from typing import NamedTuple
+from extractors.lib import getStatAsInt
+from controllers.items import addMultToInventory
 
 
 def getShops(request, temp, gameData):
     response = {}
-    response['1'] = getTownShop()
-    response['4'] = getArenaShop()
-    response['5'] = getGrandArenaShop()
-    response['6'] = getTowerShop()
-    response['8'] = getFriendshipShop()
-    response['9'] = getOutlandShop()
+    response['1'] = getShopById(1)
+    response['4'] = getShopById(4)
+    response['5'] = getShopById(5)
+    response['6'] = getShopById(6)
+    response['8'] = getShopById(8)
+    response['9'] = getShopById(9)
     return response
+
+
+def getShopById(id):
+    if id == 1:
+        return getTownShop()
+    if id == 4:
+        return getArenaShop()
+    if id == 5:
+        return getGrandArenaShop()
+    if id == 6:
+        return getTowerShop()
+    if id == 8:
+        return getFriendshipShop()
+    if id == 9:
+        return getOutlandShop()
 
 
 class ItemDef(NamedTuple):
@@ -53,6 +70,24 @@ def getTownShop():
             shop['slots'],
             2,
             ItemDef(itemType='fragmentHero', itemId=67, itemCount=500),
+            ItemDef(itemType='gold', itemCount=1),
+            )
+    addItem(
+            shop['slots'],
+            3,
+            ItemDef(itemType='fragmentHero', itemId=3, itemCount=500),
+            ItemDef(itemType='gold', itemCount=1),
+            )
+    addItem(
+            shop['slots'],
+            4,
+            ItemDef(itemType='fragmentHero', itemId=50, itemCount=500),
+            ItemDef(itemType='gold', itemCount=1),
+            )
+    addItem(
+            shop['slots'],
+            5,
+            ItemDef(itemType='fragmentHero', itemId=51, itemCount=500),
             ItemDef(itemType='gold', itemCount=1),
             )
     return shop
@@ -131,3 +166,16 @@ def getOutlandShop():
             ItemDef(itemType='coin', itemId=6, itemCount=500),
             )
     return shop
+
+
+def buy(request, temp, gameData):
+    shopId = getStatAsInt(request['args'], 'shopId')
+    shop = getShopById(shopId)
+    slot = getStatAsInt(request['args'], 'slot')
+    print(shop['slots'][str(slot)])
+    reward = shop['slots'][str(slot)]['reward']
+    addMultToInventory(temp, reward)
+    return []
+
+
+
