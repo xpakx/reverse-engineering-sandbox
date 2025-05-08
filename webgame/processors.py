@@ -13,6 +13,8 @@ from controllers.shop import getShops
 from controllers.tower import getTower
 from controllers.tournament import powerTournament
 from controllers.offer import getOffers
+from controllers.adventure import adventuresFind, adventuresSolo
+from controllers.adventure import adventuresPassed, adventuresActive
 
 
 class Processor(NamedTuple):
@@ -48,6 +50,10 @@ class RequestProcessor:
         self.registerProcessor('powerTournament_getState', powerTournament)
         self.registerProcessor('specialOffer_getAll', getOffers)
         self.registerProcessor('heroRating_getInfo', getHeroRatings)
+        self.registerProcessor('adventure_getPassed', adventuresPassed)
+        self.registerProcessor('adventure_getActiveData', adventuresActive)
+        self.registerProcessor('adventure_find', adventuresFind)
+        self.registerProcessor('adventureSolo_getActiveData', adventuresSolo)
 
     def registerProcessor(self, name, processor, ident=None):
         id = ident if ident else name
@@ -169,14 +175,6 @@ class RequestProcessor:
             return titanArenaChest(request)
         if (call == "bossGetAll"):
             return bosses(request)
-        if (call == "adventure_getPassed"):
-            return adventuresPassed(request)
-        if (call == "adventure_getActiveData"):
-            return adventuresActive(request)
-        if (call == "adventure_find"):
-            return adventuresFind(request)
-        if (call == "adventureSolo_getActiveData"):
-            return adventuresSolo(request)
         if (call == "pet_getChest"):
             return petChest(request)
         if (call == "playable_getAvailable"):
@@ -447,22 +445,6 @@ def bosses(request):
             "mayRaid": True
             })
     return result
-
-
-def adventuresPassed(request):
-    return {"ident":"adventure_getPassed","result":{"response":{"101":1,"1":12,"2":1,"3":5}}}
-
-
-def adventuresActive(request):
-    return {"ident":"adventure_getActiveData","result":{"response":{"hasActive":False,"lastChatTime":None,"hasRewards":False}}}
-
-
-def adventuresFind(request):
-    return {"ident":"adventure_find","result":{"response":{"lobbies":[],"users":[]}}}
-
-
-def adventuresSolo(request):
-    return {"ident":"adventureSolo_getActiveData","result":{"response":{"hasActive":False,"adventureId":None,"endTime":None,"turns":None,"hasRewards":None}}}
 
 
 def petChest(request):
