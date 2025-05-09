@@ -824,6 +824,42 @@ def parseLevels(data):
     return result
 
 
+class SkinData(NamedTuple):
+    id: int = 0
+    heroId: int = 0
+    isDefault: bool = False
+    stats: Dict[int, StatData] = {}
+    costs: Dict[int, Any] = {}
+    enabled: bool = True
+    notObtainable: bool = False
+
+
+def parseSkins(data) -> List[SkinData]:
+    result = {}
+    for key in data:
+        skin = data[key]
+        id = getStatAsInt(skin, 'id')
+        heroId = getStatAsInt(skin, 'heroId')
+        stats = {}
+        costs = {}
+        for levelKey in skin['statData']['levels']:
+            level = skin['statData']['levels'][levelKey]
+            lvl = getStatAsInt(level, 'level')
+            statsData = getStats(level['statBonus'])
+            cost = level['cost']
+            stats[lvl] = statsData
+            costs[lvl] = cost
+
+        skinData = SkinData(
+                id=id,
+                heroId=heroId,
+                stats=stats,
+                costs=costs,
+                )
+        result[id] = skinData
+    return result
+
+
 if __name__ == "__main__":
     # compareSpecialQuests('91c10ca0', 'f867035b', 'special')
     # compareEvents('91c10ca0', 'f867035b')
@@ -831,5 +867,9 @@ if __name__ == "__main__":
 
     with open(input_file, 'r') as f:
         data = json.load(f)
+
+    print_keys(data['skin']['1'])
+    skins = parseSkins(data['skin'])
+    print(skins[3])
 
     # print_keys(data['quest'])
