@@ -47,6 +47,17 @@ class GearData(NamedTuple):
     color: int = 1
 
 
+class SkinData(NamedTuple):
+    id: int = 0
+    heroId: int = 0
+    isDefault: bool = False
+    stats: Dict[int, StatData] = {}
+    costs: Dict[int, Any] = {}
+    enabled: bool = True
+    notObtainable: bool = False
+    default: bool = False
+
+
 class HeroData(NamedTuple):
     id: int = 0
     baseStats: StatData = StatData()
@@ -59,6 +70,14 @@ class HeroData(NamedTuple):
     heroSkills: List[int] = []
     artifacts: Any = None
     runes: Any = None
+    skins: Dict[int, SkinData] = {}
+
+    def getDefaultSkin(self) -> Optional[SkinData]:
+        for skinKey in self.skins:
+            skin = self.skins[skinKey]
+            if skin.default:
+                return skin
+        return None
 
 
 class Hero:
@@ -84,6 +103,7 @@ class Hero:
         self.gear = []
         self.experience = 0
         self.skills = []
+        self.activeSkin = self.data.getDefaultSkin()
         for skill in data.heroSkills:
             self.skills.append(0)
 
@@ -168,7 +188,7 @@ class Hero:
                 "star": self.stars,
                 "runes": [0, 0, 0, 0, 0],
                 "skins": [],
-                "currentSkin": 3,
+                "currentSkin": self.activeSkin,
                 "titanGiftLevel": 0,
                 "titanCoinsSpent": None,
                 "artifacts": [
@@ -203,7 +223,7 @@ class Hero:
             "star": self.stars,
             "runes": [0, 0, 0, 0, 0],
             "skins": {str(self.data.id): 40},
-            "currentSkin": self.data.id,
+            "currentSkin": self.activeSkin,
             "titanGiftLevel": 0,
             "titanCoinsSpent": {
                 "consumable": {"24": 0}
@@ -435,6 +455,7 @@ def parseHero(data, gear, heroId) -> HeroData:
             heroSkills=heroSkills,
             stars=stars,
             color=colors,
+            skins={},
             )
 
 
@@ -617,6 +638,7 @@ class QuestEventData(NamedTuple):
 class GameData(NamedTuple):
     heroes: Dict[int, HeroData] = {}
     items: Dict[int, GearData] = {}
+    skins: Dict[int, SkinData] = {}
     missions: Dict[int, MissionData] = {}
     questEvents: Dict[int, QuestEventData] = {}
     quests: Dict[int, SpecialQuestData] = {}
@@ -734,6 +756,7 @@ def prepareData(hash) -> GameData:
     gear = parseItems(data['inventoryItem']['gear'])
     heroes = parseHeroes(data['hero'], gear)
     missions = parseMissions(data['mission'], heroes, gear)
+    skins = parseSkins(data['skin'], heroes)
 
     questEvents = parseQuestEvents(data['specialQuestEvent']['type'])
     questChains = parseSpecialQuestChains(data['specialQuestEvent']['chain'], questEvents)
@@ -748,6 +771,7 @@ def prepareData(hash) -> GameData:
             questEvents=questEvents,
             quests=quests,
             levelToExp=levelToExp,
+            skins=skins,
             )
 
 
@@ -824,22 +848,13 @@ def parseLevels(data):
     return result
 
 
-class SkinData(NamedTuple):
-    id: int = 0
-    heroId: int = 0
-    isDefault: bool = False
-    stats: Dict[int, StatData] = {}
-    costs: Dict[int, Any] = {}
-    enabled: bool = True
-    notObtainable: bool = False
-
-
-def parseSkins(data) -> List[SkinData]:
+def parseSkins(data, heroes: Dict[int, HeroData]) -> List[SkinData]:
     result = {}
     for key in data:
         skin = data[key]
         id = getStatAsInt(skin, 'id')
         heroId = getStatAsInt(skin, 'heroId')
+        default = getStatAsInt(skin, 'isDefault') == 1
         stats = {}
         costs = {}
         for levelKey in skin['statData']['levels']:
@@ -855,8 +870,14 @@ def parseSkins(data) -> List[SkinData]:
                 heroId=heroId,
                 stats=stats,
                 costs=costs,
+                default=default,
                 )
         result[id] = skinData
+
+        hero = heroes[heroId]
+        if not hero:
+            continue
+        hero.skins[id] = skinData
     return result
 
 
@@ -869,7 +890,10 @@ if __name__ == "__main__":
         data = json.load(f)
 
     print_keys(data['skin']['1'])
-    skins = parseSkins(data['skin'])
-    print(skins[3])
+    print(data['skin']['3'])
+    gear = parseItems(data['inventoryItem']['gear'])
+    heroes = parseHeroes(data['hero'], gear)
+    skins = parseSkins(data['skin'], heroes)
+    # print(skins[3])
 
     # print_keys(data['quest'])
