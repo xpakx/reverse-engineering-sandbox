@@ -15,6 +15,10 @@ from controllers.tournament import powerTournament
 from controllers.offer import getOffers
 from controllers.adventure import adventuresFind, adventuresSolo
 from controllers.adventure import adventuresPassed, adventuresActive
+from controllers.clan import clanDomination, clanRaidRating, clanRaid
+from controllers.clan import clanPrestige, clanWarInfo, clanWarWarlord
+from controllers.clan import crossClanWarInfo, crossClanSettings
+from controllers.clan import clanActivityRewards, clanPrevData, clan
 
 
 class Processor(NamedTuple):
@@ -55,6 +59,20 @@ class RequestProcessor:
         self.registerProcessor('adventure_find', adventuresFind)
         self.registerProcessor('adventureSolo_getActiveData', adventuresSolo)
         self.registerBodyProcessor('shopBuy', buy)
+        self.registerProcessor('clanDomination_getInfo', clanDomination)
+        self.registerProcessor('clanRaid_ratingInfo', clanRaidRating)
+        self.registerProcessor('clanRaid_getInfo', clanRaid)
+        self.registerProcessor('clan_prestigeGetInfo', clanPrestige)
+
+        self.registerProcessor('clanWarGetBriefInfo', clanWarInfo)
+        self.registerProcessor('crossClanWar_getBriefInfo', crossClanWarInfo)
+        self.registerProcessor('crossClanWar_getSettings', crossClanSettings)
+        self.registerProcessor('clanWarGetWarlordInfo', clanWarWarlord)
+        self.registerProcessor('clanGetInfo', clan)
+        self.registerProcessor(
+                'clanGetActivityRewardTable', clanActivityRewards
+                )
+        self.registerProcessor('clanGetPrevData', clanPrevData)
 
     def registerProcessor(self, name, processor, ident=None):
         id = ident if ident else name
@@ -100,8 +118,6 @@ class RequestProcessor:
             return teamFavor(request)
         if (call == 'team_getBanners'):
             return teamBanners(request)
-        if (call == 'clan_prestigeGetInfo'):
-            return clanPrestige(request)
         if (call == 'mailGetAll'):
             return mail(request)
         if (call == 'arenaGetAll'):
@@ -136,14 +152,6 @@ class RequestProcessor:
             return titanSummoningCircle(request)
         if (call == 'newYearGetInfo'):
             return newYearInfo(request)
-        if (call == "clanWarGetBriefInfo"):
-            return clanWarInfo(request)
-        if (call == "crossClanWar_getBriefInfo"):
-            return crossClanWarInfo(request)
-        if (call == "crossClanWar_getSettings"):
-            return crossClanSettings(request)
-        if (call == "clanWarGetWarlordInfo"):
-            return clanWarWarlord(request)
         if (call == "campaignStoryGetList"):
             return campaignStoryList(request)
         if (call == "roleAscension_getAll"):
@@ -154,12 +162,6 @@ class RequestProcessor:
             return chatTalks(request)
         if (call == "chatGetInfo"):
             return chatInfo(request)
-        if (call == "clanGetInfo"):
-            return clan(request)
-        if (call == "clanGetActivityRewardTable"):
-            return clanActivityRewards(request)
-        if (call == "clanGetPrevData"):
-            return clanPrevData(request)
         if (call == "heroesMerchantGet"):
             return heroesMerchant(request)
         if (call == "freebieHaveGroup"):
@@ -180,12 +182,6 @@ class RequestProcessor:
             return petChest(request)
         if (call == "playable_getAvailable"):
             return playable(request)
-        if (call == "clanDomination_getInfo"):
-            return clanDomination(request)
-        if (call == "clanRaid_ratingInfo"):
-            return clanRaidRating(request)
-        if (call == "clanRaid_getInfo"):
-            return clanRaid(request)
         if (call == "coopBundle_getInfo"):
             return coopBundle(request)
         if (call == "buffs_getInfo"):
@@ -283,11 +279,6 @@ def teamFavor(request):
 def teamBanners(request):
     return {"ident":"team_getBanners","result":{"response":{"mission":None,"arena_def":None,"arena":None,"tower":None,"boss_11":None,"boss_12":None,"boss_10":None,"dungeon_water":None,"dungeon_hero":None,"dungeon_neutral":None,"dungeon_fire":None,"clanDefence_heroes":None,"clanDefence_titans":None,"adventure_hero":None,"dungeon_earth":None,"clan_pvp_hero":None,"clan_pvp_titan":None,"crossClanDefence_heroes":[None,None,None],"crossClanDefence_titans":[None,None,None],"grand_def":[None,None,None],"titan_arena":None,"clan_global_pvp_titan":None,"clan_global_pvp":None,"grand":[None,None,None]}}}
 
-
-def clanPrestige(request):
-    return {"ident":"clan_prestigeGetInfo","result":{"response":{"prestigeId":2,"prestigeCount":379400,"userPrestigeCount":22665,"farmedPrestigeLevels":[1],"endTime":1746496800,"prestigeStartPopupViewed":True,"nextTime":1746583200}}}
-
-
 def mail(request):
     return {"ident":"mailGetAll","result":{"response":{"letters":[],"users":[]}}}
 
@@ -356,22 +347,6 @@ def newYearInfo(request):
     return {"ident":"newYearGetInfo","result":{"response":{"treeLevel":0,"treeExpPercent":0,"giftsToOpen":0,"eventHero":64,"dayHero":51}}}
 
 
-def clanWarInfo(request):
-    return {"ident":"clanWarGetBriefInfo","result":{"response":{"tries":0,"targets":0,"arePointsMax":True,"nextWarTime":1745571600,"hasActiveWar":False,"nearestWarEndTime":175611200}}}
-
-
-def crossClanWarInfo(request):
-    return {"ident":"crossClanWar_getBriefInfo","result":{"response":{"status":"active","hasActiveWar":True,"hasEnoughDefendedSlots":True,"seasonEndTime":1751767200,"nextSeasonStartTime":1752458400,"nextWarTime":1745810100,"heroTries":3,"titanTries":2,"heroTargets":0,"titanTargets":0,"currentWarEndTime":1745719200}}}
-
-
-def crossClanSettings(request):
-    return {"ident":"crossClanWar_getSettings","result":{"response":{"fillDefenceByCommander":False}}}
-
-
-def clanWarWarlord(request):
-    return {"ident":"clanWarGetWarlordInfo","result":{"response":None}}
-
-
 def campaignStoryList(request):
     return {"ident":"campaignStoryGetList","result":{"response":[]}}
 
@@ -390,18 +365,6 @@ def chatTalks(request):
 
 def chatInfo(request):
     return {"ident":"chatGetInfo","result":{"response":{"banUntil":"0","subscribeServer":"0","lastMessageTime":"1745049961","blackList":[],"settings":{"chatSelectedTab":"CLAN_TAB","lastReadMessageId":90058375,"lastReadClanNewsHash":"f7086b389381c5b3f5d3cb07a4671ee7","lastReadTrainingMessageId":89994080,"lastReadXGVGMessageId":90050415}}}}
-
-
-def clan(request):
-    return {"ident":"clanGetInfo","result":{"response":{"clan":{"id":"1","ownerId":"2","level":"1","title":"SuperClan","description":"","icon":{"flagColor1":4,"flagColor2":5,"flagShape":3,"iconColor":1,"iconShape":3},"country":"7","minLevel":"30","serverId":"457","membersCount":"20","disbanding":False,"topActivity":"187676","topDungeon":"19052","roleNames":[],"frameId":2,"members":{},"news":"","activityPoints":22163,"dungeonPoints":1988,"blackList":[],"warriors":[],"giftsCount":0,"daysToKick":"14","league":"2"},"membersStat":[],"stat":{"todayActivity":2494,"activitySum":22153,"dungeonActivitySum":1255,"todayRaid":[],"todayItemsActivity":0,"todayDungeonActivity":75,"activityForRuneAvailable":False,"adventureStat":2,"clanWarStat":2},"serverResetTime":1745546400,"clanWarEndSeasonTime":1745670600,"freeClanChangeInterval":{"start":1745668800,"end":1745841600},"giftUids":[]}}}
-
-
-def clanActivityRewards(request):
-    return {"ident":"clanGetActivityRewardTable","result":{"response":{"12500":{"activityPoints":12500,"reward":{"consumable":{"4":"4"}},"clanGifts":1,"useClanRewardChangeDayRule":0}}}}
-
-
-def clanPrevData(request):
-    return {"ident":"clanGetPrevData","result":{"response":None}}
 
 
 def heroesMerchant(request):
@@ -454,18 +417,6 @@ def petChest(request):
 
 def playable(request):
     return {"ident":"playable_getAvailable","result":{"response":[25,48,49,50]}}
-
-
-def clanDomination(request):
-    return {"ident":"clanDomination_getInfo","result":{"response":None}}
-
-
-def clanRaidRating(request):
-    return {"ident":"clanRaid_ratingInfo","result":{"response":[]}}
-
-
-def clanRaid(request):
-    return {"ident":"clanRaid_getInfo","result":{"response":None}}
 
 
 def coopBundle(request):
