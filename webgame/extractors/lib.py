@@ -103,7 +103,13 @@ class Hero:
         self.gear = []
         self.experience = 0
         self.skills = []
-        self.activeSkin = self.data.getDefaultSkin()
+        self.skinLevels = {}
+        defaultSkin = self.data.getDefaultSkin()
+        if defaultSkin:
+            self.activeSkin = defaultSkin.id
+            self.skinLevels[defaultSkin.id] = 1
+        else:
+            self.activeSkin = data.id
         for skill in data.heroSkills:
             self.skills.append(0)
 
@@ -212,6 +218,7 @@ class Hero:
         for skill in self.data.heroSkills:
             skills[str(skill)] = self.skills[skillIndex]
             skillIndex += 1
+        skins = self.skinLevels if len(self.skinLevels) > 0 else []
         return {
             "id": self.data.id,
             "xp": self.experience,
@@ -222,7 +229,7 @@ class Hero:
             "power": 19156,
             "star": self.stars,
             "runes": [0, 0, 0, 0, 0],
-            "skins": {str(self.data.id): 40},
+            "skins": skins,
             "currentSkin": self.activeSkin,
             "titanGiftLevel": 0,
             "titanCoinsSpent": {
