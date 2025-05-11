@@ -53,32 +53,25 @@ class Shop:
 
 def getShops(request, temp, gameData):
     response = {}
-    response['1'] = temp['shops'][1].toResponse()
-    response['4'] = getShopById(4)
-    response['5'] = getShopById(5)
-    response['6'] = getShopById(6)
-    response['8'] = getShopById(8)
-    response['9'] = getShopById(9)
+    shops = [1, 4, 5, 6, 8, 9]
+    for shopId in shops:
+        response[str(shopId)] = getShopById(temp, shopId)
     return response
 
 
 def getTestShops():
     result = {}
     result[1] = getTownShop()
+    result[4] = getArenaShop()
+    result[5] = getGrandArenaShop()
+    result[6] = getTowerShop()
+    result[8] = getSoulShop()
+    result[9] = getFriendshipShop()
     return result
 
 
-def getShopById(id):
-    if id == 4:
-        return getArenaShop()
-    if id == 5:
-        return getGrandArenaShop()
-    if id == 6:
-        return getTowerShop()
-    if id == 8:
-        return getFriendshipShop()
-    if id == 9:
-        return getOutlandShop()
+def getShopById(temp, id):
+    return temp['shops'][id].toResponse()
 
 
 def addItem(slots, slotNum, item: ItemDef, cost: ItemDef, bought: bool = False):
@@ -126,76 +119,56 @@ def getTownShop():
 
 
 def getArenaShop():
-    shop = {}
-    shop['id'] = 4
-    shop['availableUntil'] = 0
-    shop['refreshTime'] = 1745564400
-    shop['slots'] = {}
-    addItem(
-            shop['slots'],
-            1,
-            ItemDef(itemType='fragmentHero', itemId=19, itemCount=5),
-            ItemDef(itemType='coin', itemId=1, itemCount=500),
+    shop = Shop(4)
+    shop.slots.append(
+            ShopSlot(
+                ItemDef(itemType='fragmentHero', itemId=19, itemCount=5),
+                ItemDef(itemType='coin', itemId=1, itemCount=500),
+                )
             )
     return shop
 
 
 def getGrandArenaShop():
-    shop = {}
-    shop['id'] = 5
-    shop['availableUntil'] = 0
-    shop['refreshTime'] = 1745564400
-    shop['slots'] = {}
-    addItem(
-            shop['slots'],
-            1,
-            ItemDef(itemType='fragmentHero', itemId=23, itemCount=5),
-            ItemDef(itemType='coin', itemId=2, itemCount=500),
+    shop = Shop(5)
+    shop.slots.append(
+            ShopSlot(
+                ItemDef(itemType='fragmentHero', itemId=23, itemCount=5),
+                ItemDef(itemType='coin', itemId=2, itemCount=500),
+                )
             )
     return shop
 
 
 def getTowerShop():
-    shop = {}
-    shop['id'] = 6
-    shop['availableUntil'] = 0
-    shop['refreshTime'] = 1745564400
-    shop['slots'] = {}
-    addItem(
-            shop['slots'],
-            1,
-            ItemDef(itemType='fragmentHero', itemId=5, itemCount=5),
-            ItemDef(itemType='coin', itemId=3, itemCount=500),
+    shop = Shop(6)
+    shop.slots.append(
+            ShopSlot(
+                ItemDef(itemType='fragmentHero', itemId=5, itemCount=5),
+                ItemDef(itemType='coin', itemId=3, itemCount=500),
+                )
+            )
+    return shop
+
+
+def getSoulShop():
+    shop = Shop(8)
+    shop.slots.append(
+            ShopSlot(
+                ItemDef(itemType='fragmentHero', itemId=31, itemCount=5),
+                ItemDef(itemType='coin', itemId=5, itemCount=500),
+                )
             )
     return shop
 
 
 def getFriendshipShop():
-    shop = {}
-    shop['id'] = 8
-    shop['availableUntil'] = 0
-    shop['refreshTime'] = 1745564400
-    shop['slots'] = {}
-    addItem(
-            shop['slots'],
-            1,
-            ItemDef(itemType='fragmentHero', itemId=31, itemCount=5),
-            ItemDef(itemType='coin', itemId=5, itemCount=500),
-            )
-    return shop
-
-
-def getOutlandShop():
-    shop = {}
-    shop['id'] = 9
-    shop['availableUntil'] = 0
-    shop['refreshTime'] = 1745564400
-    shop['slots'] = {}
-    addItem(
-            shop['slots'],
-            1,
-            ItemDef(itemType='fragmentHero', itemId=10, itemCount=5),
-            ItemDef(itemType='coin', itemId=6, itemCount=500),
+    shop = Shop(9)
+    shop.slots.append(
+            ShopSlot(
+                ItemDef(itemType='fragmentHero', itemId=10, itemCount=5),
+                ItemDef(itemType='coin', itemId=6, itemCount=500),
+                )
             )
     return shop
 
