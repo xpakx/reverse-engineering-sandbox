@@ -1,6 +1,54 @@
-from typing import NamedTuple
+from typing import NamedTuple, List
 from extractors.lib import getStatAsInt
 from controllers.items import addMultToInventory
+
+
+class ItemDef(NamedTuple):
+    itemType: str = 'gear'
+    itemId: int = 0
+    itemCount: int = 1
+    ident: str = 'body'
+
+    def toResponse(self):
+        if self.itemType in ['gold', 'starmoney']:
+            return {self.itemType: str(self.itemCount)}
+        return {
+                self.itemType: {
+                    str(self.itemId): str(self.itemCount)
+                    }
+                }
+
+
+class ShopSlot:
+    item: ItemDef
+    cost: ItemDef
+    bought: bool
+
+    def __init__(
+            self,
+            item: ItemDef = ItemDef(),
+            cost: ItemDef = ItemDef(),
+            bought: bool = False):
+        self.item = item
+        self.cost = cost
+        self.bought = bought
+
+
+class Shop:
+    def __init__(self, id: int):
+        self.id = id
+        self.slots = []
+
+    def toResponse(self):
+        shop = {}
+        shop['id'] = self.id
+        shop['availableUntil'] = 0
+        shop['refreshTime'] = 1745564400
+        shop['slots'] = {}
+        for i in range(len(self.slots)):
+            slot = self.slots[i]
+            addItem(shop['slots'], i, slot.item, slot.cost)
+        return shop
 
 
 def getShops(request, temp, gameData):
@@ -29,68 +77,48 @@ def getShopById(id):
         return getOutlandShop()
 
 
-class ItemDef(NamedTuple):
-    itemType: str = 'gear'
-    itemId: int = 0
-    itemCount: int = 1
-    ident: str = 'body'
-
-    def toResponse(self):
-        if self.itemType in ['gold', 'starmoney']:
-            return {self.itemType: str(self.itemCount)}
-        return {
-                self.itemType: {
-                    str(self.itemId): str(self.itemCount)
-                    }
-                }
-
-
-def addItem(slots, slotNum, item: ItemDef, cost: ItemDef):
+def addItem(slots, slotNum, item: ItemDef, cost: ItemDef, bought: bool = False):
     slot = {}
     slots[str(slotNum)] = slot
     slot['id'] = str(slotNum)
     slot['reward'] = item.toResponse()
-    slot['bought'] = 0
+    slot['bought'] = 1 if bought else 0
     slot['cost'] = cost.toResponse()
 
 
 def getTownShop():
-    shop = {}
-    shop['id'] = 1
-    shop['availableUntil'] = 0
-    shop['refreshTime'] = 1745564400
-    shop['slots'] = {}
-    addItem(
-            shop['slots'],
-            1,
-            ItemDef(itemType='consumable', itemId=11, itemCount=500),
-            ItemDef(itemType='gold', itemCount=1),
+    shop = Shop(1)
+    shop.slots.append(
+            ShopSlot(
+                ItemDef(itemType='consumable', itemId=11, itemCount=500),
+                ItemDef(itemType='gold', itemCount=1),
+                )
             )
-    addItem(
-            shop['slots'],
-            2,
-            ItemDef(itemType='fragmentHero', itemId=67, itemCount=500),
-            ItemDef(itemType='gold', itemCount=1),
+    shop.slots.append(
+            ShopSlot(
+                ItemDef(itemType='fragmentHero', itemId=67, itemCount=500),
+                ItemDef(itemType='gold', itemCount=1),
+                )
             )
-    addItem(
-            shop['slots'],
-            3,
-            ItemDef(itemType='fragmentHero', itemId=3, itemCount=500),
-            ItemDef(itemType='gold', itemCount=1),
+    shop.slots.append(
+            ShopSlot(
+                ItemDef(itemType='fragmentHero', itemId=3, itemCount=500),
+                ItemDef(itemType='gold', itemCount=1),
+                )
             )
-    addItem(
-            shop['slots'],
-            4,
-            ItemDef(itemType='fragmentHero', itemId=50, itemCount=500),
-            ItemDef(itemType='gold', itemCount=1),
+    shop.slots.append(
+            ShopSlot(
+                ItemDef(itemType='fragmentHero', itemId=50, itemCount=500),
+                ItemDef(itemType='gold', itemCount=1),
+                )
             )
-    addItem(
-            shop['slots'],
-            5,
-            ItemDef(itemType='fragmentHero', itemId=51, itemCount=500),
-            ItemDef(itemType='gold', itemCount=1),
+    shop.slots.append(
+            ShopSlot(
+                ItemDef(itemType='fragmentHero', itemId=51, itemCount=500),
+                ItemDef(itemType='gold', itemCount=1),
+                )
             )
-    return shop
+    return shop.toResponse()
 
 
 def getArenaShop():
@@ -176,6 +204,3 @@ def buy(request, temp, gameData):
     reward = shop['slots'][str(slot)]['reward']
     addMultToInventory(temp, reward)
     return []
-
-
-
