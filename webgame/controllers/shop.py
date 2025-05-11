@@ -53,7 +53,7 @@ class Shop:
 
 def getShops(request, temp, gameData):
     response = {}
-    response['1'] = getShopById(1)
+    response['1'] = temp['shops'][1].toResponse()
     response['4'] = getShopById(4)
     response['5'] = getShopById(5)
     response['6'] = getShopById(6)
@@ -62,9 +62,13 @@ def getShops(request, temp, gameData):
     return response
 
 
+def getTestShops():
+    result = {}
+    result[1] = getTownShop()
+    return result
+
+
 def getShopById(id):
-    if id == 1:
-        return getTownShop()
     if id == 4:
         return getArenaShop()
     if id == 5:
@@ -118,7 +122,7 @@ def getTownShop():
                 ItemDef(itemType='gold', itemCount=1),
                 )
             )
-    return shop.toResponse()
+    return shop
 
 
 def getArenaShop():

@@ -4,6 +4,7 @@ import processors
 from extractors.lib import prepareData
 from controllers.items import getTestInventory
 from controllers.heroes import getTestHeroes, applyHeroes
+from controllers.shop import getTestShops
 import os
 from pathlib import Path
 
@@ -14,6 +15,7 @@ gameData = prepareData(hash)
 tempState = {
         'inventory': getTestInventory(),
         'heroes': applyHeroes(getTestHeroes(), gameData),
+        'shops': getTestShops(),
         }
 
 
