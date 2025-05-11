@@ -175,7 +175,7 @@ def getFriendshipShop():
 
 def buy(request, temp, gameData):
     shopId = getStatAsInt(request['args'], 'shopId')
-    shop = getShopById(shopId)
+    shop = getShopById(temp, shopId)
     slot = getStatAsInt(request['args'], 'slot')
     print(shop['slots'][str(slot)])
     reward = shop['slots'][str(slot)]['reward']
