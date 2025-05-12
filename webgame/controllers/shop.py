@@ -47,7 +47,7 @@ class Shop:
         shop['slots'] = {}
         for i in range(len(self.slots)):
             slot = self.slots[i]
-            addItem(shop['slots'], i, slot.item, slot.cost)
+            addItem(shop['slots'], i, slot.item, slot.cost, slot.bought)
         return shop
 
 
@@ -55,7 +55,7 @@ def getShops(request, temp, gameData):
     response = {}
     shops = [1, 4, 5, 6, 8, 9]
     for shopId in shops:
-        response[str(shopId)] = getShopById(temp, shopId)
+        response[str(shopId)] = getShopResponseById(temp, shopId)
     return response
 
 
@@ -70,8 +70,12 @@ def getTestShops():
     return result
 
 
-def getShopById(temp, id):
+def getShopResponseById(temp, id):
     return temp['shops'][id].toResponse()
+
+
+def getShopById(temp, id):
+    return temp['shops'][id]
 
 
 def addItem(slots, slotNum, item: ItemDef, cost: ItemDef, bought: bool = False):
@@ -177,7 +181,11 @@ def buy(request, temp, gameData):
     shopId = getStatAsInt(request['args'], 'shopId')
     shop = getShopById(temp, shopId)
     slot = getStatAsInt(request['args'], 'slot')
-    print(shop['slots'][str(slot)])
-    reward = shop['slots'][str(slot)]['reward']
+    if shop.slots[slot-1].bought:
+        # error
+        return []
+    shop.slots[slot-1].bought = True
+    shopResponse = shop.toResponse()
+    reward = shopResponse['slots'][str(slot)]['reward']
     addMultToInventory(temp, reward)
     return []
