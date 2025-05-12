@@ -1,5 +1,5 @@
-from typing import NamedTuple, List
-from extractors.lib import getStatAsInt
+from typing import NamedTuple, List, Dict, Any
+from extractors.lib import getStatAsInt, GameData
 from controllers.items import addMultToInventory
 
 
@@ -36,8 +36,8 @@ class ShopSlot:
 
 class Shop:
     def __init__(self, id: int):
-        self.id = id
-        self.slots = []
+        self.id: int = id
+        self.slots: List[ShopSlot] = []
 
     def toResponse(self):
         shop = {}
@@ -51,7 +51,7 @@ class Shop:
         return shop
 
 
-def getShops(request, temp, gameData):
+def getShops(request, temp, gameData: GameData):
     response = {}
     shops = [1, 4, 5, 6, 8, 9]
     for shopId in shops:
@@ -70,15 +70,20 @@ def getTestShops():
     return result
 
 
-def getShopResponseById(temp, id):
+def getShopResponseById(temp, id: int):
     return temp['shops'][id].toResponse()
 
 
-def getShopById(temp, id):
+def getShopById(temp, id: int):
     return temp['shops'][id]
 
 
-def addItem(slots, slotNum, item: ItemDef, cost: ItemDef, bought: bool = False):
+def addItem(
+        slots: Dict[str, Any],
+        slotNum: int,
+        item: ItemDef,
+        cost: ItemDef,
+        bought: bool = False):
     slot = {}
     slots[str(slotNum)] = slot
     slot['id'] = str(slotNum)
@@ -177,7 +182,7 @@ def getFriendshipShop():
     return shop
 
 
-def buy(request, temp, gameData):
+def buy(request, temp, gameData: GameData):
     shopId = getStatAsInt(request['args'], 'shopId')
     shop = getShopById(temp, shopId)
     slot = getStatAsInt(request['args'], 'slot')
