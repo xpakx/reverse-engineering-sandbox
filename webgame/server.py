@@ -7,6 +7,7 @@ from controllers.heroes import getTestHeroes, applyHeroes
 from controllers.shop import getTestShops
 import os
 from pathlib import Path
+import time
 
 hash = '82048d36'
 versioned_root = f'./{hash}'
@@ -127,7 +128,7 @@ if __name__ == '__main__':
         except Exception as e:
             return (500, {'Content-Type': 'text/plain'}, f'Error: {str(e)}')
         resp = {}
-        resp['date'] = 1745545330.034689
+        resp['date'] = int(time.time())
         resp['results'] = responses
 
         response = json.dumps(resp)
