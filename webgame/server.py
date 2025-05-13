@@ -98,11 +98,18 @@ class SimpleHTTPServerWithRoutes(HTTPServer):
         self.routes.append((method, path, handler))
 
 
-if __name__ == '__main__':
-    processor = processors.RequestProcessor()
-    debug = True
+def getDebugFile(debut):
+    if not debug:
+        return None
     with open('responseData/lyria.json', 'r') as file:
         debugFile = file.read()
+    return debugFile
+
+
+if __name__ == '__main__':
+    processor = processors.RequestProcessor()
+    debug = False
+    debugFile = getDebugFile(debug)
 
     def api_handler(request_handler):
         responses = []
