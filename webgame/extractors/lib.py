@@ -891,7 +891,7 @@ def parseSkins(data, heroes: Dict[int, HeroData]) -> List[SkinData]:
 if __name__ == "__main__":
     # compareSpecialQuests('91c10ca0', 'f867035b', 'special')
     # compareEvents('91c10ca0', 'f867035b')
-    input_file = "./f867035b/indices/lib.json"
+    input_file = "./82048d36/indices/lib.json"
 
     with open(input_file, 'r') as f:
         data = json.load(f)

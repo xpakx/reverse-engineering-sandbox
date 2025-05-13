@@ -8,7 +8,7 @@ from controllers.shop import getTestShops
 import os
 from pathlib import Path
 
-hash = 'f867035b'
+hash = '82048d36'
 versioned_root = f'./{hash}'
 logs = False
 gameData = prepareData(hash)
@@ -99,6 +99,9 @@ class SimpleHTTPServerWithRoutes(HTTPServer):
 
 if __name__ == '__main__':
     processor = processors.RequestProcessor()
+    debug = True
+    with open('responseData/lyria.json', 'r') as file:
+        debugFile = file.read()
 
     def api_handler(request_handler):
         responses = []
@@ -109,6 +112,8 @@ if __name__ == '__main__':
 
             body_data = json.loads(raw_body)
             if 'calls' in body_data:
+                if debug and body_data['calls'][0]['name'] == 'registration':
+                    return (200, {'Content-Type': 'application/json'}, debugFile)
                 for call in body_data['calls']:
                     data = processor.process(call, tempState, gameData)
                     if data:

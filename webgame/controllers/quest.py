@@ -10,7 +10,7 @@ rewards = {
             }
         }
 
-currentEvents = [68]
+currentEvents = [68, 581, 580]
 
 
 def farmQuest(request, temp, gameData):
