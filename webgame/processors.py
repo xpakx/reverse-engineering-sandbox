@@ -20,6 +20,8 @@ from controllers.clan import clanPrestige, clanWarInfo, clanWarWarlord
 from controllers.clan import crossClanWarInfo, crossClanSettings
 from controllers.clan import clanActivityRewards, clanPrevData, clan
 from controllers.battlepass import getBattlePass, getSpecialBattlePass
+from controllers.titan import getTitans, getTitanSpirits, getTitanArena
+from controllers.titan import getTitanArenaChest
 
 
 class Processor(NamedTuple):
@@ -77,6 +79,11 @@ class RequestProcessor:
         self.registerProcessor('battlePass_getInfo', getBattlePass)
         self.registerProcessor('battlePass_getSpecial', getSpecialBattlePass)
 
+        self.registerProcessor('titanGetAll', getTitans)
+        self.registerProcessor('titanSpiritGetAll', getTitanSpirits)
+        self.registerProcessor('titanArenaCheckForgotten', getTitanArena)
+        self.registerProcessor('titanArenaGetChestReward', getTitanArenaChest)
+
     def registerProcessor(self, name, processor, ident=None):
         id = ident if ident else name
         self.processors[name] = Processor(process=processor, ident=id)
@@ -105,10 +112,6 @@ class RequestProcessor:
             return friends(request)
         if (call == 'billingGetAll'):
             return billing(request)
-        if (call == 'titanGetAll'):
-            return titans(request)
-        if (call == 'titanSpiritGetAll'):
-            return titanSpirits(request)
         if (call == 'pet_getAll'):
             return pets(request)
         if (call == 'pet_getPotionDailyBuyCount'):
@@ -177,10 +180,6 @@ class RequestProcessor:
             return expeditions(request)
         if (call == "hallOfFameGetTrophies"):
             return hallOfFame(request)
-        if (call == "titanArenaCheckForgotten"):
-            return titanArena(request)
-        if (call == "titanArenaGetChestReward"):
-            return titanArenaChest(request)
         if (call == "bossGetAll"):
             return bosses(request)
         if (call == "pet_getChest"):
@@ -238,14 +237,6 @@ def friends(request):
 
 def billing(request):
     return {"ident":"billingGetAll","result":{"response":{"billings":[],"bundle":[]}}}
-
-
-def titans(request):
-    return {"ident":"titanGetAll","result":{"response":{}}}
-
-
-def titanSpirits(request):
-    return {"ident":"titanSpiritGetAll","result":{"response":{"water":{"id":4001,"level":1,"star":0},"fire":{"id":4002,"level":18,"star":1},"earth":{"id":4003,"level":1,"star":0},"dark":{"id":4004,"level":1,"star":0},"light":{"id":4005,"level":1,"star":0}}}}
 
 
 def pets(request):
@@ -386,14 +377,6 @@ def expeditions(request):
 
 def hallOfFame(request):
     return {"ident":"hallOfFameGetTrophies","result":{"response":[]}}
-
-
-def titanArena(request):
-    return {"ident":"titanArenaCheckForgotten","result":{"response":{"result":False}}}
-
-
-def titanArenaChest(request):
-    return {"ident":"titanArenaGetChestReward","result":{"response":[]}}
 
 
 def bosses(request):
