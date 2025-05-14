@@ -19,6 +19,7 @@ from controllers.clan import clanDomination, clanRaidRating, clanRaid
 from controllers.clan import clanPrestige, clanWarInfo, clanWarWarlord
 from controllers.clan import crossClanWarInfo, crossClanSettings
 from controllers.clan import clanActivityRewards, clanPrevData, clan
+from controllers.battlepass import getBattlePass, getSpecialBattlePass
 
 
 class Processor(NamedTuple):
@@ -73,6 +74,8 @@ class RequestProcessor:
                 'clanGetActivityRewardTable', clanActivityRewards
                 )
         self.registerProcessor('clanGetPrevData', clanPrevData)
+        self.registerProcessor('battlePass_getInfo', getBattlePass)
+        self.registerProcessor('battlePass_getSpecial', getSpecialBattlePass)
 
     def registerProcessor(self, name, processor, ident=None):
         id = ident if ident else name
@@ -86,7 +89,9 @@ class RequestProcessor:
         response['ident'] = processor.ident
         if request['ident'] != 'body':
             response['ident'] = request['ident']
-        response['result'] = {"response": processor.process(request, temp, gameData)}
+        response['result'] = {
+                "response": processor.process(request, temp, gameData)
+                }
         return response
 
     def process(self, request, temp, gameData: GameData):
@@ -214,10 +219,6 @@ class RequestProcessor:
             return newHeroes(request)
         if (call == "mechanicAvailability"):
             return mechanics(request)
-        if (call == "battlePass_getInfo"):
-            return battlePass(request)
-        if (call == "battlePass_getSpecial"):
-            return specialBattlePass(request)
 
         print("Unknown command:", call)
         return None
@@ -481,11 +482,3 @@ def newHeroes(request):
 
 def mechanics(request):
 	return {"ident":"mechanicAvailability","result":{"response":{"titan_arena":True,"titan_arena_def":True,"titan_artifact":True,"titan_artifact_chest":True,"titan_valley":True,"titan_spirits":True,"titan_artifact_merchant":True,"titan_arena_hall_of_fame":True}}}
-
-
-def battlePass(request):
-    return {"ident":"battlePass_getInfo","result":{"response":None}}
-
-
-def specialBattlePass(request):
-	{"ident":"battlePass_getSpecial","result":{"response":None}}
