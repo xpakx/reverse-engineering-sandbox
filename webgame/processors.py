@@ -21,7 +21,8 @@ from controllers.clan import crossClanWarInfo, crossClanSettings
 from controllers.clan import clanActivityRewards, clanPrevData, clan
 from controllers.battlepass import getBattlePass, getSpecialBattlePass
 from controllers.titan import getTitans, getTitanSpirits, getTitanArena
-from controllers.titan import getTitanArenaChest
+from controllers.titan import getTitanArenaChest, getTitanSummoningCircle
+from controllers.titan import getTitanArtifactChest
 
 
 class Processor(NamedTuple):
@@ -83,6 +84,10 @@ class RequestProcessor:
         self.registerProcessor('titanSpiritGetAll', getTitanSpirits)
         self.registerProcessor('titanArenaCheckForgotten', getTitanArena)
         self.registerProcessor('titanArenaGetChestReward', getTitanArenaChest)
+        self.registerProcessor('titanArtifactGetChest', getTitanArtifactChest)
+        self.registerProcessor(
+                'titanGetSummoningCircle', getTitanSummoningCircle
+                )
 
     def registerProcessor(self, name, processor, ident=None):
         id = ident if ident else name
@@ -112,20 +117,26 @@ class RequestProcessor:
             return friends(request)
         if (call == 'billingGetAll'):
             return billing(request)
+
         if (call == 'pet_getAll'):
             return pets(request)
         if (call == 'pet_getPotionDailyBuyCount'):
             return petPotions(request)
+        if (call == "pet_getChest"):
+            return petChest(request)
+
         if (call == 'missionGetAll'):
             return missions(request)
         if (call == 'missionGetReplace'):
             return missionReplace(request)
+
         if (call == 'teamGetAll'):
             return team(request)
         if (call == 'teamGetFavor'):
             return teamFavor(request)
         if (call == 'team_getBanners'):
             return teamBanners(request)
+
         if (call == 'mailGetAll'):
             return mail(request)
         if (call == 'arenaGetAll'):
@@ -154,10 +165,6 @@ class RequestProcessor:
             return billing(request)
         if (call == 'artifactGetChestLevel'):
             return artifactChest(request)
-        if (call == 'titanArtifactGetChest'):
-            return titanArtifactChest(request)
-        if (call == 'titanGetSummoningCircle'):
-            return titanSummoningCircle(request)
         if (call == 'newYearGetInfo'):
             return newYearInfo(request)
         if (call == "campaignStoryGetList"):
@@ -182,8 +189,6 @@ class RequestProcessor:
             return hallOfFame(request)
         if (call == "bossGetAll"):
             return bosses(request)
-        if (call == "pet_getChest"):
-            return petChest(request)
         if (call == "playable_getAvailable"):
             return playable(request)
         if (call == "coopBundle_getInfo"):
@@ -325,14 +330,6 @@ def lastBilling(request):
 
 def artifactChest(request):
     return {"ident":"artifactGetChestLevel","result":{"response":{"level":3,"xp":60,"starmoneySpent":800}}}
-
-
-def titanArtifactChest(request):
-    return {"ident":"titanArtifactGetChest","result":{"response":{"starmoneySpent":4500}}}
-
-
-def titanSummoningCircle(request):
-    return {"ident":"titanGetSummoningCircle","result":{"response":{"starmoneySpent":700}}}
 
 
 def newYearInfo(request):

@@ -16,8 +16,16 @@ def getTitans(request, temp, gameData: GameData):
 def getTitanSpirits(request, temp, gameData: GameData):
     return {
             "water": {"id": 4001, "level": 1, "star": 0},
-            "fire": {"id": 4002, "level": 18, "star": 1},
+            "fire": {"id": 4002, "level": 1, "star": 0},
             "earth": {"id": 4003, "level": 1, "star": 0},
             "dark": {"id": 4004, "level": 1, "star": 0},
             "light": {"id": 4005, "level": 1, "star": 0}
         }
+
+
+def getTitanArtifactChest(request, temp, gameData: GameData):
+    return {"starmoneySpent": 0}
+
+
+def getTitanSummoningCircle(request, temp, gameData: GameData):
+    return {"starmoneySpent": 0}
