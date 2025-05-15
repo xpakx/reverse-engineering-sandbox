@@ -23,6 +23,7 @@ from controllers.battlepass import getBattlePass, getSpecialBattlePass
 from controllers.titan import getTitans, getTitanSpirits, getTitanArena
 from controllers.titan import getTitanArenaChest, getTitanSummoningCircle
 from controllers.titan import getTitanArtifactChest
+from controllers.pet import getPets, getPetChest, getPetPotions
 
 
 class Processor(NamedTuple):
@@ -89,6 +90,10 @@ class RequestProcessor:
                 'titanGetSummoningCircle', getTitanSummoningCircle
                 )
 
+        self.registerProcessor('pet_getAll', getPets)
+        self.registerProcessor('pet_getPotionDailyBuyCount', getPetPotions)
+        self.registerProcessor('pet_getChest', getPetChest)
+
     def registerProcessor(self, name, processor, ident=None):
         id = ident if ident else name
         self.processors[name] = Processor(process=processor, ident=id)
@@ -117,13 +122,6 @@ class RequestProcessor:
             return friends(request)
         if (call == 'billingGetAll'):
             return billing(request)
-
-        if (call == 'pet_getAll'):
-            return pets(request)
-        if (call == 'pet_getPotionDailyBuyCount'):
-            return petPotions(request)
-        if (call == "pet_getChest"):
-            return petChest(request)
 
         if (call == 'missionGetAll'):
             return missions(request)
@@ -242,14 +240,6 @@ def friends(request):
 
 def billing(request):
     return {"ident":"billingGetAll","result":{"response":{"billings":[],"bundle":[]}}}
-
-
-def pets(request):
-    return {"ident":"pet_getAll","result":{"response":[]}}
-
-
-def petPotions(request):
-    return {"ident":"pet_getPotionDailyBuyCount","result":{"response":0}}
 
 
 def missions(request):
@@ -390,10 +380,6 @@ def bosses(request):
             "mayRaid": True
             })
     return result
-
-
-def petChest(request):
-    return {"ident":"pet_getChest","result":{"response":{"starmoneySpent":2000,"dailyPetId":"6006"}}}
 
 
 def playable(request):
