@@ -1,5 +1,6 @@
 from controllers.user import register, getInfo
 from controllers.campaign import startMission, endMission, raidMission
+from controllers.campaign import getMissions, getMissionReplace
 from controllers.heroes import getUserHeroes, upgradeSkill, evolveHero
 from controllers.heroes import addExpToHero, getHeroRatings
 from controllers.items import buyStamina, useStaminaItem, inventory
@@ -96,6 +97,9 @@ class RequestProcessor:
         self.registerProcessor('pet_getChest', getPetChest)
         self.registerProcessor('bossGetAll', getBosses)
 
+        self.registerProcessor('missionGetAll', getMissions)
+        self.registerProcessor('missionGetReplace', getMissionReplace)
+
     def registerProcessor(self, name, processor, ident=None):
         id = ident if ident else name
         self.processors[name] = Processor(process=processor, ident=id)
@@ -129,11 +133,6 @@ class RequestProcessor:
             return friends(request)
         if (call == 'billingGetAll'):
             return billing(request)
-
-        if (call == 'missionGetAll'):
-            return missions(request)
-        if (call == 'missionGetReplace'):
-            return missionReplace(request)
 
         if (call == 'teamGetAll'):
             return team(request)
@@ -245,19 +244,6 @@ def friends(request):
 
 def billing(request):
     return {"ident":"billingGetAll","result":{"response":{"billings":[],"bundle":[]}}}
-
-
-def missions(request):
-    result = {"ident":"missionGetAll","result":{"response":[]}}
-    for i in range(1, 2):
-        result['result']['response'].append(
-                {"id":i,"stars":3,"triesSpent":0,"resetToday":0,"attempts":22,"wins":22}
-            )
-    return result
-
-
-def missionReplace(request):
-    return {"ident":"missionGetReplace","result":{"response":None}}
 
 
 def team(request):

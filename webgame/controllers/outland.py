@@ -2,7 +2,7 @@ from extractors.lib import GameData
 
 
 def getBosses(request, temp, gameData: GameData):
-    response = {}
+    response = []
     for i in range(10, 13):
         response.append({
             "id": i,

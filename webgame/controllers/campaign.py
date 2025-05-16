@@ -131,3 +131,23 @@ def raidMission(request, temp, gameData):
     raidReward['consumable'] = {'9': 2*attempts}
     response['raid'] = raidReward
     return response
+
+
+def getMissions(request, temp, gameData):
+    response = []
+    for i in range(1, 2):
+        response.append(
+                {
+                    "id": i,
+                    "stars": 3,
+                    "triesSpent": 0,
+                    "resetToday": 0,
+                    "attempts": 22,
+                    "wins": 22
+                }
+            )
+    return response
+
+
+def getMissionReplace(request, temp, gameData):
+    return None
