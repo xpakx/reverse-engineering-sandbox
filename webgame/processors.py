@@ -24,6 +24,7 @@ from controllers.titan import getTitans, getTitanSpirits, getTitanArena
 from controllers.titan import getTitanArenaChest, getTitanSummoningCircle
 from controllers.titan import getTitanArtifactChest
 from controllers.pet import getPets, getPetChest, getPetPotions
+from controllers.outland import getBosses
 
 
 class Processor(NamedTuple):
@@ -93,6 +94,7 @@ class RequestProcessor:
         self.registerProcessor('pet_getAll', getPets)
         self.registerProcessor('pet_getPotionDailyBuyCount', getPetPotions)
         self.registerProcessor('pet_getChest', getPetChest)
+        self.registerProcessor('bossGetAll', getBosses)
 
     def registerProcessor(self, name, processor, ident=None):
         id = ident if ident else name
@@ -114,7 +116,12 @@ class RequestProcessor:
     def process(self, request, temp, gameData: GameData):
         call = request['name']
         if call in self.processors:
-            return self.callProcessor(self.processors[call], request, temp, gameData)
+            return self.callProcessor(
+                    self.processors[call],
+                    request,
+                    temp,
+                    gameData
+                )
 
         if (call == 'userMergeGetStatus'):
             return register(request, temp, gameData)
@@ -185,8 +192,6 @@ class RequestProcessor:
             return expeditions(request)
         if (call == "hallOfFameGetTrophies"):
             return hallOfFame(request)
-        if (call == "bossGetAll"):
-            return bosses(request)
         if (call == "playable_getAvailable"):
             return playable(request)
         if (call == "coopBundle_getInfo"):
@@ -364,22 +369,6 @@ def expeditions(request):
 
 def hallOfFame(request):
     return {"ident":"hallOfFameGetTrophies","result":{"response":[]}}
-
-
-def bosses(request):
-    result = {"ident":"bossGetAll","result":{"response":[]}}
-    for i in range(10, 13):
-        result['result']['response'].append({
-            "id": i,
-            "bossLevel": 1,
-            "chestNum": 1,
-            "chestId": 0,
-            "lastChestReward": [],
-            "chests": [],
-            "cost": [],
-            "mayRaid": True
-            })
-    return result
 
 
 def playable(request):
