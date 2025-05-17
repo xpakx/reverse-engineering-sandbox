@@ -183,7 +183,7 @@ class RequestProcessor:
                     gameData
                 )
 
-        print("Unknown command:", call)
+        print(f'WARNING: Unknown command {call}')
         return None
 
 
