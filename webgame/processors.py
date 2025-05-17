@@ -100,6 +100,62 @@ class RequestProcessor:
         self.registerProcessor('missionGetAll', getMissions)
         self.registerProcessor('missionGetReplace', getMissionReplace)
 
+        # TODO: extract
+
+        self.registerProcessor('userMergeGetStatus', register)
+        self.registerProcessor('friendsGetInfo', friends)
+        self.registerProcessor('billingGetAll', billing)
+        self.registerProcessor('subscriptionGetInfo', subscription)
+
+        self.registerProcessor('userGetAvailableAvatars', avatars)
+        self.registerProcessor('userGetAvailableAvatarFrames', avatarFrames)
+        self.registerProcessor('userGetAvailableStickers', stickers)
+
+        self.registerProcessor('teamGetAll', team)
+        self.registerProcessor('teamGetFavor', teamFavor)
+        self.registerProcessor('team_getBanners', teamBanners)
+
+        self.registerProcessor('chatsGetAll', chats)
+        self.registerProcessor('chatGetTalks', chatTalks)
+        self.registerProcessor('chatGetInfo', chatInfo)
+
+        self.registerProcessor('mailGetAll', mail)
+
+        self.registerProcessor('arenaGetAll', arena)
+        self.registerProcessor('socialQuestGetInfo', socialQuest)
+        self.registerProcessor('telegramQuestGetInfo', telegramQuest)
+        self.registerProcessor('settingsGetAll', settings)
+        self.registerProcessor('zeppelinGiftGet', zeppelinGift)
+        self.registerProcessor('tutorialGetInfo', tutorial)
+        self.registerProcessor('splitGetAll', splits)
+        self.registerProcessor('billingGetLast', billing)
+        self.registerProcessor('artifactGetChestLevel', artifactChest)
+        self.registerProcessor('newYearGetInfo', newYearInfo)
+        self.registerProcessor('campaignStoryGetList', campaignStoryList)
+        self.registerProcessor('roleAscension_getAll', roleAscension)
+        self.registerProcessor('heroesMerchantGet', heroesMerchant)
+        self.registerProcessor('freebieHaveGroup', freebie)
+        self.registerProcessor('pirateTreasureIsAvailable', pirateTreasure)
+        self.registerProcessor('expeditionGet', expeditions)
+        self.registerProcessor('hallOfFameGetTrophies', hallOfFame)
+        self.registerProcessor('playable_getAvailable', playable)
+        self.registerProcessor('coopBundle_getInfo', coopBundle)
+        self.registerProcessor('buffs_getInfo', buffs)
+        self.registerProcessor('brawl_getInfo', brawl)
+        self.registerProcessor('brawl_questGetInfo', brawlQuests)
+        self.registerProcessor('epicBrawl_getBriefInfo', epicBrawl)
+        self.registerProcessor('epicBrawl_getWinStreak', epicBrawlStreak)
+        self.registerProcessor('stronghold_getInfo', stronghold)
+        self.registerProcessor('mechanicsBan_getInfo', mechanicsBan)
+        self.registerProcessor('gacha_getInfo', gacha)
+        self.registerProcessor('offerwall_getActive', offerwall)
+        self.registerProcessor('banner_getAll', banners)
+        self.registerProcessor('idle_getAll', idle)
+        self.registerProcessor('workshopBuff_getInfo', workshopBuff)
+        self.registerProcessor('rewardedVideo_boxyGetInfo', videos)
+        self.registerProcessor('newHeroNotification_get', newHeroes)
+        self.registerProcessor('mechanicAvailability', mechanics)
+
     def registerProcessor(self, name, processor, ident=None):
         id = ident if ident else name
         self.processors[name] = Processor(process=processor, ident=id)
@@ -127,299 +183,196 @@ class RequestProcessor:
                     gameData
                 )
 
-        if (call == 'userMergeGetStatus'):
-            return register(request, temp, gameData)
-        if (call == 'friendsGetInfo'):
-            return friends(request)
-        if (call == 'billingGetAll'):
-            return billing(request)
-
-        if (call == 'teamGetAll'):
-            return team(request)
-        if (call == 'teamGetFavor'):
-            return teamFavor(request)
-        if (call == 'team_getBanners'):
-            return teamBanners(request)
-
-        if (call == 'mailGetAll'):
-            return mail(request)
-        if (call == 'arenaGetAll'):
-            return arena(request)
-        if (call == 'socialQuestGetInfo'):
-            return socialQuest(request)
-        if (call == 'telegramQuestGetInfo'):
-            return telegramQuest(request)
-        if (call == 'userGetAvailableAvatars'):
-            return avatars(request)
-        if (call == 'userGetAvailableAvatarFrames'):
-            return avatarFrames(request)
-        if (call == 'userGetAvailableStickers'):
-            return stickers(request)
-        if (call == 'settingsGetAll'):
-            return settings(request)
-        if (call == 'subscriptionGetInfo'):
-            return subscription(request)
-        if (call == 'zeppelinGiftGet'):
-            return zeppelinGift(request)
-        if (call == 'tutorialGetInfo'):
-            return tutorial(request)
-        if (call == 'splitGetAll'):
-            return splits(request)
-        if (call == 'billingGetLast'):
-            return billing(request)
-        if (call == 'artifactGetChestLevel'):
-            return artifactChest(request)
-        if (call == 'newYearGetInfo'):
-            return newYearInfo(request)
-        if (call == "campaignStoryGetList"):
-            return campaignStoryList(request)
-        if (call == "roleAscension_getAll"):
-            return roleAscension(request)
-        if (call == "chatsGetAll"):
-            return chats(request)
-        if (call == "chatGetTalks"):
-            return chatTalks(request)
-        if (call == "chatGetInfo"):
-            return chatInfo(request)
-        if (call == "heroesMerchantGet"):
-            return heroesMerchant(request)
-        if (call == "freebieHaveGroup"):
-            return freebie(request)
-        if (call == "pirateTreasureIsAvailable"):
-            return pirateTreasure(request)
-        if (call == "expeditionGet"):
-            return expeditions(request)
-        if (call == "hallOfFameGetTrophies"):
-            return hallOfFame(request)
-        if (call == "playable_getAvailable"):
-            return playable(request)
-        if (call == "coopBundle_getInfo"):
-            return coopBundle(request)
-        if (call == "buffs_getInfo"):
-            return buffs(request)
-        if (call == "brawl_getInfo"):
-            return brawl(request)
-        if (call == "brawl_questGetInfo"):
-            return brawlQuests(request)
-        if (call == "epicBrawl_getBriefInfo"):
-            return epicBrawl(request)
-        if (call == "epicBrawl_getWinStreak"):
-            return epicBrawlStreak(request)
-        if (call == "stronghold_getInfo"):
-            return stronghold(request)
-        if (call == "mechanicsBan_getInfo"):
-            return mechanicsBan(request)
-        if (call == "gacha_getInfo"):
-            return gacha(request)
-        if (call == "offerwall_getActive"):
-            return offerwall(request)
-        if (call == "banner_getAll"):
-            return banners(request)
-        if (call == "idle_getAll"):
-            return idle(request)
-        if (call == "workshopBuff_getInfo"):
-            return workshopBuff(request)
-        if (call == "rewardedVideo_boxyGetInfo"):
-            return videos(request)
-        if (call == "newHeroNotification_get"):
-            return newHeroes(request)
-        if (call == "mechanicAvailability"):
-            return mechanics(request)
-
         print("Unknown command:", call)
         return None
 
 
-def friends(request):
+def friends(request, temp, gameData: GameData):
     return {
-            "ident": "friendsGetInfo",
-            "result": {
-                "response": {
-                    "accounts": [],
-                    "users": []
-                    }
-                }
+                "accounts": [],
+                "users": []
             }
 
 
-def billing(request):
-    return {"ident":"billingGetAll","result":{"response":{"billings":[],"bundle":[]}}}
+def billing(request, temp, gameData: GameData):
+    return {"billings":[],"bundle":[]}
 
 
-def team(request):
-    return {"ident":"teamGetAll","result":{"response":{"mission":[],"arena":[],"tower":[],"boss_11":[],"boss_12":[],"boss_10":[],"dungeon_water":[],"dungeon_hero":[],"dungeon_neutral":[],"dungeon_fire":[],"brawl_titan":[],"clanDefence_heroes":[],"clanDefence_titans":[],"adventure_hero":[],"dungeon_earth":[],"clan_pvp_hero":[],"clan_pvp_titan":[],"crossClanDefence_heroes":[[],[],[]],"crossClanDefence_titans":[[],[]],"titan_arena_def":[],"titan_arena":[],"clan_global_pvp_titan":[],"clan_global_pvp":[],"clanRaid_nodes":[[],[]],"grand":[[],[],[]]}}}
+def team(request, temp, gameData: GameData):
+    return {"mission":[],"arena":[],"tower":[],"boss_11":[],"boss_12":[],"boss_10":[],"dungeon_water":[],"dungeon_hero":[],"dungeon_neutral":[],"dungeon_fire":[],"brawl_titan":[],"clanDefence_heroes":[],"clanDefence_titans":[],"adventure_hero":[],"dungeon_earth":[],"clan_pvp_hero":[],"clan_pvp_titan":[],"crossClanDefence_heroes":[[],[],[]],"crossClanDefence_titans":[[],[]],"titan_arena_def":[],"titan_arena":[],"clan_global_pvp_titan":[],"clan_global_pvp":[],"clanRaid_nodes":[[],[]],"grand":[[],[],[]]}
 
 
-def teamFavor(request):
-    return {"ident":"teamGetFavor","result":{"response":{"__legacy":[],"mission":[],"arena_def":[],"arena":[],"tower":[],"boss_11":[],"boss_12":[],"boss_10":[],"dungeon_water":None,"dungeon_hero":[],"dungeon_neutral":None,"dungeon_fire":None,"brawl_titan":[],"clanDefence_heroes":[],"clanDefence_titans":[],"adventure_hero":[],"dungeon_earth":None,"clan_pvp_hero":[],"clan_pvp_titan":None,"crossClanDefence_heroes":[],"crossClanDefence_titans":[],"grand_def":[],"titan_arena_def":None,"titan_arena":None,"clan_global_pvp_titan":None,"clan_global_pvp":[],"clanRaid_nodes":[],"grand":[]}}}
+def teamFavor(request, temp, gameData: GameData):
+    return {"__legacy":[],"mission":[],"arena_def":[],"arena":[],"tower":[],"boss_11":[],"boss_12":[],"boss_10":[],"dungeon_water":None,"dungeon_hero":[],"dungeon_neutral":None,"dungeon_fire":None,"brawl_titan":[],"clanDefence_heroes":[],"clanDefence_titans":[],"adventure_hero":[],"dungeon_earth":None,"clan_pvp_hero":[],"clan_pvp_titan":None,"crossClanDefence_heroes":[],"crossClanDefence_titans":[],"grand_def":[],"titan_arena_def":None,"titan_arena":None,"clan_global_pvp_titan":None,"clan_global_pvp":[],"clanRaid_nodes":[],"grand":[]}
 
 
-def teamBanners(request):
-    return {"ident":"team_getBanners","result":{"response":{"mission":None,"arena_def":None,"arena":None,"tower":None,"boss_11":None,"boss_12":None,"boss_10":None,"dungeon_water":None,"dungeon_hero":None,"dungeon_neutral":None,"dungeon_fire":None,"clanDefence_heroes":None,"clanDefence_titans":None,"adventure_hero":None,"dungeon_earth":None,"clan_pvp_hero":None,"clan_pvp_titan":None,"crossClanDefence_heroes":[None,None,None],"crossClanDefence_titans":[None,None,None],"grand_def":[None,None,None],"titan_arena":None,"clan_global_pvp_titan":None,"clan_global_pvp":None,"grand":[None,None,None]}}}
+def teamBanners(request, temp, gameData: GameData):
+    return {"mission":None,"arena_def":None,"arena":None,"tower":None,"boss_11":None,"boss_12":None,"boss_10":None,"dungeon_water":None,"dungeon_hero":None,"dungeon_neutral":None,"dungeon_fire":None,"clanDefence_heroes":None,"clanDefence_titans":None,"adventure_hero":None,"dungeon_earth":None,"clan_pvp_hero":None,"clan_pvp_titan":None,"crossClanDefence_heroes":[None,None,None],"crossClanDefence_titans":[None,None,None],"grand_def":[None,None,None],"titan_arena":None,"clan_global_pvp_titan":None,"clan_global_pvp":None,"grand":[None,None,None]}
 
-def mail(request):
-    return {"ident":"mailGetAll","result":{"response":{"letters":[],"users":[]}}}
 
+def mail(request, temp, gameData: GameData):
+    return {"letters":[],"users":[]}
 
-def arena(request):
-    return {"ident":"arenaGetAll","result":{"response":{"userId":"1","arenaPlace":"257","arenaHeroes":[],"grandPlace":"579","grandHeroes":[[],[],[]],"grandCoin":31.265900000000002,"grandCoinTime":1745545329,"arenaPower":"84873","grandPower":"122338","rewardFlag":"0","battles":45,"wins":33,"rewardTime":1745604000}}}
 
+def arena(request, temp, gameData: GameData):
+    return {"userId":"1","arenaPlace":"257","arenaHeroes":[],"grandPlace":"579","grandHeroes":[[],[],[]],"grandCoin":31.265900000000002,"grandCoinTime":1745545329,"arenaPower":"84873","grandPower":"122338","rewardFlag":"0","battles":45,"wins":33,"rewardTime":1745604000}
 
-def socialQuest(request):
-    return {"ident":"socialQuestGetInfo","result":{"response":{"farmed":True}}}
 
+def socialQuest(request, temp, gameData: GameData):
+    return {"farmed":True}
 
-def telegramQuest(request):
-    return {"ident":"telegramQuestGetInfo","result":{"response":{"twitter":"1","youtube":"1","push":True,"discord":True,"favorites":"1","emailConfirmed":True,"post":"","group":"","notifications":True}}}
 
+def telegramQuest(request, temp, gameData: GameData):
+    return {"twitter":"1","youtube":"1","push":True,"discord":True,"favorites":"1","emailConfirmed":True,"post":"","group":"","notifications":True}
 
-def avatars(request):
-    return {"ident":"userGetAvailableAvatars","result":{"response":[1325, 92, 93]}}
 
+def avatars(request, temp, gameData: GameData):
+    return [1325, 92, 93]
 
-def avatarFrames(request):
-    return {"ident":"userGetAvailableAvatarFrames","result":{"response":{"frames":[],"progress":{"41":{"frameId":41,"current":0,"max":1}}}}}
 
+def avatarFrames(request, temp, gameData: GameData):
+    return {"frames":[],"progress":{"41":{"frameId":41,"current":0,"max":1}}}
 
-def stickers(request):
-    return {"ident":"userGetAvailableStickers","result":{"response":[2]}}
 
+def stickers(request, temp, gameData: GameData):
+    return [2]
 
-def settings(request):
-    return {"ident":"settingsGetAll","result":{"response":{"cookie":"nocookie","currency":"PLN","sounds":False,"music":False,"theme":True,"heroesBrowsedStatusMask":"qgNJACgAAAo","autoBattleToggle":True,"inventoryLootBoxBrowsedCount":23,"pveSpeedUpToggleIndex":1,"enableUltCinematic":False,"showHeroGachaWishlistTutorial":False,"playThemeMusicByHero":"AAA","titansBrowsedStatusMask":"AwBQwAMH","towerSpeedUpToggleIndex":0,"petsBrowsedStatusMask":"xQI","titanDungeonSpeedUpToggleIndex":1,"adventureChatBrowsingTime":1745284165,"lastBrowsedShopByGoldClanRaidStartTime":1745200800,"lastBrowsedShopByCoinsClanRaidStartTime":1745200800}}}
 
+def settings(request, temp, gameData: GameData):
+    return {"cookie":"nocookie","currency":"PLN","sounds":False,"music":False,"theme":True,"heroesBrowsedStatusMask":"qgNJACgAAAo","autoBattleToggle":True,"inventoryLootBoxBrowsedCount":23,"pveSpeedUpToggleIndex":1,"enableUltCinematic":False,"showHeroGachaWishlistTutorial":False,"playThemeMusicByHero":"AAA","titansBrowsedStatusMask":"AwBQwAMH","towerSpeedUpToggleIndex":0,"petsBrowsedStatusMask":"xQI","titanDungeonSpeedUpToggleIndex":1,"adventureChatBrowsingTime":1745284165,"lastBrowsedShopByGoldClanRaidStartTime":1745200800,"lastBrowsedShopByCoinsClanRaidStartTime":1745200800}
 
-def subscription(request):
-    return {"ident":"subscriptionGetInfo","result":{"response":{"subscription":None,"dailyReward":{"availableFarm":False,"dailyReward":{"coin":{"14":"400"}},"notFarmedDays":0,"currentReward":None}}}}
 
+def subscription(request, temp, gameData: GameData):
+    return {"subscription":None,"dailyReward":{"availableFarm":False,"dailyReward":{"coin":{"14":"400"}},"notFarmedDays":0,"currentReward":None}}
 
-def zeppelinGift(request):
-    return {"ident":"zeppelinGiftGet","result":{"response":{"available":False,"reward":{"consumable":{"45":1}}}}}
 
+def zeppelinGift(request, temp, gameData: GameData):
+    return {"available":False,"reward":{"consumable":{"45":1}}}
 
-def tutorial(request):
-    return {"ident":"tutorialGetInfo","result":{"response":{"chains":{"1":9999,"3":9999,"18":9999,"25":1,"2":9999,"4":9999,"5":9999,"6":9999,"7":9999,"8":9999,"9":9999,"10":0,"11":9999,"13":9999,"14":9999,"15":0,"16":0,"17":9999,"26":0,"29":0,"27":9999,"28":9999,"31":0,"33":0},"params":{"heroIcon1":"hero2","heroIcon2":"hero20","heroName1":"LIB_HERO_NAME_2","heroName2":"LIB_HERO_NAME_20","tutorialBattleEndTime":"5.46"}}}}
 
+def tutorial(request, temp, gameData: GameData):
+    return {"chains":{"1":9999,"3":9999,"18":9999,"25":1,"2":9999,"4":9999,"5":9999,"6":9999,"7":9999,"8":9999,"9":9999,"10":0,"11":9999,"13":9999,"14":9999,"15":0,"16":0,"17":9999,"26":0,"29":0,"27":9999,"28":9999,"31":0,"33":0},"params":{"heroIcon1":"hero2","heroIcon2":"hero20","heroName1":"LIB_HERO_NAME_2","heroName2":"LIB_HERO_NAME_20","tutorialBattleEndTime":"5.46"}}
 
-def splits(request):
-    return {"ident":"splitGetAll","result":{"response":[{"rule":{"stash":{"flushIntervalStart":1000,"flushIntervalDefault":5000}}},None]}}
 
+def splits(request, temp, gameData: GameData):
+    return [{"rule":{"stash":{"flushIntervalStart":1000,"flushIntervalDefault":5000}}},None]
 
-def lastBilling(request):
-    return {"ident":"billingGetLast","result":{"response":None}}
 
+def lastBilling(request, temp, gameData: GameData):
+    return None
 
-def artifactChest(request):
-    return {"ident":"artifactGetChestLevel","result":{"response":{"level":3,"xp":60,"starmoneySpent":800}}}
 
+def artifactChest(request, temp, gameData: GameData):
+    return {"level":3,"xp":60,"starmoneySpent":800}
 
-def newYearInfo(request):
-    return {"ident":"newYearGetInfo","result":{"response":{"treeLevel":0,"treeExpPercent":0,"giftsToOpen":0,"eventHero":64,"dayHero":51}}}
 
+def newYearInfo(request, temp, gameData: GameData):
+    return {"treeLevel":0,"treeExpPercent":0,"giftsToOpen":0,"eventHero":64,"dayHero":51}
 
-def campaignStoryList(request):
-    return {"ident":"campaignStoryGetList","result":{"response":[]}}
 
+def campaignStoryList(request, temp, gameData: GameData):
+    return []
 
-def roleAscension(request):
-    return {"ident":"roleAscension_getAll","result":{"response":{"3":{"id":3,"level":14}}}}
 
+def roleAscension(request, temp, gameData: GameData):
+    return {"3":{"id":3,"level":14}}
 
-def chats(request):
-    return {"ident":"chatsGetAll","result":{"response":{"clan":{"chat":[],"users":{},"clans":[]},"xgvg":{"chat":[],"users":{},"clans":[]}}}},
 
+def chats(request, temp, gameData: GameData):
+    return {"clan":{"chat":[],"users":{},"clans":[]},"xgvg":{"chat":[],"users":{},"clans":[]}}
 
-def chatTalks(request):
-    return {"ident":"chatGetTalks","result":{"response":{"talks":[],"users":{}}}},
 
+def chatTalks(request, temp, gameData: GameData):
+    return {"talks":[],"users":{}}
 
-def chatInfo(request):
-    return {"ident":"chatGetInfo","result":{"response":{"banUntil":"0","subscribeServer":"0","lastMessageTime":"1745049961","blackList":[],"settings":{"chatSelectedTab":"CLAN_TAB","lastReadMessageId":90058375,"lastReadClanNewsHash":"f7086b389381c5b3f5d3cb07a4671ee7","lastReadTrainingMessageId":89994080,"lastReadXGVGMessageId":90050415}}}}
 
+def chatInfo(request, temp, gameData: GameData):
+    return {"banUntil":"0","subscribeServer":"0","lastMessageTime":"1745049961","blackList":[],"settings":{"chatSelectedTab":"CLAN_TAB","lastReadMessageId":90058375,"lastReadClanNewsHash":"f7086b389381c5b3f5d3cb07a4671ee7","lastReadTrainingMessageId":89994080,"lastReadXGVGMessageId":90050415}}
 
-def heroesMerchant(request):
-    return {"ident":"heroesMerchantGet","result":{"response":None}}
 
+def heroesMerchant(request, temp, gameData: GameData):
+    return None
 
-def freebie(request):
-    return {"ident":"freebieHaveGroup","result":{"response":True}}
 
+def freebie(request, temp, gameData: GameData):
+    return True
 
-def pirateTreasure(request):
-    return {"ident":"pirateTreasureIsAvailable","result":{"response":False}}
 
+def pirateTreasure(request, temp, gameData: GameData):
+    return False
 
-def expeditions(request):
-    return {"ident":"expeditionGet","result":{"response":[{"id":0,"slotId":1,"status":3,"heroes":[],"endTime":0,"duration":900,"day":"20250424","reward":{"consumable":{"44":1,"42":3,"41":2}},"power":50200,"rarity":4,"storyId":6,"attemptsLeft":0}]}}
 
+def expeditions(request, temp, gameData: GameData):
+    return [{"id":0,"slotId":1,"status":3,"heroes":[],"endTime":0,"duration":900,"day":"20250424","reward":{"consumable":{"44":1,"42":3,"41":2}},"power":50200,"rarity":4,"storyId":6,"attemptsLeft":0}]
 
-def hallOfFame(request):
-    return {"ident":"hallOfFameGetTrophies","result":{"response":[]}}
 
+def hallOfFame(request, temp, gameData: GameData):
+    return []
 
-def playable(request):
-    return {"ident":"playable_getAvailable","result":{"response":[25,48,49,50]}}
 
+def playable(request, temp, gameData: GameData):
+    return [25,48,49,50]
 
-def coopBundle(request):
-    return {"ident":"coopBundle_getInfo","result":{"response":[]}}
 
+def coopBundle(request, temp, gameData: GameData):
+    return []
 
-def buffs(request):
-    return {"ident":"buffs_getInfo","result":{"response":[]}}
 
+def buffs(request, temp, gameData: GameData):
+    return []
 
-def brawl(request):
-    return {"ident":"brawl_getInfo","result":{"response":None}}
 
+def brawl(request, temp, gameData: GameData):
+    return None
 
-def brawlQuests(request):
-    return {"ident":"brawl_questGetInfo","result":{"response":None}}
 
+def brawlQuests(request, temp, gameData: GameData):
+    return None
 
-def epicBrawl(request):
-    return {"ident":"epicBrawl_getBriefInfo","result":{"response":None}}
 
+def epicBrawl(request, temp, gameData: GameData):
+    return None
 
-def epicBrawlStreak(request):
-    return {"ident":"epicBrawl_getWinStreak","result":{"response":None}}
 
+def epicBrawlStreak(request, temp, gameData: GameData):
+    return None
 
-def stronghold(request):
-    return {"ident":"stronghold_getInfo","result":{"response":{"regions":{"1":{"status":"active","activeMission":1},"2":{"status":"locked","activeMission":-1},"3":{"status":"locked","activeMission":-1},"4":{"status":"locked","activeMission":-1},"5":{"status":"locked","activeMission":-1}}}}}
 
+def stronghold(request, temp, gameData: GameData):
+    return {"regions":{"1":{"status":"active","activeMission":1},"2":{"status":"locked","activeMission":-1},"3":{"status":"locked","activeMission":-1},"4":{"status":"locked","activeMission":-1},"5":{"status":"locked","activeMission":-1}}}
 
-def mechanicsBan(request):
-    return {"ident":"mechanicsBan_getInfo","result":{"response":[]}}
 
+def mechanicsBan(request, temp, gameData: GameData):
+    return []
 
-def gacha(request):
-    return {"ident":"gacha_getInfo","result":{"response":{"nextRefill":1745550000,"wishlist":[40,40,40],"onceRolled":{"super":[4002,4005]},"openings":{"count":31,"last":25,"next":35,"reward":{"consumable":{"11":"30"},"gold":350000}},"guaranteedOfferCount":[]}}}
 
+def gacha(request, temp, gameData: GameData):
+    return {"nextRefill":1745550000,"wishlist":[40,40,40],"onceRolled":{"super":[4002,4005]},"openings":{"count":31,"last":25,"next":35,"reward":{"consumable":{"11":"30"},"gold":350000}},"guaranteedOfferCount":[]}
 
-def offerwall(request):
-    return {"ident":"offerwall_getActive","result":{"response":None}}
 
+def offerwall(request, temp, gameData: GameData):
+    return None
 
-def banners(request):
-    return {"ident":"banner_getAll","result":{"response":[]}}
 
+def banners(request, temp, gameData: GameData):
+    return []
 
-def idle(request):
-    return {"ident":"idle_getAll","result":{"response":[]}}
 
+def idle(request, temp, gameData: GameData):
+    return []
 
-def workshopBuff(request):
-	return {"ident":"workshopBuff_getInfo","result":{"response":None}}
 
+def workshopBuff(request, temp, gameData: GameData):
+    return None
 
-def videos(request):
-	return {"ident":"rewardedVideo_boxyGetInfo","result":{"response":None}}
 
+def videos(request, temp, gameData: GameData):
+    return None
 
-def newHeroes(request):
-	{"ident":"newHeroNotification_get","result":{"response":None}}
 
+def newHeroes(request, temp, gameData: GameData):
+    return None
 
-def mechanics(request):
-	return {"ident":"mechanicAvailability","result":{"response":{"titan_arena":True,"titan_arena_def":True,"titan_artifact":True,"titan_artifact_chest":True,"titan_valley":True,"titan_spirits":True,"titan_artifact_merchant":True,"titan_arena_hall_of_fame":True}}}
+
+def mechanics(request, temp, gameData: GameData):
+    return {"titan_arena":True,"titan_arena_def":True,"titan_artifact":True,"titan_artifact_chest":True,"titan_valley":True,"titan_spirits":True,"titan_artifact_merchant":True,"titan_arena_hall_of_fame":True}
