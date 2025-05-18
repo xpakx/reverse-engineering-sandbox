@@ -66,7 +66,8 @@ class CustomHandler(SimpleHTTPRequestHandler):
             if '.js' in rel_path and '.json' not in rel_path:
                 rel_path = rel_path.replace('assets/', 'akamaihd/')
             else:
-                versioned_path = os.path.join(os.getcwd(), versioned_root, rel_path)
+                versioned_path = os.path.join(
+                        os.getcwd(), versioned_root, rel_path)
                 versioned_asset = Path(versioned_path)
                 if versioned_asset.exists():
                     return versioned_path
@@ -117,13 +118,18 @@ if __name__ == '__main__':
         responses = []
 
         try:
-            content_length = int(request_handler.headers.get('Content-Length', 0))
+            content_length = request_handler.headers.get('Content-Length', 0)
+            content_length = int(content_length)
             raw_body = request_handler.rfile.read(content_length)
 
             body_data = json.loads(raw_body)
             if 'calls' in body_data:
                 if debug and body_data['calls'][0]['name'] == 'registration':
-                    return (200, {'Content-Type': 'application/json'}, debugFile)
+                    return (
+                            200,
+                            {'Content-Type': 'application/json'},
+                            debugFile
+                        )
                 for call in body_data['calls']:
                     data = processor.process(call, tempState, gameData)
                     if data:
@@ -133,9 +139,17 @@ if __name__ == '__main__':
                 if data:
                     responses.append(data)
         except ValueError:
-            return (400, {'Content-Type': 'text/plain'}, 'Invalid Content-Length')
+            return (
+                    400,
+                    {'Content-Type': 'text/plain'},
+                    'Invalid Content-Length'
+                )
         except Exception as e:
-            return (500, {'Content-Type': 'text/plain'}, f'Error: {str(e)}')
+            return (
+                    500,
+                    {'Content-Type': 'text/plain'},
+                    f'Error: {str(e)}'
+                )
         resp = {}
         resp['date'] = int(time.time())
         resp['results'] = responses
