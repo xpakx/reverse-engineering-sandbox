@@ -1,6 +1,7 @@
 from typing import NamedTuple, List, Dict, Any
 from extractors.lib import getStatAsInt, GameData
 from controllers.items import addMultToInventory
+from datetime import datetime, timedelta
 
 
 class ItemDef(NamedTuple):
@@ -38,13 +39,24 @@ class Shop:
     def __init__(self, id: int):
         self.id: int = id
         self.slots: List[ShopSlot] = []
+        self.updateRefreshTime()
+
+    def updateRefreshTime(self):
+        today = datetime.now()
+        todayNoon = datetime(today.year, today.month, today.day, 12, 0, 0)
+        if today >= todayNoon:
+            noonTime = todayNoon + timedelta(days=1)
+        else:
+            noonTime = todayNoon
+        self.refreshAt = int(noonTime.timestamp())
 
     def toResponse(self):
         shop = {}
         shop['id'] = self.id
         shop['availableUntil'] = 0
-        shop['refreshTime'] = 1745564400
+        shop['refreshTime'] = self.refreshAt
         shop['slots'] = {}
+        shop['level'] = 0
         for i in range(len(self.slots)):
             slot = self.slots[i]
             addItem(shop['slots'], i, slot.item, slot.cost, slot.bought)
@@ -86,10 +98,12 @@ def addItem(
         bought: bool = False):
     slot = {}
     slots[str(slotNum)] = slot
-    slot['id'] = str(slotNum)
+    slot['id'] = slotNum
     slot['reward'] = item.toResponse()
     slot['bought'] = 1 if bought else 0
     slot['cost'] = cost.toResponse()
+    slot['pinned'] = False
+    slot['amountAvailable'] = None
 
 
 def getTownShop():
