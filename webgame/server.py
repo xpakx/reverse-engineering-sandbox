@@ -2,9 +2,7 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 import json
 import processors
 from extractors.lib import prepareData
-from controllers.items import getTestInventory
-from controllers.heroes import getTestHeroes, applyHeroes
-from controllers.shop import getTestShops
+import repo.userdata as userData
 import os
 from pathlib import Path
 import time
@@ -15,11 +13,6 @@ hash = '82048d36'
 versioned_root = f'./{hash}'
 logs = False
 gameData = prepareData(hash)
-tempState = {
-        'inventory': getTestInventory(),
-        'heroes': applyHeroes(getTestHeroes(), gameData),
-        'shops': getTestShops(),
-        }
 
 
 class CustomHandler(SimpleHTTPRequestHandler):
@@ -121,6 +114,12 @@ if __name__ == '__main__':
             content_length = request_handler.headers.get('Content-Length', 0)
             content_length = int(content_length)
             raw_body = request_handler.rfile.read(content_length)
+
+            tempState = {
+                'inventory': userData.getInventoryByUserId(0),
+                'heroes': userData.getHeroesByUserId(0, gameData),
+                'shops': userData.getShopsByUserId(0),
+            }
 
             body_data = json.loads(raw_body)
             if 'calls' in body_data:
