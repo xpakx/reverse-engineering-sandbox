@@ -4,14 +4,30 @@ from controllers.heroes import getTestHeroes, applyHeroes
 from controllers.shop import getTestShops, Shop
 from typing import Dict, Any, List
 
+inventoryById = {}
+heroesById = {}
+shopsById = {}
+
 
 def getInventoryByUserId(id: int) -> Dict[str, Any]:
-    return getTestInventory()
+    if id in inventoryById:
+        return inventoryById[id]
+    newInventory = getTestInventory()
+    inventoryById[id] = newInventory
+    return newInventory
 
 
 def getHeroesByUserId(id: int, gameData) -> List[Hero]:
-    return applyHeroes(getTestHeroes(), gameData)
+    if id in heroesById:
+        return heroesById[id]
+    newHeroes = applyHeroes(getTestHeroes(), gameData)
+    heroesById[id] = newHeroes
+    return newHeroes
 
 
 def getShopsByUserId(id: int) -> List[Shop]:
-    return getTestShops()
+    if id in shopsById:
+        return shopsById[id]
+    newShops = getTestShops()
+    shopsById[id] = newShops
+    return newShops
