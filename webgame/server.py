@@ -2,7 +2,7 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 import json
 import processors
 from extractors.lib import prepareData
-import repo.userdata as userData
+from repo.userdata import GameRepository
 import os
 from pathlib import Path
 import time
@@ -107,6 +107,8 @@ if __name__ == '__main__':
     debug = False
     debugFile = getDebugFile(debug)
 
+    gameRepo = GameRepository(gameData)
+
     def api_handler(request_handler):
         responses = []
 
@@ -116,9 +118,9 @@ if __name__ == '__main__':
             raw_body = request_handler.rfile.read(content_length)
 
             tempState = {
-                'inventory': userData.getInventoryByUserId(0),
-                'heroes': userData.getHeroesByUserId(0, gameData),
-                'shops': userData.getShopsByUserId(0),
+                'inventory': gameRepo.getInventoryByUserId(0),
+                'heroes': gameRepo.getHeroesByUserId(0),
+                'shops': gameRepo.getShopsByUserId(0),
             }
 
             body_data = json.loads(raw_body)
