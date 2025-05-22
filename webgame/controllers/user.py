@@ -1,7 +1,9 @@
+from repo.userdata import GameRepository
+
 cookies = {'': '1'}
 
 
-def register(request, temp, gameData):
+def register(request, repo: GameRepository, gameData):
     print(request)
     if 'name' not in request:
         return None
@@ -15,14 +17,13 @@ def register(request, temp, gameData):
     response = {}
     response['isNewUser'] = True if userId else False
     response['userId'] = userId
-    temp['userId'] = userId
+    repo.tempUser = userId
     return response
 
 
-def getInfo(request, temp, gameData):
+def getInfo(request, repo: GameRepository, gameData):
     print(request)
-    print(temp)
-    if 'userId' not in temp:
+    if not repo.tempUser:
         return {}
 
     profile = {

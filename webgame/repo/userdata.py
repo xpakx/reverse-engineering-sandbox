@@ -1,7 +1,6 @@
 from extractors.lib import Hero
-from controllers.items import getTestInventory
-from controllers.heroes import getTestHeroes, applyHeroes
-from controllers.shop import getTestShops, Shop
+from repo.hero import getTestHeroes, applyHeroes
+from repo.shop import getTestShops, Shop
 from typing import Dict, Any, List
 
 
@@ -11,6 +10,7 @@ class GameRepository:
         self.inventoryById = {}
         self.heroesById = {}
         self.shopsById = {}
+        self.tempUser = None
 
     def getInventoryByUserId(self, id: int) -> Dict[str, Any]:
         if id in self.inventoryById:
@@ -32,3 +32,30 @@ class GameRepository:
         newShops = getTestShops()
         self.shopsById[id] = newShops
         return newShops
+
+
+it = {
+        'bottledEnergy': '17',
+        'bigExp': '11',
+    }
+
+
+def getTestInventory():
+    return {
+            "consumable": {
+                it['bigExp']: 20,
+                it['bottledEnergy']: 30
+            },
+            "gear": {},
+            "fragmentHero": {},
+            "scroll": {},
+            "coin": {},
+            "fragmentGear": {},
+            "fragmentScroll": {},
+            "fragmentArtifact": {},
+            "fragmentTitan": {},
+            "fragmentTitanArtifact": {},
+            "ascensionGear": {},
+            "fragmentPet": {},
+            "petGear": {}
+        }

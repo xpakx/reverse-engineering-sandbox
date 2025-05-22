@@ -26,6 +26,7 @@ from controllers.titan import getTitanArenaChest, getTitanSummoningCircle
 from controllers.titan import getTitanArtifactChest
 from controllers.pet import getPets, getPetChest, getPetPotions
 from controllers.outland import getBosses
+from repo.userdata import GameRepository
 
 
 class Processor(NamedTuple):
@@ -163,23 +164,24 @@ class RequestProcessor:
     def registerBodyProcessor(self, name, processor):
         self.registerProcessor(name, processor, 'body')
 
-    def callProcessor(self, processor, request, temp, gameData: GameData):
+    def callProcessor(self, processor, request, repo: GameRepository, gameData: GameData):
         response = {}
         response['ident'] = processor.ident
         if request['ident'] != 'body':
             response['ident'] = request['ident']
         response['result'] = {
-                "response": processor.process(request, temp, gameData)
+                "response": processor.process(request, repo, gameData)
                 }
         return response
 
-    def process(self, request, temp, gameData: GameData):
+    def process(self, request, repo: GameRepository, gameData: GameData):
         call = request['name']
+        print(f'Call: {call}')
         if call in self.processors:
             return self.callProcessor(
                     self.processors[call],
                     request,
-                    temp,
+                    repo,
                     gameData
                 )
 

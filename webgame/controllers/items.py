@@ -1,51 +1,25 @@
 from extractors.lib import getStatAsInt
+from repo.userdata import GameRepository
 
 
-def buyStamina(request, temp, gameData):
+def buyStamina(request, repo: GameRepository, gameData):
     print(request)
     return {'stamina': 120}
 
 
-def useStaminaItem(request, temp, gameData):
+def useStaminaItem(request, repo: GameRepository, gameData):
     print(request)
     itemId = getStatAsInt(request['args'], 'libId')
     amount = getStatAsInt(request['args'], 'amount')
     return []
 
 
-def inventory(request, temp, gameData):
-    return temp['inventory']
+def inventory(request, repo: GameRepository, gameData):
+    return repo.getInventoryByUserId(1)
 
 
-it = {
-        'bottledEnergy': '17',
-        'bigExp': '11',
-    }
-
-
-def getTestInventory():
-    return {
-            "consumable": {
-                it['bigExp']: 20,
-                it['bottledEnergy']: 30
-            },
-            "gear": {},
-            "fragmentHero": {},
-            "scroll": {},
-            "coin": {},
-            "fragmentGear": {},
-            "fragmentScroll": {},
-            "fragmentArtifact": {},
-            "fragmentTitan": {},
-            "fragmentTitanArtifact": {},
-            "ascensionGear": {},
-            "fragmentPet": {},
-            "petGear": {}
-        }
-
-
-def addToInventory(temp, category: str, id: int, amount: int):
-    inventory = temp['inventory']
+def addToInventory(repo: GameRepository, category: str, id: int, amount: int):
+    inventory = repo.getInventoryByUserId(1)
     if category not in inventory:
         inventory[category] = {}
 
@@ -57,11 +31,11 @@ def addToInventory(temp, category: str, id: int, amount: int):
     cat[strId] = cat[strId] + amount
 
 
-def addMultToInventory(temp, reward):
+def addMultToInventory(repo: GameRepository, reward):
     for category in reward:
         items = reward[category]
         if isinstance(items, dict):
             for item in items:
                 id = int(item)
                 amount = int(items[item])
-                addToInventory(temp, category, id, amount)
+                addToInventory(repo, category, id, amount)

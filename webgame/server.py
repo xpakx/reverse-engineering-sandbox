@@ -132,11 +132,11 @@ if __name__ == '__main__':
                             debugFile
                         )
                 for call in body_data['calls']:
-                    data = processor.process(call, tempState, gameData)
+                    data = processor.process(call, gameRepo, gameData)
                     if data:
                         responses.append(data)
             else:
-                data = processor.process(body_data, tempState, gameData)
+                data = processor.process(body_data, gameRepo, gameData)
                 if data:
                     responses.append(data)
         except ValueError:
@@ -146,6 +146,7 @@ if __name__ == '__main__':
                     'Invalid Content-Length'
                 )
         except Exception as e:
+            print(f'Error: {str(e)}')
             return (
                     500,
                     {'Content-Type': 'text/plain'},
