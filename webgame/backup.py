@@ -267,5 +267,6 @@ def patchFiles(hash):
     flatten_and_prepend_paths(f"{hash}/indices/index.assets.json", '../assets')
 
 
-hash = readData('hero.html')
-patchFiles(hash)
+if __name__ == "__main__":
+    hash = readData('hero.html')
+    patchFiles(hash)
