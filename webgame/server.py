@@ -117,12 +117,6 @@ if __name__ == '__main__':
             content_length = int(content_length)
             raw_body = request_handler.rfile.read(content_length)
 
-            tempState = {
-                'inventory': gameRepo.getInventoryByUserId(0),
-                'heroes': gameRepo.getHeroesByUserId(0),
-                'shops': gameRepo.getShopsByUserId(0),
-            }
-
             body_data = json.loads(raw_body)
             if 'calls' in body_data:
                 if debug and body_data['calls'][0]['name'] == 'registration':
