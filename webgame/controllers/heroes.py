@@ -41,7 +41,9 @@ def evolveHero(request, repo: GameRepository, gameData: GameData):
     userHeroes = repo.getHeroesByUserId(1)
     for hero in userHeroes:
         if hero.data.id == heroId:
+            hero.revertStarsAndLevel(hero.stars, hero.level)
             hero.stars += 1
+            hero.applyStarsAndLevel(hero.stars, hero.level)
     return []
 
 
