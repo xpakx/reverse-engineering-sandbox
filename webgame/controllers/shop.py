@@ -1,5 +1,5 @@
 from extractors.lib import getStatAsInt, GameData
-from controllers.items import addMultToInventory
+from controllers.items import addMultToInventory, removeFromInventory
 from repo.userdata import GameRepository
 
 
@@ -24,6 +24,12 @@ def buy(request, repo: GameRepository, gameData: GameData):
     shop = getShopById(repo, shopId)
     slot = getStatAsInt(request['args'], 'slot')
     if shop.slots[slot-1].bought:
+        # error
+        return []
+
+    cost = shop.slots[slot-1].cost
+    enoughResources = removeFromInventory(repo, cost.itemType, cost.itemId, cost.itemCount)
+    if not enoughResources:
         # error
         return []
     shop.slots[slot-1].bought = True
