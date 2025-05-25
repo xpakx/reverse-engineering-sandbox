@@ -39,3 +39,19 @@ def addMultToInventory(repo: GameRepository, reward):
                 id = int(item)
                 amount = int(items[item])
                 addToInventory(repo, category, id, amount)
+
+
+def removeFromInventory(repo: GameRepository, category: str, id: int, amount: int) -> bool:
+    inventory = repo.getInventoryByUserId(1)
+    if category not in inventory:
+        inventory[category] = {}
+
+    cat = inventory[category]
+    strId = str(id)
+    if strId not in cat:
+        cat[strId] = 0
+
+    if cat[strId] < amount:
+        return False
+    cat[strId] = cat[strId] - amount
+    return True
