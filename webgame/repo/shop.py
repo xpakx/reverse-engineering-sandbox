@@ -1,21 +1,6 @@
-from typing import NamedTuple, List, Any, Dict
+from typing import List, Any, Dict
 from datetime import datetime, timedelta
-
-
-class ItemDef(NamedTuple):
-    itemType: str = 'gear'
-    itemId: int = 0
-    itemCount: int = 1
-    ident: str = 'body'
-
-    def toResponse(self):
-        if self.itemType in ['gold', 'starmoney']:
-            return {self.itemType: str(self.itemCount)}
-        return {
-                self.itemType: {
-                    str(self.itemId): str(self.itemCount)
-                    }
-                }
+from repo.item import ItemDef
 
 
 class ShopSlot:

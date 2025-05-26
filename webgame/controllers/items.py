@@ -1,5 +1,6 @@
 from extractors.lib import getStatAsInt
 from repo.userdata import GameRepository
+from repo.item import ItemDef
 
 
 def buyStamina(request, repo: GameRepository, gameData):
@@ -41,17 +42,21 @@ def addMultToInventory(repo: GameRepository, reward):
                 addToInventory(repo, category, id, amount)
 
 
-def removeFromInventory(repo: GameRepository, category: str, id: int, amount: int) -> bool:
-    inventory = repo.getInventoryByUserId(1)
-    if category not in inventory:
-        inventory[category] = {}
+def removeFromInventory(repo: GameRepository, item: ItemDef) -> bool:
+    if item.itemType == 'gold':
+        return True  # TODO
 
-    cat = inventory[category]
-    strId = str(id)
+    inventory = repo.getInventoryByUserId(1)
+    if item.itemType not in inventory:
+        inventory[item.itemType] = {}
+
+    cat = inventory[item.itemType]
+    strId = str(item.itemId)
     if strId not in cat:
         cat[strId] = 0
 
-    if cat[strId] < amount:
+    print(cat[strId])
+    if cat[strId] < item.itemCount:
         return False
-    cat[strId] = cat[strId] - amount
+    cat[strId] = cat[strId] - item.itemCount
     return True
