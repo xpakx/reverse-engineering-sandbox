@@ -1,4 +1,4 @@
-from typing import NamedTuple, Dict
+from typing import NamedTuple, Dict, List
 
 
 class ItemDef(NamedTuple):
@@ -45,6 +45,10 @@ class Inventory:
         invItem = category[item.itemId]
         self.updateCount(item, invItem.itemCount - item.itemCount)
 
+    def addItemMult(self, items: List[ItemDef]):
+        for item in items:
+            self.addItem(item)
+
     def removeItem(self, item: ItemDef) -> bool:
         if item.itemType == 'gold':
             if self.gold < item.itemCount:
@@ -71,6 +75,23 @@ class Inventory:
             return
         invItem = category[item.itemId]
         self.updateCount(item, invItem.itemCount - item.itemCount)
+
+    def checkItem(self, item: ItemDef) -> bool:
+        if item.itemType == 'gold':
+            return self.gold >= item.itemCount
+        category = self.items[item.itemType]
+        if item.itemId not in category:
+            return False
+        invItem = category[item.itemId]
+        return invItem.itemCount >= item.itemCount
+
+    def removeItemMult(self, items: List[ItemDef]) -> bool:
+        for item in items:
+            if not self.checkItem(item):
+                return False
+        for item in items:
+            self.removeItemUnsafe(item)
+        return True
 
     def updateCount(self, item: ItemDef, count: int):
         category = self.items[item.itemType]
