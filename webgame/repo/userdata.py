@@ -2,6 +2,8 @@ from extractors.lib import Hero
 from repo.hero import getTestHeroes, applyHeroes
 from repo.shop import getTestShops, Shop
 from typing import Dict, Any, List
+from repo.item import Inventory
+from repo.shop import ItemDef
 
 
 class GameRepository:
@@ -35,27 +37,21 @@ class GameRepository:
 
 
 it = {
-        'bottledEnergy': '17',
-        'bigExp': '11',
+        'bottledEnergy': 17,
+        'bigExp': 11,
     }
 
 
 def getTestInventory():
-    return {
-            "consumable": {
-                it['bigExp']: 20,
-                it['bottledEnergy']: 30
-            },
-            "gear": {},
-            "fragmentHero": {},
-            "scroll": {},
-            "coin": {},
-            "fragmentGear": {},
-            "fragmentScroll": {},
-            "fragmentArtifact": {},
-            "fragmentTitan": {},
-            "fragmentTitanArtifact": {},
-            "ascensionGear": {},
-            "fragmentPet": {},
-            "petGear": {}
-        }
+    inv = Inventory(1)
+    inv.addItem(
+                ItemDef(
+                    itemType='consumable',
+                    itemId=it['bigExp'],
+                    itemCount=20))
+    inv.addItem(
+                ItemDef(
+                    itemType='consumable',
+                    itemId=it['bottledEnergy'],
+                    itemCount=30))
+    return inv.toResponse()

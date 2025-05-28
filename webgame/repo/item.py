@@ -107,6 +107,6 @@ class Inventory:
             cat = {}
             for item in self.items[category]:
                 it = self.items[category][item]
-                cat[str(it)] = it.itemCount
+                cat[str(it.itemId)] = it.itemCount
             response[category] = cat
         return response
