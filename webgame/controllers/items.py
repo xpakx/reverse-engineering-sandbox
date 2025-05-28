@@ -16,20 +16,13 @@ def useStaminaItem(request, repo: GameRepository, gameData):
 
 
 def inventory(request, repo: GameRepository, gameData):
-    return repo.getInventoryByUserId(1)
+    return repo.getInventoryByUserId(1).toResponse()
 
 
 def addToInventory(repo: GameRepository, category: str, id: int, amount: int):
     inventory = repo.getInventoryByUserId(1)
-    if category not in inventory:
-        inventory[category] = {}
-
-    cat = inventory[category]
-    strId = str(id)
-    if strId not in cat:
-        cat[strId] = 0
-
-    cat[strId] = cat[strId] + amount
+    item = ItemDef(itemType=category, itemId=id, itemCount=amount)
+    inventory.addItem(item)
 
 
 def addMultToInventory(repo: GameRepository, reward):
@@ -43,20 +36,6 @@ def addMultToInventory(repo: GameRepository, reward):
 
 
 def removeFromInventory(repo: GameRepository, item: ItemDef) -> bool:
-    if item.itemType == 'gold':
-        return True  # TODO
-
     inventory = repo.getInventoryByUserId(1)
-    if item.itemType not in inventory:
-        inventory[item.itemType] = {}
-
-    cat = inventory[item.itemType]
-    strId = str(item.itemId)
-    if strId not in cat:
-        cat[strId] = 0
-
-    print(cat[strId])
-    if cat[strId] < item.itemCount:
-        return False
-    cat[strId] = cat[strId] - item.itemCount
-    return True
+    result = inventory.removeItem(item)
+    return result

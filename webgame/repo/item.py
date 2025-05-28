@@ -50,6 +50,7 @@ class Inventory:
             self.addItem(item)
 
     def removeItem(self, item: ItemDef) -> bool:
+        print(item)
         if item.itemType == 'gold':
             if self.gold < item.itemCount:
                 return False
