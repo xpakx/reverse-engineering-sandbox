@@ -25,6 +25,7 @@ def getInfo(request, repo: GameRepository, gameData):
     print(request)
     if not repo.tempUser:
         return {}
+    inventory = repo.getInventoryByUserId(1)
 
     profile = {
             "id": "1",
@@ -42,9 +43,9 @@ def getInfo(request, repo: GameRepository, gameData):
             "allowPm": "all",
             "accountId": "149848381",
             "timeZone": 2,
-            "starMoney": 520000,
+            "starMoney": inventory.emeralds,
             "vipPoints": "50000",
-            "gold": 500000000,
+            "gold": inventory.gold,
             "refillable": [],
             "flags": "8",
             "tutorialStep": "9999",
