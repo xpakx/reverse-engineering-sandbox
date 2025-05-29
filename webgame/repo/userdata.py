@@ -45,6 +45,7 @@ it = {
 def getTestInventory():
     inv = Inventory(1)
     inv.gold = 500000
+    inv.emeralds = 500000
     inv.addItem(
                 ItemDef(
                     itemType='consumable',

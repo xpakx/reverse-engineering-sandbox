@@ -19,6 +19,7 @@ class ItemDef(NamedTuple):
 class Inventory:
     def __init__(self, id: int):
         self.gold = 0
+        self.emeralds = 0
         self.items: Dict[str, Dict[int, ItemDef]] = {}
         self.items['consumable'] = {}
         self.items['gear'] = {}
@@ -38,6 +39,9 @@ class Inventory:
         if item.itemType == 'gold':
             self.gold = self.gold + item.itemCount
             return
+        if item.itemType == 'starmoney':
+            self.emeralds = self.emeralds + item.itemCount
+            return
         category = self.items[item.itemType]
         if item.itemId not in category:
             category[item.itemId] = item
@@ -56,6 +60,11 @@ class Inventory:
                 return False
             self.gold = self.gold - item.itemCount
             return True
+        if item.itemType == 'starmoney':
+            if self.emeralds < item.itemCount:
+                return False
+            self.emeralds = self.emeralds - item.itemCount
+            return True
 
         category = self.items[item.itemType]
         if item.itemId not in category:
@@ -71,6 +80,9 @@ class Inventory:
         if item.itemType == 'gold':
             self.gold = self.gold - item.itemCount
             return
+        if item.itemType == 'starmoney':
+            self.emeralds = self.emeralds - item.itemCount
+            return
         category = self.items[item.itemType]
         if item.itemId not in category:
             return
@@ -80,6 +92,8 @@ class Inventory:
     def checkItem(self, item: ItemDef) -> bool:
         if item.itemType == 'gold':
             return self.gold >= item.itemCount
+        if item.itemType == 'starmoney':
+            return self.emeralds >= item.itemCount
         category = self.items[item.itemType]
         if item.itemId not in category:
             return False
