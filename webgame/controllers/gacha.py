@@ -54,8 +54,19 @@ def summonHero(request, repo: GameRepository, gameData):
     return response
 
 
-# TODO
 def checkResources(inventory: Inventory, isFreeSummon: bool, summons: int):
+    itemType = "coin" if isFreeSummon else "starmoney"
+    cost = summons if isFreeSummon else (
+            summons*200 if summons < 10 else summons*150)
+    cost = ItemDef(
+            itemId=38,
+            itemCount=cost,
+            itemType=itemType
+        )
+    enoughResources = inventory.checkItem(cost)
+    if not enoughResources:
+        return False
+    inventory.removeItem(cost)
     return True
 
 
