@@ -43,7 +43,7 @@ class Inventory:
             category[item.itemId] = item
             return
         invItem = category[item.itemId]
-        self.updateCount(item, invItem.itemCount - item.itemCount)
+        self.updateCount(item, invItem.itemCount + item.itemCount)
 
     def addItemMult(self, items: List[ItemDef]):
         for item in items:
