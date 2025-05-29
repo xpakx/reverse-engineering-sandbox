@@ -1,13 +1,15 @@
 import random
-from controllers.items import addToInventory
+from repo.userdata import GameRepository
+from repo.item import ItemDef, Inventory
 
 
-def summonHero(request, temp, gameData):
+def summonHero(request, repo: GameRepository, gameData):
     print(request)
     isFreeSummon = request['args']['free']
     isPackSummon = request['args']['pack']
     summons = 10 if isPackSummon else 1
-    canSummon = checkResources(isFreeSummon, summons)
+    inventory = repo.getInventoryByUserId(1)
+    canSummon = checkResources(inventory, isFreeSummon, summons)
     if not canSummon:
         return []  # TODO
 
@@ -29,7 +31,11 @@ def summonHero(request, temp, gameData):
         rew = {}
         rew[str(reward)] = 5
         fragmentList.append(rew)
-        addToInventory(temp, 'fragmentHero', reward, 5)
+        inventory.addItem(
+                ItemDef(
+                    itemType='fragmentHero',
+                    itemId=reward,
+                    itemCount=5))
 
     rare = []
     common = []
@@ -49,7 +55,7 @@ def summonHero(request, temp, gameData):
 
 
 # TODO
-def checkResources(isFreeSummon: bool, summons: int):
+def checkResources(inventory: Inventory, isFreeSummon: bool, summons: int):
     return True
 
 
