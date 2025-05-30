@@ -1,6 +1,7 @@
 from typing import NamedTuple, Dict, List, Any, Tuple, Optional, Union
 import json
 from datetime import time, datetime
+from repo.item import ItemDef
 
 attrs = ["strength", "agility", "intelligence", "hp",
          "physicalCritChance", "physicalAttack",
@@ -255,6 +256,7 @@ class WaveData(NamedTuple):
 class DropData(NamedTuple):
     chance: int
     reward: Any
+    rewardNew: List[ItemDef]
 
 
 class MissionData(NamedTuple):
@@ -537,8 +539,8 @@ def parseWaveDrops(wave) -> List[DropData]:
             continue
         drop = enemy['drop']
         if len(drop) > 0:
-            for item in drop:
-                drops.append(item)
+            for category in drop:
+                drops.append(category)
     if len(drops) == 0:
         return []
 
@@ -547,7 +549,23 @@ def parseWaveDrops(wave) -> List[DropData]:
         if 'reward' not in drop:
             continue
         chance = getStatAsInt(drop, 'chance')
-        dropData = DropData(chance=chance, reward=drop['reward'])
+
+        items = []
+        for category in drop['reward']:
+            if category == 'gold':
+                count = getStatAsInt(drop['reward'], 'gold')
+                itemDef = ItemDef(itemType='gold', itemCount=count)
+                items.append(itemDef)
+            else:
+                for key in drop['reward'][category]:
+                    value = drop['reward'][category][key]
+                    itemDef = ItemDef(
+                            itemType=category,
+                            itemCount=int(value),
+                            itemId=int(key))
+                    items.append(itemDef)
+        dropData = DropData(chance=chance, reward=drop['reward'], rewardNew=items)
+
         result.append(dropData)
     return result
 
