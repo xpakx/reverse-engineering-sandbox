@@ -1,25 +1,27 @@
-from controllers.items import addMultToInventory
 from extractors.lib import getStatAsInt, GameData
 from datetime import datetime
+from repo.userdata import GameRepository
+from repo.item import ItemDef
 
 
 rewards = {
-        23151: {
-            'fragmentHero': {'60': 3},
-            'gold': 30000
-            }
+        23151: [
+            ItemDef(itemType='fragmentHero', itemId=60, itemCount=3),
+            ItemDef(itemType='gold', itemCount=30000),
+            ]
         }
 
 currentEvents = [68, 581, 580]
 
 
-def farmQuest(request, temp, gameData):
+def farmQuest(request, repo: GameRepository, gameData):
     print(request)
     questId = getStatAsInt(request['args'], 'questId')
     if questId not in rewards:
         return []
     print(rewards[questId])
-    addMultToInventory(temp, rewards[questId])
+    inventory = repo.getInventoryByUserId(1)
+    inventory.addItemMult(rewards[questId])
     return rewards[questId]
 
 
