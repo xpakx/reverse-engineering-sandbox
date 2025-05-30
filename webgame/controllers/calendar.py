@@ -1,6 +1,7 @@
 import time
 from datetime import datetime
-from controllers.items import addMultToInventory
+from repo.userdata import GameRepository
+from repo.item import ItemDef
 
 
 def getTime(request, temp, gameData):
@@ -29,19 +30,17 @@ def getDailyBonus(request, temp, gameData):
 
 
 dailyRewards = {
-        20: {
-            'fragmentHero': {str(heroOfMonth): 8},
-            }
+        20: ItemDef(itemType='fragmentHero', itemId=heroOfMonth, itemCount=8)
         }
 
 
-def farmDaily(request, temp, gameData):
+def farmDaily(request, repo: GameRepository, gameData):
     print(request)
     vip = request['args']['vip'] == 1
 
-    rewards = dailyRewards[claimedDays]
+    reward = dailyRewards[claimedDays]
     if vip:
         print("TODO: double rewards for vip accounts")
-
-    addMultToInventory(temp, rewards)
-    return rewards
+    inventory = repo.getInventoryByUserId(1)
+    inventory.addItem(reward)
+    return reward.toResponse()
