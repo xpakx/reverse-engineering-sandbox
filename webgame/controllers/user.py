@@ -60,8 +60,10 @@ def getInfo(request, repo: GameRepository, gameData):
             "maxSumPower": { "heroes": 98580, "titans": 12916, "pets": 37490 }
             }
 
+    stamina = repo.getStaminaMyUserId(1)
     for i in range(1, 61):
+        amount = stamina if i == 1 else 20
         profile['refillable'].append(
-                {"id": i, "amount": 20, "lastRefill": 1745545328, "boughtToday": 0}
+                {"id": i, "amount": amount, "lastRefill": 1745545328, "boughtToday": 0}
                 )
     return profile
