@@ -12,6 +12,7 @@ class GameRepository:
         self.inventoryById = {}
         self.heroesById = {}
         self.shopsById = {}
+        self.staminaById = {}
         self.tempUser = None
 
     def getInventoryByUserId(self, id: int) -> Inventory:
@@ -34,6 +35,15 @@ class GameRepository:
         newShops = getTestShops()
         self.shopsById[id] = newShops
         return newShops
+
+    def getStaminaMyUserId(self, id: int) -> int:
+        if id in self.staminaById:
+            return self.staminaById[id]
+        self.staminaById[id] = 120
+        return 120
+
+    def setStaminaMyUserId(self, id: int, value: int):
+        self.staminaById[id] = value
 
 
 it = {

@@ -7,6 +7,14 @@ userStamina = 0
 
 def buyStamina(request, repo: GameRepository, gameData):
     print(request)
+    # TODO: vary cost depending on number of buys
+    emeralds = ItemDef(itemId=0,
+                       itemCount=50,
+                       itemType='starmoney')
+    inventory = repo.getInventoryByUserId(1)
+    inventory.removeItem(emeralds)
+    currentStamina = repo.getStaminaMyUserId(1)
+    repo.setStaminaMyUserId(1, currentStamina + 120)
     return {'stamina': 120}
 
 
