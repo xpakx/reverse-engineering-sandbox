@@ -29,9 +29,8 @@ def useStaminaItem(request, repo: GameRepository, gameData):
     inventory = repo.getInventoryByUserId(1)
     enoughResources = inventory.removeItem(item)
     if enoughResources:
-        # TODO
-        global userStamina
-        userStamina += 120
+        currentStamina = repo.getStaminaByUserId(1).amount
+        repo.setStaminaByUserId(1, currentStamina + 200)
     return []
 
 
