@@ -13,8 +13,8 @@ def buyStamina(request, repo: GameRepository, gameData):
                        itemType='starmoney')
     inventory = repo.getInventoryByUserId(1)
     inventory.removeItem(emeralds)
-    currentStamina = repo.getStaminaMyUserId(1)
-    repo.setStaminaMyUserId(1, currentStamina + 120)
+    currentStamina = repo.getStaminaByUserId(1).amount
+    repo.setStaminaByUserId(1, currentStamina + 120)
     return {'stamina': 120}
 
 

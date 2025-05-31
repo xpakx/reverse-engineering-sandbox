@@ -4,6 +4,23 @@ from repo.shop import getTestShops, Shop
 from typing import List
 from repo.item import Inventory
 from repo.shop import ItemDef
+from dataclasses import dataclass
+
+
+@dataclass
+class RefillableData:
+    id: int
+    amount: id
+    lastRefill: int
+    boughtToday: bool
+
+    def toResponse(self):
+        return {
+                "id": self.id,
+                "amount": self.amount,
+                "lastRefill": self.lastRefill,
+                "boughtToday": 1 if self.boughtToday else 0
+                }
 
 
 class GameRepository:
@@ -36,14 +53,14 @@ class GameRepository:
         self.shopsById[id] = newShops
         return newShops
 
-    def getStaminaMyUserId(self, id: int) -> int:
+    def getStaminaByUserId(self, id: int) -> RefillableData:
         if id in self.staminaById:
             return self.staminaById[id]
-        self.staminaById[id] = 120
-        return 120
+        self.staminaById[id] = RefillableData(1, 120, 0, False)
+        return self.staminaById[id]
 
-    def setStaminaMyUserId(self, id: int, value: int):
-        self.staminaById[id] = value
+    def setStaminaByUserId(self, id: int, value: int):
+        self.staminaById[id].amount = value
 
 
 it = {
