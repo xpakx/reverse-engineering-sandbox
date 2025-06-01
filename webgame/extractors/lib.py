@@ -72,6 +72,7 @@ class HeroData(NamedTuple):
     artifacts: Any = None
     runes: Any = None
     skins: Dict[int, SkinData] = {}
+    minStar: int = 1
 
     def getDefaultSkin(self) -> Optional[SkinData]:
         for skinKey in self.skins:
@@ -432,10 +433,13 @@ def parseHero(data, gear, heroId) -> HeroData:
                 heroSkills.append(skill)
 
     stars = {}
+    minStar = 100
     for i in data['stars']:
         entry = data['stars'][i]
         stats = getStats(entry['battleStatData'])
         key = int(i)
+        if key < minStar:
+            minStar = key
         stars[key] = stats
 
     colors = {}
@@ -465,6 +469,7 @@ def parseHero(data, gear, heroId) -> HeroData:
             stars=stars,
             color=colors,
             skins={},
+            minStar=minStar,
             )
 
 
