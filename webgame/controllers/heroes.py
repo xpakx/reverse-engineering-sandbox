@@ -1,6 +1,7 @@
 from extractors.lib import GameData, Hero, getStatAsInt
 from typing import Optional
 from repo.userdata import GameRepository
+from repo.item import ItemDef
 
 
 def getHeroById(id: int, data: GameData):
@@ -66,3 +67,26 @@ def getHeroRatings(request, repo: GameRepository, gameData: GameData):
     for i in range(1, 67):
         response['rating'][str(i)] = 4.00
     return response
+
+
+def craftHero(request, repo: GameRepository, gameData: GameData):
+    heroId = getStatAsInt(request['args'], 'heroId')
+    inventory = repo.getInventoryByUserId(1)
+
+    cost = ItemDef(
+            itemType='fragmentHero',
+            itemId=heroId,
+            itemCount=80)  # TODO: correct costs
+    hasFragments = inventory.removeItem(cost)
+    if not hasFragments:
+        print("Not enough soul stones")
+        return []
+    userHeroes = repo.getHeroesByUserId(1)
+
+    heroData = gameData.heroes[heroId]
+    hero = Hero(heroData)
+    hero.applyStarsAndLevel(3, 1)  # TODO: correct stars
+    hero.applyColor(1)
+    hero.skills[0] = 1
+    userHeroes.append(hero)
+    return []
