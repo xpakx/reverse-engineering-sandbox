@@ -23,19 +23,19 @@ def buy(request, repo: GameRepository, gameData: GameData):
     shop = getShopById(repo, shopId)
     slot = getStatAsInt(request['args'], 'slot')
 
-    if shop.slots[slot-1].bought:
+    if shop.slots[slot].bought:
         # error
         print("Shop warning: item already bought")
         return []
 
-    cost = shop.slots[slot-1].cost
+    cost = shop.slots[slot].cost
     inventory = repo.getInventoryByUserId(1)
     enoughResources = inventory.removeItem(cost)
     if not enoughResources:
         # error
         print("Shop warning: not enough resources")
         return []
-    shop.slots[slot-1].bought = True
-    reward = shop.slots[slot-1].item
+    shop.slots[slot].bought = True
+    reward = shop.slots[slot].item
     inventory.addItem(reward)
     return []
