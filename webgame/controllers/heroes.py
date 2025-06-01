@@ -73,20 +73,36 @@ def craftHero(request, repo: GameRepository, gameData: GameData):
     heroId = getStatAsInt(request['args'], 'heroId')
     inventory = repo.getInventoryByUserId(1)
 
+    heroData = gameData.heroes[heroId]
+    soulStones = starsToCost(heroData.minStar)
+
     cost = ItemDef(
             itemType='fragmentHero',
             itemId=heroId,
-            itemCount=80)  # TODO: correct costs
+            itemCount=soulStones)
     hasFragments = inventory.removeItem(cost)
     if not hasFragments:
         print("Not enough soul stones")
         return []
     userHeroes = repo.getHeroesByUserId(1)
 
-    heroData = gameData.heroes[heroId]
     hero = Hero(heroData)
-    hero.applyStarsAndLevel(3, 1)  # TODO: correct stars
+    hero.applyStarsAndLevel(heroData.minStar, 1)
     hero.applyColor(1)
     hero.skills[0] = 1
     userHeroes.append(hero)
     return []
+
+
+def starsToCost(minStar: int) -> int:
+    if minStar == 1:
+        return 10
+    if minStar == 2:
+        return 30
+    if minStar == 3:
+        return 80
+    if minStar == 4:
+        return 180
+    if minStar == 5:
+        return 330
+    return 630
