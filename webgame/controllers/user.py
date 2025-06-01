@@ -25,14 +25,16 @@ def getInfo(request, repo: GameRepository, gameData):
     print(request)
     if not repo.tempUser:
         return {}
-    inventory = repo.getInventoryByUserId(1)
+    userId = 1
+    inventory = repo.getInventoryByUserId(userId)
+    user = repo.getUserSummary(userId)
 
     profile = {
-            "id": "1",
-            "name": "Sir Rocinante",
+            "id": str(userId),
+            "name": user.username,
             "lastLoginTime": "1745545266",
             "serverId": "1",
-            "level": "68",
+            "level": str(user.teamLevel),
             "clanId": "1",
             "clanRole": "2",
             "commander": False,
@@ -44,14 +46,14 @@ def getInfo(request, repo: GameRepository, gameData):
             "accountId": "149848381",
             "timeZone": 2,
             "starMoney": inventory.emeralds,
-            "vipPoints": "50000",
+            "vipPoints": str(user.vipExp),
             "gold": inventory.gold,
             "refillable": [],
             "flags": "8",
             "tutorialStep": "9999",
             "nextDayTs": 1745550000,
             "nextServerDayTs": 1745546400,
-            "experience": "253",
+            "experience": str(user.teamExp),
             "maxLevel": 130,
             "useEnergyBuyLimit": False,
             "vkPayIsActive": False,

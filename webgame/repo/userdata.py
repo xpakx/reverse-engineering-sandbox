@@ -23,6 +23,14 @@ class RefillableData:
                 }
 
 
+@dataclass
+class UserSummary:
+    username: str
+    teamLevel: int
+    teamExp: int
+    vipExp: int
+
+
 class GameRepository:
     def __init__(self, gameData):
         self.gameData = gameData
@@ -30,6 +38,7 @@ class GameRepository:
         self.heroesById = {}
         self.shopsById = {}
         self.staminaById = {}
+        self.usersById = {}
         self.tempUser = None
 
     def getInventoryByUserId(self, id: int) -> Inventory:
@@ -61,6 +70,18 @@ class GameRepository:
 
     def setStaminaByUserId(self, id: int, value: int):
         self.staminaById[id].amount = value
+
+    def getUserSummary(self, id: int) -> UserSummary:
+        if id in self.usersById:
+            return self.usersById[id]
+        self.usersById[id] = UserSummary(
+                "Sir Rocinante",
+                68,
+                120,
+                50000
+                )
+        return self.usersById[id]
+
 
 
 it = {
