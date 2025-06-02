@@ -106,3 +106,44 @@ def starsToCost(minStar: int) -> int:
     if minStar == 5:
         return 330
     return 630
+
+
+def heroEquip(request, repo: GameRepository, gameData: GameData):
+    heroId = getStatAsInt(request['args'], 'heroId')
+    slot = getStatAsInt(request['args'], 'slot')
+
+    hero: Optional[Hero] = None
+    heroes = repo.getHeroesByUserId(1)
+    for h in heroes:
+        if h.data.id == heroId:
+            hero = h
+            break
+    if not hero:
+        return None
+
+    item = hero.data.color[hero.color][1][slot].id
+    cost = ItemDef(
+            itemType='gear',
+            itemId=item,
+            itemCount=1)
+    inventory = repo.getInventoryByUserId(1)
+    hasGear = inventory.removeItem(cost)
+    if not hasGear:
+        print("No gear in inventory")
+        return []
+
+    gearCount = len(hero.gear)
+    if slot > gearCount:
+        gearCount += 1
+    newGear = []
+    for i in range(gearCount):
+        if i < len(hero.gear) and hero.gear[i]:
+            newGear.append(True)
+            continue
+        if i == slot:
+            newGear.append(True)
+            continue
+        newGear.append(False)
+    hero.removeGear()
+    hero.applyGear(newGear)
+    return []

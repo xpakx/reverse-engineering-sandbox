@@ -7,7 +7,7 @@ class UserHero(NamedTuple):
     stars: int = 1
     level: int = 1
     color: int = 1
-    gear: List[bool] = [True, True, True]
+    gear: List[bool] = []
 
 
 def getTestHeroes() -> List[UserHero]:

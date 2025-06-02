@@ -104,4 +104,9 @@ def getTestInventory():
                     itemType='consumable',
                     itemId=it['bottledEnergy'],
                     itemCount=30))
+    inv.addItem(
+                ItemDef(
+                    itemType='gear',
+                    itemId=8,
+                    itemCount=30))
     return inv
