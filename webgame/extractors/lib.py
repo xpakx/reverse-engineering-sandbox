@@ -161,6 +161,7 @@ class Hero:
     def applyGear(self, gear: List[bool]):
         currColor = self.data.color[self.color]
         items = currColor[1]
+        print(items)
         length = min(len(gear), len(items))
         self.gear = gear
         for i in range(0, length):

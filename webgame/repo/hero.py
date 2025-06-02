@@ -7,6 +7,7 @@ class UserHero(NamedTuple):
     stars: int = 1
     level: int = 1
     color: int = 1
+    gear: List[bool] = [True, True, True]
 
 
 def getTestHeroes() -> List[UserHero]:
@@ -24,6 +25,7 @@ def applyHeroes(userData: List[UserHero], data: GameData):
         hero = Hero(heroData)
         hero.applyStarsAndLevel(userHero.stars, userHero.level)
         hero.applyColor(userHero.color)
+        hero.applyGear(userHero.gear)
         hero.skills[0] = 1
         result.append(hero)
     return result
