@@ -85,15 +85,16 @@ def endMission(request, repo: GameRepository, gameData):
     print(request)
     missionId = getStatAsInt(request['args'], 'id', 1)
     mission = gameData.missions[missionId]
-    reward = getRewardsForMission(gameData, missionId)
+    reward = getRewardsForMission(repo, gameData, missionId)
     reward['heroXp'] = {'3': mission.heroExp}
     response = {}
     response['reward'] = reward
     return response
 
 
-def getRewardsForMission(gameData: GameData, missionId: int):
+def getRewardsForMission(repo: GameRepository, gameData: GameData, missionId: int):
     mission = gameData.missions[missionId]
+    inventory = repo.getInventoryByUserId(1)
     reward = {}
     for dropData in mission.drops:
         if dropData.chance == 0:
@@ -114,6 +115,7 @@ def getRewardsForMission(gameData: GameData, missionId: int):
                 if key not in reward[drop.itemType]:
                     reward[drop.itemType][key] = 0
                 reward[drop.itemType][key] = reward[drop.itemType][key] + value
+            inventory.addItem(drop)
     reward['experience'] = mission.teamExp
     return reward
 
@@ -124,7 +126,7 @@ def raidMission(request, repo: GameRepository, gameData):
     attempts = getStatAsInt(request['args'], 'times', 1)
     response = {}
     for i in range(attempts):
-        reward = getRewardsForMission(gameData, missionId)
+        reward = getRewardsForMission(repo, gameData, missionId)
         id = str(i)
         response[id] = reward
 
