@@ -103,17 +103,17 @@ def getRewardsForMission(gameData: GameData, missionId: int):
             if roll > dropData.chance:
                 continue
 
-        for drop in dropData.reward:
-            if drop == 'gold':
+        for drop in dropData.rewardNew:
+            if drop.itemType == 'gold':
                 reward['gold'] = dropData.reward['gold']
-            if drop in ['gear', 'fragmentHero', 'consumable']:
-                if drop not in reward:
-                    reward[drop] = {}
-                for key in dropData.reward[drop]:
-                    value = dropData.reward[drop][key]
-                    if key not in reward[drop]:
-                        reward[drop][key] = 0
-                    reward[drop][key] = reward[drop][key] + value
+            if drop.itemType in ['gear', 'fragmentHero', 'consumable']:
+                if drop.itemType not in reward:
+                    reward[drop.itemType] = {}
+                key = str(drop.itemId)
+                value = drop.itemCount
+                if key not in reward[drop.itemType]:
+                    reward[drop.itemType][key] = 0
+                reward[drop.itemType][key] = reward[drop.itemType][key] + value
     reward['experience'] = mission.teamExp
     return reward
 
