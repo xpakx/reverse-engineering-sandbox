@@ -265,8 +265,7 @@ class WaveData(NamedTuple):
 
 class DropData(NamedTuple):
     chance: int
-    reward: Any
-    rewardNew: List[ItemDef]
+    reward: List[ItemDef]
 
 
 class MissionData(NamedTuple):
@@ -578,7 +577,7 @@ def parseWaveDrops(wave) -> List[DropData]:
                             itemCount=int(value),
                             itemId=int(key))
                     items.append(itemDef)
-        dropData = DropData(chance=chance, reward=drop['reward'], rewardNew=items)
+        dropData = DropData(chance=chance, reward=items)
 
         result.append(dropData)
     return result

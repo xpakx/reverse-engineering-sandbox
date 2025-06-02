@@ -104,9 +104,9 @@ def getRewardsForMission(repo: GameRepository, gameData: GameData, missionId: in
             if roll > dropData.chance:
                 continue
 
-        for drop in dropData.rewardNew:
+        for drop in dropData.reward:
             if drop.itemType == 'gold':
-                reward['gold'] = dropData.reward['gold']
+                reward['gold'] = drop.itemCount
             if drop.itemType in ['gear', 'fragmentHero', 'consumable']:
                 if drop.itemType not in reward:
                     reward[drop.itemType] = {}
