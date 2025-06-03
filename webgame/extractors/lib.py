@@ -158,6 +158,13 @@ class Hero:
         if stats:
             self.update(stats)
 
+    def revertColor(self):
+        colorData = self.data.color[self.color]
+        stats = colorData[0]
+        self.color = 1
+        if stats:
+            self.revert(stats)
+
     def applyGear(self, gear: List[bool]):
         currColor = self.data.color[self.color]
         items = currColor[1]
@@ -174,7 +181,7 @@ class Hero:
         length = min(len(self.gear), len(items))
         for i in range(0, length):
             if self.gear[i]:
-                self.remove(items[i].battleStats)
+                self.revert(items[i].battleStats)
 
     def addExperience(self, experience: int, levelToExp: Dict[int, int]):
         self.experience += experience

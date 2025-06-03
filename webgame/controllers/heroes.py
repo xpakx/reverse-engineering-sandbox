@@ -138,3 +138,20 @@ def heroEquip(request, repo: GameRepository, gameData: GameData):
     hero.removeGear()
     hero.applyGear(newGear)
     return []
+
+
+def heroPromote(request, repo: GameRepository, gameData: GameData):
+    heroId = getStatAsInt(request['args'], 'heroId')
+    hero = repo.getHeroByUserIdAndId(1, heroId)
+    if not hero:
+        return None
+    if len(hero.gear) < 6:
+        return None
+    if not all(hero.gear):
+        return None
+    color = hero.color
+    hero.removeGear()
+    hero.gear = []
+    hero.revertColor()
+    hero.applyColor(color + 1)
+    return []
