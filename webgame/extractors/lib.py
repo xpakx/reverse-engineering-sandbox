@@ -223,6 +223,12 @@ class Hero:
                 "intelligence": self.intelligence,
             }
 
+    def getGearData(self):
+        print(self.data.id, self.gear)
+        if all(self.gear):
+            return [0]*len(self.gear)
+        return {i: 0 for i, equipped in enumerate(self.gear) if equipped}
+
     def getProfileData(self):
         skills = {}
         skillIndex = 0
@@ -235,7 +241,7 @@ class Hero:
             "xp": self.experience,
             "level": self.level,
             "color": self.color,
-            "slots": [0, 0, 0],
+            "slots": self.getGearData(),
             "skills": skills,
             "power": 19156,
             "star": self.stars,
