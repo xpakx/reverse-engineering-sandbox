@@ -124,8 +124,8 @@ def heroEquip(request, repo: GameRepository, gameData: GameData):
         return []
 
     gearCount = len(hero.gear)
-    if slot > gearCount:
-        gearCount += 1
+    if slot >= gearCount:
+        gearCount = slot + 1
     newGear = []
     for i in range(gearCount):
         if i < len(hero.gear) and hero.gear[i]:
