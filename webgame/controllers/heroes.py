@@ -1,5 +1,4 @@
 from extractors.lib import GameData, Hero, getStatAsInt
-from typing import Optional
 from repo.userdata import GameRepository
 from repo.item import ItemDef
 
@@ -23,12 +22,7 @@ def getUserHeroes(request, repo: GameRepository, gameData: GameData):
 def upgradeSkill(request, repo: GameRepository, gameData: GameData):
     heroId = getStatAsInt(request['args'], 'heroId')
     skillNum = getStatAsInt(request['args'], 'skill') - 1
-    hero: Optional[Hero] = None
-    heroes = repo.getHeroesByUserId(1)
-    for h in heroes:
-        if h.data.id == heroId:
-            hero = h
-            break
+    hero = repo.getHeroByUserIdAndId(1, heroId)
     if not hero:
         return None
     hero.skills[skillNum] += 1
@@ -39,12 +33,14 @@ def evolveHero(request, repo: GameRepository, gameData: GameData):
     heroId = getStatAsInt(request['args'], 'heroId')
     # TODO: errors, verify and deduct gold
 
-    userHeroes = repo.getHeroesByUserId(1)
-    for hero in userHeroes:
-        if hero.data.id == heroId:
-            hero.revertStarsAndLevel(hero.stars, hero.level)
-            hero.stars += 1
-            hero.applyStarsAndLevel(hero.stars, hero.level)
+    hero = repo.getHeroByUserIdAndId(1, heroId)
+    if not hero:
+        # TODO: error
+        return None
+
+    hero.revertStarsAndLevel(hero.stars, hero.level)
+    hero.stars += 1
+    hero.applyStarsAndLevel(hero.stars, hero.level)
     return []
 
 
@@ -53,10 +49,10 @@ def addExpToHero(request, repo: GameRepository, gameData: GameData):
     # consumableId = getStatAsInt(request['args'], 'libId')
     consumableAmount = getStatAsInt(request['args'], 'amount')
     exp = 1500 * consumableAmount
-    userHeroes = repo.getHeroesByUserId(1)
-    for hero in userHeroes:
-        if hero.data.id == heroId:
-            hero.addExperience(exp, gameData.levelToExp)
+    hero = repo.getHeroByUserIdAndId(1, heroId)
+    if not hero:
+        return None
+    hero.addExperience(exp, gameData.levelToExp)
     return []
 
 
@@ -112,12 +108,7 @@ def heroEquip(request, repo: GameRepository, gameData: GameData):
     heroId = getStatAsInt(request['args'], 'heroId')
     slot = getStatAsInt(request['args'], 'slot')
 
-    hero: Optional[Hero] = None
-    heroes = repo.getHeroesByUserId(1)
-    for h in heroes:
-        if h.data.id == heroId:
-            hero = h
-            break
+    hero = repo.getHeroByUserIdAndId(1, heroId)
     if not hero:
         return None
 
