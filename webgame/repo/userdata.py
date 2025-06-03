@@ -1,7 +1,7 @@
 from extractors.lib import Hero
 from repo.hero import getTestHeroes, applyHeroes
 from repo.shop import getTestShops, Shop
-from typing import List
+from typing import List, Optional
 from repo.item import Inventory
 from repo.shop import ItemDef
 from dataclasses import dataclass
@@ -55,6 +55,13 @@ class GameRepository:
         self.heroesById[id] = newHeroes
         return newHeroes
 
+    def getHeroByUserIdAndId(self, userId: int, heroId: int) -> Optional[Hero]:
+        userHeroes = self.getHeroesByUserId(userId)
+        for hero in userHeroes:
+            if hero.data.id == heroId:
+                return hero
+        return None
+
     def getShopsByUserId(self, id: int) -> List[Shop]:
         if id in self.shopsById:
             return self.shopsById[id]
@@ -81,7 +88,6 @@ class GameRepository:
                 50000
                 )
         return self.usersById[id]
-
 
 
 it = {
