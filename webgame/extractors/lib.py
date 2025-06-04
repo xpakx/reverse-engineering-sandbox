@@ -53,7 +53,7 @@ class SkinData(NamedTuple):
     heroId: int = 0
     isDefault: bool = False
     stats: Dict[int, StatData] = {}
-    costs: Dict[int, Any] = {}
+    costs: Dict[int, ItemDef] = {}
     enabled: bool = True
     notObtainable: bool = False
     default: bool = False
@@ -912,9 +912,19 @@ def parseSkins(data, heroes: Dict[int, HeroData]) -> List[SkinData]:
             level = skin['statData']['levels'][levelKey]
             lvl = getStatAsInt(level, 'level')
             statsData = getStats(level['statBonus'])
-            cost = level['cost']
+            costDict = level['cost']
+            if costDict:
+                costType = next(iter(costDict), 'coin')
+                costValue = costDict[costType]
+                costId = next(iter(costValue), 0)
+                costAmount = costValue[costId]
+                cost = ItemDef(
+                        itemType=costType,
+                        itemId=int(costId),
+                        itemCount=costAmount,
+                        )
+                costs[lvl] = cost
             stats[lvl] = statsData
-            costs[lvl] = cost
 
         skinData = SkinData(
                 id=id,
