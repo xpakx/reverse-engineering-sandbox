@@ -155,3 +155,27 @@ def heroPromote(request, repo: GameRepository, gameData: GameData):
     hero.revertColor()
     hero.applyColor(color + 1)
     return []
+
+
+def heroSkinUpgrade(request, repo: GameRepository, gameData: GameData):
+    heroId = getStatAsInt(request['args'], 'heroId')
+    skinId = getStatAsInt(request['args'], 'skinId')
+    hero = repo.getHeroByUserIdAndId(1, heroId)
+    inventory = repo.getInventoryByUserId(1)
+    if not hero:
+        return None
+    if skinId not in hero.data.skins:
+        return None
+    skin = hero.data.skins[skinId]
+    level = hero.skinLevels[skinId] if skinId in hero.skinLevels else 0
+    newLevel = level + 1
+    cost = skin.costs[newLevel]
+    hasSkinStones = inventory.removeItem(cost)
+    if not hasSkinStones:
+        print("Not enough skin stones")
+        return None
+    if level > 0:
+        hero.revert(skin.stats[level])
+    hero.skinLevels[skinId] = newLevel
+    hero.update(skin.stats[newLevel])
+    return None

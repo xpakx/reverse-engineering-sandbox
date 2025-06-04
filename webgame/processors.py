@@ -3,7 +3,7 @@ from controllers.campaign import startMission, endMission, raidMission
 from controllers.campaign import getMissions, getMissionReplace
 from controllers.heroes import getUserHeroes, upgradeSkill, evolveHero
 from controllers.heroes import addExpToHero, getHeroRatings, craftHero
-from controllers.heroes import heroEquip, heroPromote
+from controllers.heroes import heroEquip, heroPromote, heroSkinUpgrade
 from controllers.items import buyStamina, useStaminaItem, inventory
 from controllers.gacha import summonHero
 from extractors.lib import GameData
@@ -105,6 +105,7 @@ class RequestProcessor:
         self.registerBodyProcessor('heroCraft', craftHero)
         self.registerBodyProcessor('heroInsertItem', heroEquip)
         self.registerBodyProcessor('heroPromote', heroPromote)
+        self.registerBodyProcessor('heroSkinUpgrade', heroSkinUpgrade)
 
         # TODO: extract
 
