@@ -2,10 +2,24 @@
 import type.magic;
 import std.mem;
 
+struct GbAx<auto size> {
+    u8 data[size];
+};
+
+struct GbAs<auto size> {
+    u8 data[size];
+};
+
 struct Chunk {
     u32 size;
     char type[4];
-    u8 data[size]; 
+    if (type == "gbAx") {
+        GbAx<size> data;
+    } else if (type == "gbAs") {
+        GbAs<size> data;
+    } else {
+        u8 data[size]; 
+    }
     u32 crc;
 };
 
