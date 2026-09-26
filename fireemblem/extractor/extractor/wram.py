@@ -2,6 +2,8 @@ from construct import (
         Struct, Pointer, PaddedString, Int32ul, Int16ul,
         Int8ul, Enum, Array
 )
+import json
+from pathlib import Path
 
 PhaseEnum = Enum(
         Int8ul,
@@ -417,17 +419,31 @@ def parse_wram_file(wram_path="wram.bin"):
 
     parsed = WRAMStructure.parse(wram_data)
 
-    print("--- Extracted WRAM Data ---")
-    print(f"Player Name:     {parsed.player_name}")
-    print(f"Money:           {parsed.money}")
-    print(f"Turn:            {parsed.turn_num}")
-    print(f"Phase:           {parsed.phase}")
+    blob = {}
+    blob["tactician"] = {
+            "name": parsed.player_name,
+            "money": parsed.money,
+    }
+    blob["battle"] = {
+            "turn": parsed.turn_num,
+            "phase": parsed.phase,
+    }
 
-    print("--- Characters ---")
-    for i, char in enumerate(parsed.chars):
-        print(f"Slot {i:2d} | Lvl {char.level:2d} | {char.portrait} | {char.char_class}")
-    return parsed
+    blob["characters"] = []
+    for char in parsed.chars:
+        character = {
+                "level": char.level,
+                "portrait": char.portrait,
+                "class": char.char_class,
+        }
+        blob["characters"].append(character)
+    return blob
 
 
 if __name__ == "__main__":
-    parse_wram_file("game_wram.bin")
+    blob = parse_wram_file("game_wram.bin")
+    json_str = json.dumps(blob, indent=2)
+
+    out_path = Path("game_data.json")
+    with out_path.open("w", encoding="utf-8") as f:
+        f.write(json_str)
