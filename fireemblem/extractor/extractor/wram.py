@@ -3,6 +3,7 @@ from construct import (
         Int8ul, Enum, Array
 )
 import json
+import io
 from pathlib import Path
 
 PhaseEnum = Enum(
@@ -440,10 +441,46 @@ def parse_wram_file(wram_path="wram.bin"):
     return blob
 
 
-if __name__ == "__main__":
+def update_wram_with_json(blob, wram_path="wram.bin", wram_out="new_wram.bin"):
+    with open(wram_path, "rb") as f:
+        wram_data = f.read()
+    parsed = WRAMStructure.parse(wram_data)
+
+    parsed.player_name = blob["tactician"]["name"]
+    parsed.money = blob["tactician"]["money"]
+    parsed.turn_num = blob["battle"]["turn"]
+    parsed.phase = blob["battle"]["phase"]
+
+    for i, char_data in enumerate(blob["characters"]):
+        if i >= len(parsed.chars):
+            break
+        parsed.chars[i].level = char_data["level"]
+        parsed.chars[i].portrait = char_data["portrait"]
+        parsed.chars[i].char_class = char_data["class"]
+
+    stream = io.BytesIO(wram_data)
+    WRAMStructure.build_stream(parsed, stream)
+
+    with open(wram_out, "wb") as f:
+        f.write(stream.getvalue())
+
+
+def inject():
+    blob_path = Path("game_data.json")
+    with blob_path.open("r", encoding="utf-8") as f:
+        blob = json.load(f)
+    update_wram_with_json(blob, "game_wram.bin")
+
+
+def extract():
     blob = parse_wram_file("game_wram.bin")
     json_str = json.dumps(blob, indent=2)
 
     out_path = Path("game_data.json")
     with out_path.open("w", encoding="utf-8") as f:
         f.write(json_str)
+
+
+if __name__ == "__main__":
+    inject()
+    # extract()
