@@ -56,13 +56,13 @@ def downloadFile(name, filename, filepath, url):
         with open(filepath, 'wb') as f:
             for chunk in response.iter_content(chunk_size=8192):
                 f.write(chunk)
-        print(f"Saved {filename} to {dir}")
+        print(f"Saved {filename} to {filepath}")
     except Exception as e:
         print(f"Failed to download {filename}: {str(e)}")
 
 
 def downloadIndex(index, hash, dir):
-    baseUrl = "https://heroesweb-a.akamaihd.net/wb"
+    baseUrl = "https://heroeswb-a-cdn.nextersglobal.com/envs/production/wb"
     url = f"{baseUrl}/{index}/index.{index}.{hash}.json.gz"
     filename = f"index.{index}.json.gz"
     filepath = Path(dir) / "indices" / filename
@@ -84,31 +84,35 @@ def downloadFromIndex(index, hash):
     js.mkdir(exist_ok=True)
 
     extractIndex(index, hash)
+    baseUrl = "https://heroeswb-a-cdn.nextersglobal.com/envs/production/wb"
 
     process_entries(
             f'{hash}/indices/index.{index}.json',
-            f'https://heroesweb-a.akamaihd.net/wb/{index}/',
+            f'{baseUrl}/{index}/',
             f'./{hash}/akamaihd'
             )
 
 
 def downloadLibFromIndex(index, hash):
     extractIndex(index, hash)
+    baseUrl = "https://heroeswb-a-cdn.nextersglobal.com/envs/production/wb"
 
     process_entries_select(
             f'{hash}/indices/index.{index}.json',
-            f'https://heroesweb-a.akamaihd.net/wb/{index}/',
+            f'{baseUrl}/{index}/',
             f'./{hash}/indices',
-            ['en.json.gz', 'lib.json.gz']
+            # ['en.json.gz', 'lib.json.gz']
+            ['lib.json.gz']
             )
 
 
 def downloadExternalLibsFromIndex(index, hash):
     extractIndex(index, hash)
+    baseUrl = "https://heroeswb-a-cdn.nextersglobal.com/envs/production/wb"
 
     process_entries_js(
             f'{hash}/indices/index.{index}.json',
-            f'https://heroesweb-a.akamaihd.net/wb/{index}/',
+            f'{baseUrl}/{index}/',
             f'./{hash}/akamaihd'
             )
 
@@ -208,12 +212,15 @@ def readData(filename) -> str:
         print(imports)
         jsUrl = getJsUrl(imports)
         print(jsUrl)
+        baseJsUrl = "https://static.hero-wars.com/i/hw-web/v2/2038911"  # TODO number
+        jsUrl = f"{baseJsUrl}/{jsUrl}"
+        # TODO: check folder
         nums = downloadAppAndTranslate(imports, hashToDir, jsUrl)
         print(nums)
         imports = findJsImports(f'{hashToDir}/akamaihd/apps.js')
         addToNums(nums, imports)
         print(nums)
-        downloadNums(nums, hashToDir, jsUrl)
+        downloadNums(nums, hashToDir, jsUrl)  # TODO: some seem return 403, but webapp doesn use them
         return hashToDir
 
 
