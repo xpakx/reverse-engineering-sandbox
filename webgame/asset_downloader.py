@@ -120,8 +120,8 @@ def process_entries_ver(json_file, url, assets_dir, parent_assets_dir):
 if __name__ == "__main__":
     print("Warning: This will download ~4GB of assets. Ctrl+C to abort in 5s…")
     time.sleep(5)
-    base_url = "https://heroesweb-a.akamaihd.net/wb/assets/"
-    hash = "82048d36"
+    base_url = "https://heroeswb-a-cdn.nextersglobal.com/envs/production/wb/assets/"
+    hash = "d24aef06"
     json_file = f"./{hash}/indices/index.assets.json.backup"
     assets_dir = f"./{hash}/assets"
     parent_dir = "./assets"
