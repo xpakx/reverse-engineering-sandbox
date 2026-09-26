@@ -429,4 +429,5 @@ def parse_wram_file(wram_path="wram.bin"):
     return parsed
 
 
-parse_wram_file("game_wram.bin")
+if __name__ == "__main__":
+    parse_wram_file("game_wram.bin")

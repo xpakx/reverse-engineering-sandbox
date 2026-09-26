@@ -60,4 +60,5 @@ def save_wram_to_file(mgba_save_path, output_wram_path="wram.bin"):
         print(f"Successfully exported {len(save_state.wram)} bytes to '{output_wram_path}'")
 
 
-save_wram_to_file("../save.ss1", "game_wram.bin")
+if __name__ == "__main__":
+    save_wram_to_file("../save.ss1", "game_wram.bin")

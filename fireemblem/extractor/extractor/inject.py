@@ -61,7 +61,7 @@ def inject_wram(original_ss_path, new_wram_bytes, output_ss_path):
     print(f"Successfully updated WRAM and saved to '{output_ss_path}'")
 
 
-with open("game_wram.bin", "rb") as f:
-    modified_wram = f.read()
-
-inject_wram("../save.ss1", modified_wram, "../new_save.ss1")
+if __name__ == "__main__":
+    with open("game_wram.bin", "rb") as f:
+        modified_wram = f.read()
+    inject_wram("../save.ss1", modified_wram, "../new_save.ss1")
