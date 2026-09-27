@@ -19,21 +19,65 @@ enum Phase : u8 {
     Enemy = 0x80
 };
 
-enum TurnStatus : u8 {
-    NotMoved = 0x00,			// 0000 0000
-    Rescuer = 0x10,			// 0001 0000
-    Moved = 0x42,			// 0100 0010
-    MovedRescuer = 0x52,		// 0101 0010
-    Rescued = 0x63			// 0110 0011
-    // bitmask? [unk, moved?, rescued?, rescuer?] [unk, unk, moved??, rescued??]
+bitfield TurnStatus {
+    hidden          : 1; // Hidden
+    move_finished   : 1; // Move fully finished
+    dead            : 1; // Dead
+    unselected_unk  : 1; // Unselected???
+
+    rescuer         : 1; // Rescuer unit
+    rescued         : 1; // Rescued unit
+    move_committed  : 1; // Move committed
+    flag_unk        : 1; // Unknown flag
+
+    // [flag_unk, move_commited, rescued, rescuer] [unselected_unk, dead, move_finished, hidden]
+
+    // MOVED
+    // 0100 0010 make move fully finished
+    // 0100 0000 make unit greyed out (after visual update), but
+    //		it still can be moved
+    //		although move cannot be cancelled out
+    // 0000 0010 is still fully finished move
+    
+    // it seems we're still lacking flag to grey out a unit
+    // although, it seems that this does update after move, so
+    // probably visual refresh is only after action
+
+    // RESCUED
+    // 0010 0000 is enough to make a rescued icon in the profile
+    // normally used with HIDDEN
+
+    // RESCUER
+    // 0001 0000 this seem to be fully functional
+    //		i assume 'rescue' or 'unk5' has sth to do 
+    //		with the actual unit
+    // normally used with HIDDEN
+
+    // HIDDEN
+    // 0000 0001 this seem to make a unit hidden/out of map
+    // used with RESCUED, RESCUER or DEAD
+
+    // DEAD
+    // 0000 0101
+    // 0000 0100 seem to be dead in a menus/for attacking,
+    //		but enemies still try to approach unit if it is 
+    //		not hidden with last bit
+    // normally used with HIDDEN
+
+    // UNSELECTED
+    // 0000 1000 seems to make unit non selected during pre-mission selection
 };
 
 enum HiddenStatus : u8 {
+    // 0x10 and 0x20 seems to be swapped??
     NoEffect = 0x00, 			// 0000 0000
-    Afa = 0x10,  			// 0001 0000
+    Afa = 0x10,  			// 0001 0000 
     WillDropLastItem = 0x20, 		// 0010 0000
     AfaAndWillDropLastItem = 0x30 	// 0011 0000
-    // bitmask? [unk, unk, willdrop?, afa?] [unk, unk, unk, unk]
+    // bitmask? [unk, unk, afa?, will_drop] [in_ballista, unk, unk, unk]
+
+    // first two makes unit unattackable by enemies
+    // penultimate makes unit visually invisible if cursor is not on it
 };
 
 enum CharClass : u16 {
