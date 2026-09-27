@@ -411,7 +411,45 @@ WRAMStructure = Struct(
         "turn_num" / Pointer(0x2BC08, Int16ul),
         "phase" / Pointer(0x2BC07, PhaseEnum),
         "chars" / Pointer(0x2BD50, Array(52, Character)),
+        "enemies" / Pointer(0x2CEC0, Array(52, Character)),
 )
+
+
+def char_to_json(char):
+    position = {
+            "x": char.horiz_pos,
+            "y": char.vert_pos,
+    }
+    hp = {
+            "max": char.max_hp,
+            "current": char.curr_hp,
+    }
+    stats = {
+            "hp": hp,
+            "strength": char.strength,
+            "skill": char.skill,
+            "speed": char.speed,
+            "defense": char.defense,
+            "resistance": char.resistance,
+            "luck": char.luck,
+            "constitution_bonus": char.constitution_bonus,
+            "move_bonus": char.move_bonus,
+    }
+    character = {
+            "portrait": char.portrait,
+            "class": char.char_class,
+            "level": char.level,
+            "exp": char.exp,
+            "pos": position,
+            "stats": stats,
+            "turn_status": f"{char.turn_status:08b}",
+            "hidden_status": f"{char.hidden_status:08b}",
+            "unk4": f"{char.unk4:016b}",
+            "unk3": f"{char.unk3:016b}",
+            "unk5": f"{char.unk5:08b}",
+            "unk6": f"{char.unk6:08b}",
+    }
+    return character
 
 
 def parse_wram_file(wram_path="wram.bin"):
@@ -432,37 +470,39 @@ def parse_wram_file(wram_path="wram.bin"):
 
     blob["characters"] = []
     for char in parsed.chars:
-        position = {
-                "x": char.horiz_pos,
-                "y": char.vert_pos,
-        }
-        hp = {
-                "max": char.max_hp,
-                "current": char.curr_hp,
-        }
-        stats = {
-                "hp": hp,
-                "strength": char.strength,
-                "skill": char.skill,
-                "speed": char.speed,
-                "defense": char.defense,
-                "resistance": char.resistance,
-                "luck": char.luck,
-                "constitution_bonus": char.constitution_bonus,
-                "move_bonus": char.move_bonus,
-        }
-        character = {
-                "portrait": char.portrait,
-                "class": char.char_class,
-                "level": char.level,
-                "exp": char.exp,
-                "pos": position,
-                "stats": stats,
-                "turn_status": f"{char.turn_status:08b}",
-                "hidden_status": f"{char.hidden_status:08b}",
-        }
-        blob["characters"].append(character)
+        blob["characters"].append(char_to_json(char))
+    blob["enemies"] = []
+    for char in parsed.enemies:
+        blob["enemies"].append(char_to_json(char))
     return blob
+
+
+def parse_char(parsed_list, i, char_data):
+    parsed_list[i].level = char_data["level"]
+    parsed_list[i].exp = char_data["exp"]
+    parsed_list[i].portrait = char_data["portrait"]
+    parsed_list[i].char_class = char_data["class"]
+
+    parsed_list[i].horiz_pos = char_data["pos"]["x"]
+    parsed_list[i].vert_pos = char_data["pos"]["y"]
+
+    parsed_list[i].max_hp = char_data["stats"]["hp"]["max"]
+    parsed_list[i].curr_hp = char_data["stats"]["hp"]["current"]
+    parsed_list[i].strength = char_data["stats"]["strength"]
+    parsed_list[i].skill = char_data["stats"]["skill"]
+    parsed_list[i].speed = char_data["stats"]["speed"]
+    parsed_list[i].defense = char_data["stats"]["defense"]
+    parsed_list[i].resistance = char_data["stats"]["resistance"]
+    parsed_list[i].luck = char_data["stats"]["luck"]
+    parsed_list[i].constitution_bonus = char_data["stats"]["constitution_bonus"]
+    parsed_list[i].move_bonus = char_data["stats"]["move_bonus"]
+
+    parsed_list[i].turn_status = int(char_data["turn_status"], 2)
+    parsed_list[i].hidden_status = int(char_data["hidden_status"], 2)
+    parsed_list[i].unk4 = int(char_data["unk4"], 2)
+    parsed_list[i].unk3 = int(char_data["unk3"], 2)
+    parsed_list[i].unk5 = int(char_data["unk5"], 2)
+    parsed_list[i].unk6 = int(char_data["unk6"], 2)
 
 
 def update_wram_with_json(blob, wram_path="wram.bin", wram_out="new_wram.bin"):
@@ -478,27 +518,12 @@ def update_wram_with_json(blob, wram_path="wram.bin", wram_out="new_wram.bin"):
     for i, char_data in enumerate(blob["characters"]):
         if i >= len(parsed.chars):
             break
-        parsed.chars[i].level = char_data["level"]
-        parsed.chars[i].exp = char_data["exp"]
-        parsed.chars[i].portrait = char_data["portrait"]
-        parsed.chars[i].char_class = char_data["class"]
+        parse_char(parsed.chars, i, char_data)
 
-        parsed.chars[i].horiz_pos = char_data["pos"]["x"]
-        parsed.chars[i].vert_pos = char_data["pos"]["y"]
-
-        parsed.chars[i].max_hp = char_data["stats"]["hp"]["max"]
-        parsed.chars[i].curr_hp = char_data["stats"]["hp"]["current"]
-        parsed.chars[i].strength = char_data["stats"]["strength"]
-        parsed.chars[i].skill = char_data["stats"]["skill"]
-        parsed.chars[i].speed = char_data["stats"]["speed"]
-        parsed.chars[i].defense = char_data["stats"]["defense"]
-        parsed.chars[i].resistance = char_data["stats"]["resistance"]
-        parsed.chars[i].luck = char_data["stats"]["luck"]
-        parsed.chars[i].constitution_bonus = char_data["stats"]["constitution_bonus"]
-        parsed.chars[i].move_bonus = char_data["stats"]["move_bonus"]
-
-        parsed.chars[i].turn_status = int(char_data["turn_status"], 2)
-        parsed.chars[i].hidden_status = int(char_data["hidden_status"], 2)
+    for i, char_data in enumerate(blob["enemies"]):
+        if i >= len(parsed.enemies):
+            break
+        parse_char(parsed.enemies, i, char_data)
 
     stream = io.BytesIO(wram_data)
     WRAMStructure.build_stream(parsed, stream)
