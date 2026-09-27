@@ -432,10 +432,34 @@ def parse_wram_file(wram_path="wram.bin"):
 
     blob["characters"] = []
     for char in parsed.chars:
+        position = {
+                "x": char.horiz_pos,
+                "y": char.vert_pos,
+        }
+        hp = {
+                "max": char.max_hp,
+                "current": char.curr_hp,
+        }
+        stats = {
+                "hp": hp,
+                "strength": char.strength,
+                "skill": char.skill,
+                "speed": char.speed,
+                "defense": char.defense,
+                "resistance": char.resistance,
+                "luck": char.luck,
+                "constitution_bonus": char.constitution_bonus,
+                "move_bonus": char.move_bonus,
+        }
         character = {
-                "level": char.level,
                 "portrait": char.portrait,
                 "class": char.char_class,
+                "level": char.level,
+                "exp": char.exp,
+                "pos": position,
+                "stats": stats,
+                "turn_status": f"{char.turn_status:08b}",
+                "hidden_status": f"{char.hidden_status:08b}",
         }
         blob["characters"].append(character)
     return blob
@@ -455,8 +479,26 @@ def update_wram_with_json(blob, wram_path="wram.bin", wram_out="new_wram.bin"):
         if i >= len(parsed.chars):
             break
         parsed.chars[i].level = char_data["level"]
+        parsed.chars[i].exp = char_data["exp"]
         parsed.chars[i].portrait = char_data["portrait"]
         parsed.chars[i].char_class = char_data["class"]
+
+        parsed.chars[i].horiz_pos = char_data["pos"]["x"]
+        parsed.chars[i].vert_pos = char_data["pos"]["y"]
+
+        parsed.chars[i].max_hp = char_data["stats"]["hp"]["max"]
+        parsed.chars[i].curr_hp = char_data["stats"]["hp"]["current"]
+        parsed.chars[i].strength = char_data["stats"]["strength"]
+        parsed.chars[i].skill = char_data["stats"]["skill"]
+        parsed.chars[i].speed = char_data["stats"]["speed"]
+        parsed.chars[i].defense = char_data["stats"]["defense"]
+        parsed.chars[i].resistance = char_data["stats"]["resistance"]
+        parsed.chars[i].luck = char_data["stats"]["luck"]
+        parsed.chars[i].constitution_bonus = char_data["stats"]["constitution_bonus"]
+        parsed.chars[i].move_bonus = char_data["stats"]["move_bonus"]
+
+        parsed.chars[i].turn_status = int(char_data["turn_status"], 2)
+        parsed.chars[i].hidden_status = int(char_data["hidden_status"], 2)
 
     stream = io.BytesIO(wram_data)
     WRAMStructure.build_stream(parsed, stream)
