@@ -1,6 +1,6 @@
 from construct import (
         Struct, Pointer, PaddedString, Int32ul, Int16ul,
-        Int8ul, Enum, Array
+        Int8ul, Enum, Array, FlagsEnum,
 )
 import json
 import io
@@ -365,6 +365,19 @@ Item = Struct(
         "quantity" / Int8ul,
 )
 
+TurnStatus = FlagsEnum(
+    Int8ul,
+    hidden=0x01,
+    move_finished=0x02,
+    dead=0x04,
+    unk_unselected=0x08,
+
+    rescuer=0x10,
+    rescued=0x20,
+    move_commited=0x40,
+    flag_unk=0x80,
+)
+
 Character = Struct(
         "portrait" / CharPortrait,
         "unk1" / Int16ul,
@@ -373,7 +386,7 @@ Character = Struct(
         "level" / Int8ul,
         "exp" / Int8ul,
         "unk3" / Int16ul,
-        "turn_status" / Int8ul,
+        "turn_status" / TurnStatus,
         "hidden_status" / Int8ul,
         "unk4" / Int16ul,
         "horiz_pos" / Int8ul,
@@ -435,6 +448,16 @@ def char_to_json(char):
             "constitution_bonus": char.constitution_bonus,
             "move_bonus": char.move_bonus,
     }
+    state = {
+            "hidden": char.turn_status.hidden,
+            "move_finished": char.turn_status.move_finished,
+            "dead": char.turn_status.dead,
+            "unk_unselected": char.turn_status.unk_unselected,
+            "rescuer": char.turn_status.rescuer,
+            "rescued": char.turn_status.rescued,
+            "move_commited": char.turn_status.move_commited,
+            "flag_unk": char.turn_status.flag_unk,
+    }
     character = {
             "portrait": char.portrait,
             "class": char.char_class,
@@ -442,7 +465,7 @@ def char_to_json(char):
             "exp": char.exp,
             "pos": position,
             "stats": stats,
-            "turn_status": f"{char.turn_status:08b}",
+            "turn_status": state,
             "hidden_status": f"{char.hidden_status:08b}",
             "unk4": f"{char.unk4:016b}",
             "unk3": f"{char.unk3:016b}",
@@ -497,12 +520,20 @@ def parse_char(parsed_list, i, char_data):
     parsed_list[i].constitution_bonus = char_data["stats"]["constitution_bonus"]
     parsed_list[i].move_bonus = char_data["stats"]["move_bonus"]
 
-    parsed_list[i].turn_status = int(char_data["turn_status"], 2)
     parsed_list[i].hidden_status = int(char_data["hidden_status"], 2)
     parsed_list[i].unk4 = int(char_data["unk4"], 2)
     parsed_list[i].unk3 = int(char_data["unk3"], 2)
     parsed_list[i].unk5 = int(char_data["unk5"], 2)
     parsed_list[i].unk6 = int(char_data["unk6"], 2)
+
+    parsed_list[i].turn_status.hidden = char_data["turn_status"]["hidden"]
+    parsed_list[i].turn_status.move_finished = char_data["turn_status"]["move_finished"]
+    parsed_list[i].turn_status.dead = char_data["turn_status"]["dead"]
+    parsed_list[i].turn_status.unk_unselected = char_data["turn_status"]["unk_unselected"]
+    parsed_list[i].turn_status.rescuer = char_data["turn_status"]["rescuer"]
+    parsed_list[i].turn_status.rescued = char_data["turn_status"]["rescued"]
+    parsed_list[i].turn_status.move_commited = char_data["turn_status"]["move_commited"]
+    parsed_list[i].turn_status.flag_unk = char_data["turn_status"]["flag_unk"]
 
 
 def update_wram_with_json(blob, wram_path="wram.bin", wram_out="new_wram.bin"):
