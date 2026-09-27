@@ -465,22 +465,22 @@ def update_wram_with_json(blob, wram_path="wram.bin", wram_out="new_wram.bin"):
         f.write(stream.getvalue())
 
 
-def inject():
-    blob_path = Path("game_data.json")
+def inject_json(blob_file="game_data.json", wram_in="game_wram.bin", wram_out="new_wram.bin"):
+    blob_path = Path(blob_file)
     with blob_path.open("r", encoding="utf-8") as f:
         blob = json.load(f)
-    update_wram_with_json(blob, "game_wram.bin")
+    update_wram_with_json(blob, wram_in, wram_out)
 
 
-def extract():
-    blob = parse_wram_file("game_wram.bin")
+def extract_json(blob_file="game_data.json", wram_in="game_wram.bin"):
+    blob = parse_wram_file(wram_in)
     json_str = json.dumps(blob, indent=2)
 
-    out_path = Path("game_data.json")
+    out_path = Path(blob_file)
     with out_path.open("w", encoding="utf-8") as f:
         f.write(json_str)
 
 
 if __name__ == "__main__":
-    inject()
-    # extract()
+    inject_json()
+    # extract_json()
