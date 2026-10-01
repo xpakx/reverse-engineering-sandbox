@@ -22,6 +22,7 @@
 	 import OuterClickDirective from "../directives/outerClick.js";
 	 import AutofocusDirective from "../directives/autofocus.js";
 
+	 import { CommunityService } from "../services/communityService.js";
 	 import Profile from "./Profile.vue";
 	 import UseSprite from "./UseSprite.vue";
 	 import GameSettings from "./GameSettings.vue";
@@ -36,6 +37,9 @@
 
 	 const SIDEBAR_MODE_MENU = "menu";
 	 const SIDEBAR_MODE_PROFILE = "profile";
+
+	 const isGeoBlockedCountry = [].includes(window.NXUserInfo?.geoip_Country_Code);
+	 // == false, minification artifact?
 
 	 export default {
 		 name: "Game",
@@ -114,10 +118,91 @@
 			 window.NXIsDelayedUser = this.isRegistrationUser;
 			 window.NXShowDelayedFormSignup = this.showFormPopupType;
 			 window.NXShowConfirmEmail = this.showConfirmEmail;
+
+			 // TODO: import tests
+			 console.log("backgroundCssClass:", this.backgroundCssClass);
+			 console.log("menuIsVisible:", this.menuIsVisible);
+			 console.log("profileIsVisible:", this.profileIsVisible);
+			 console.log("supportButtonCssClass:", this.supportButtonCssClass);
+			 console.log("moreButtonCssClass:", this.moreButtonCssClass);
+			 // console.log("supportOrMoreButtonCssClass:", this.supportOrMoreButtonCssClass);
+
+			 // console.log("createLoginIsVisible:", this.createLoginIsVisible);
+			 // console.log("createLoginButtonCssClass:", this.createLoginButtonCssClass);
+			 console.log("currencyDropdownDisabled:", this.currencyDropdownDisabled);
+			 // console.log("subscribeNewsManageLoading:", this.subscribeNewsManageLoading);
+			 // console.log("subscribeNewsButtonCssClass:", this.subscribeNewsButtonCssClass);
+			 // console.log("subscribeNewsIsShow:", this.subscribeNewsIsShow);
+			 console.log("promoCodesBlockIsVisible:", this.promoCodesBlockIsVisible);
 		 },
 
 		 computed: {
-			 // TODO
+			 backgroundCssClass() {
+				 return `bg_color_${UserInfo.background_id}`;
+			 },
+
+			 menuIsVisible() {
+				 return this.sidebarMode === SIDEBAR_MODE_MENU && Boolean(this.sidebarIsVisible);
+			 },
+
+			 profileIsVisible() {
+				 return this.sidebarMode === SIDEBAR_MODE_PROFILE && Boolean(this.sidebarIsVisible);
+			 },
+
+			 supportButtonCssClass() {
+				 return {
+					 waiting: this.supportModalButtonIsWaiting,
+					 badge: this.supportModalButtonIsBadge
+				 };
+			 },
+
+			 moreButtonCssClass() {
+				 return {
+					 badge: CommunityService.notificatorIsVisible
+				 };
+			 },
+
+			 supportOrMoreButtonCssClass() {
+				 return {
+					 badge: (
+						 CommunityService.notificatorIsVisible || 
+						 this.supportModalButtonIsBadge || 
+						 NotificationBadgeService.state.isShown // TODO: mock
+					 )
+				 };
+			 },
+
+			 createLoginIsVisible() {
+				 return createLoginState.isEnabled; // TODO: mock
+			 },
+
+			 createLoginButtonCssClass() {
+				 return {
+					 badge: createLoginState.firstOpenClick
+				 };
+			 },
+
+			 currencyDropdownDisabled() {
+				 return this.manageCurrencyLoading || isGeoBlockedCountry; // TODO: mixin
+			 },
+
+			 subscribeNewsManageLoading() {
+				 return UserService.updateUserStatePromise; // TODO: mock
+			 },
+
+			 subscribeNewsButtonCssClass() {
+				 return {
+					 waiting: this.subscribeNewsManageLoading
+				 };
+			 },
+
+			 subscribeNewsIsShow() {
+				 return getSubscribeNewsNewsletter(); // TODO: mock
+			 },
+
+			 promoCodesBlockIsVisible() {
+				 return window.NXAppInfo?.isPromoCodesEnabled;
+			 }
 		 },
 
 		 methods: {

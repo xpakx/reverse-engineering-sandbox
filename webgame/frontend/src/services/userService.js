@@ -13,7 +13,6 @@ export const UserService = {
 };
 
 export const UserInfo = {
-	constructor(data = {}) {
-		this.is_delayed_registration = !!data.is_delayed_registration;
-	}
+	is_delayed_registration: Boolean(window.NXUserInfo?.is_delayed_registration), // TODO: ???
+	background_id: "dark",
 };
