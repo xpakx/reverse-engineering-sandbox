@@ -28,6 +28,7 @@
 	 import GameSettings from "./GameSettings.vue";
 	 import PromoCodesBlock from "./PromoCodesBlock.vue";
 	 import GameLoader from "./GameLoader.vue";
+	 import GameStarterMixin from "../mixins/GameStarterMixin.js";
 
 	 import { UserInfo } from "../services/userService.js";
 	 import {
@@ -45,6 +46,7 @@
 		 name: "Game",
 
 		 // TODO: mixins
+		 mixins: [GameStarterMixin],
 
 		 components: {
 			 Profile,
