@@ -6,4 +6,7 @@
  * @globals ???
  */
 
-<template><div class="game-loader">Game Loading...</div></template>
+<template>
+	<div class="game-loader">Game Loading...</div>
+	<div id="flash-content"></div>
+</template>

@@ -7,6 +7,10 @@
  */
 
 class AnalyticsService {
+	constructor() {
+		this.isLocked = false;
+	}
+
 	log(eventName, payload = null) {
 		console.log(`[Analytics] Event: ${eventName}`, payload || "");
 	}
@@ -16,6 +20,16 @@ class AnalyticsService {
 		if (immediate) {
 			Object.values(listeners).forEach((callback) => typeof callback === "function" && callback());
 		}
+	}
+
+	lock() {
+		this.isLocked = true;
+		console.log("[Analytics] Event dispatching locked");
+
+		return () => {
+			this.isLocked = false;
+			console.log("[Analytics] Event dispatching unlocked");
+		};
 	}
 }
 

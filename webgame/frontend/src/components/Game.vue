@@ -6,7 +6,7 @@
  * @globals NXIsDelayedUser, NXShowDelayedFormSignup, NXShowConfirmEmail, NXAppInfo, NXFlashVars
  */
 
- // TODO: original uses inline templates
+ // TODO: original does not use inline templates
  <template>
 	 <div class="game-container">
 		 <h2>Game Canvas / Wrapper Component</h2>
