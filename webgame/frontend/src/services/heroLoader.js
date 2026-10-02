@@ -17,7 +17,7 @@ class HeroLoader extends ScriptLoader {
 	}
 
 	load() {
-		console.log("client loading"); // TODO: this.logger.log
+		this.logger.log("client loading");
 
 		if (this.checkCanBeLoaded()) {
 			this.retryCount = 0;

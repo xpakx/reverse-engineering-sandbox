@@ -4,11 +4,20 @@ window.NXUserInfo = window.NXUserInfo || {
 	is_delayed_registration: false,
 	social_network: "facebook",
 	isNewUserRegistered24h: true,
+	antiAddiction: null,
 	groupNumber: null
 };
 
 window.NXFlashVars = window.NXFlashVars || {
-	userState: {}
+	preloader_js: "http://localhost:8081/assets/heroes.d24aef0654d76f8bbeefb95953b00cf8.js",
+
+	userState: {},
+	uid: "12345",
+	country_code: "US",
+	playable: false,
+	userState: {
+		params: {}
+	}
 };
 
 window.pagelive = window.pagelive || {
@@ -16,4 +25,16 @@ window.pagelive = window.pagelive || {
 	onAppShowPromt: (cb) => cb(),
 	onAppPromtAccepted: (cb) => cb(),
 	onAppPromtDismiss: (cb) => cb()
+};
+
+window.NXAppInfo = {
+	nxSource: "",
+	visiting_uid: "test-session"
+};
+
+window.NXPushDSettings = {
+	server_url: "",
+	network: "web",
+	app_id: "heroeshx",
+	access_token: ""
 };
