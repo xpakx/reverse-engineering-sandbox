@@ -9,7 +9,7 @@ import time
 import handlers
 
 
-hash = '82048d36'
+hash = 'd24aef06'
 versioned_root = f'./{hash}'
 logs = False
 gameData = prepareData(hash)
@@ -154,7 +154,8 @@ if __name__ == '__main__':
         print("RESPONSE CREATED")
         return (200, {'Content-Type': 'application/json'}, response)
 
-    server = SimpleHTTPServerWithRoutes(('localhost', 8081))
+    port = 8081
+    server = SimpleHTTPServerWithRoutes(('localhost', port))
     server.add_route('GET', '/api/clientStat/', handlers.stash_handler)
     server.add_route('POST', '/api/', api_handler)
     server.add_route('POST', '/client-tech-logs', handlers.logs_handler)
@@ -164,5 +165,5 @@ if __name__ == '__main__':
     server.add_route('POST', '/chat/get_info', handlers.info_handler)
     server.add_route('POST', '/landing_loaded', handlers.landing_handler)
 
-    print("Starting server on http://localhost:8000")
+    print(f"Starting server on http://localhost:{port}")
     server.serve_forever()
