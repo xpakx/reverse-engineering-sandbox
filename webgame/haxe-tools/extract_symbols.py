@@ -1,5 +1,6 @@
 import re
 import json
+from pathlib import Path
 
 hash = "d24aef06"
 
@@ -29,10 +30,20 @@ def extract_haxe_classes(
     print("Successfully extracted")
 
 
-# TODO: extract from indices
-name = "heroes.d24aef0654d76f8bbeefb95953b00cf8.js"
+def find_script_by_hash(hash: str, name: str) -> str:
+    folder = Path(f"../{hash}/akamaihd/")
+    pattern = f"{name}.*.js"
+
+    matches = list(folder.glob(pattern))
+    if not matches:
+        raise FileNotFoundError(f"No file matching pattern '{pattern}' found in '{hash}'.")
+    return str(matches[0])
+
+
+name = find_script_by_hash(hash, "heroes")
+print(name)
 extract_haxe_classes(
-        f'../{hash}/akamaihd/{name}',
+        name,
         'symbols.json',
         ("game.",),
         "k"
