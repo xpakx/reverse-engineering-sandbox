@@ -1,0 +1,24 @@
+---
+import data from '../../public/data.json';
+---
+
+<div id="container">
+<html lang="en">
+  <head>
+    <title>User List</title>
+  </head>
+  <body>
+    <h1>Team Members</h1>
+    <ul>
+      {data.characters.map((character) => (
+        <li>
+          <strong>{character.class}</strong> - {character.portrait}
+        </li>
+      ))}
+    </ul>
+  </body>
+</html>
+</div>
+
+<style>
+</style>
