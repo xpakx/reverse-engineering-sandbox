@@ -197,6 +197,7 @@ def readData(filename) -> str:
         heroHash = extractHeroHash(data)
         hashToDir = createVerDir(heroHash)
         addDataJs(hashToDir, heroHash)
+        copyIndexHtml(hashToDir)
 
         hashes = extractIndexHashes(data)
         print(hashes)
@@ -268,6 +269,15 @@ def addDataJs(hash, fullHash):
     path.write_text(data)
 
 
+def copyIndexHtml(hash):
+    orig = './index.html'
+    path = Path(orig)
+    data = path.read_text()
+    filename = f'{hash}/index.html'
+    path = Path(filename)
+    path.write_text(data)
+
+
 def patchFiles(hash):
     patchGameJs(hash)
     flatten_and_prepend_paths(f"{hash}/indices/index.client.json", "../akamaihd")
@@ -275,5 +285,5 @@ def patchFiles(hash):
 
 
 if __name__ == "__main__":
-    hash = readData('hero.html')
+    hash = readData('hero3.html')
     patchFiles(hash)
