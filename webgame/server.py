@@ -7,9 +7,10 @@ import os
 from pathlib import Path
 import time
 import handlers
+import requests
 
 
-hash = 'd24aef06'
+hash = '6d140fe1'
 versioned_root = f'./{hash}'
 logs = False
 gameData = prepareData(hash)
@@ -64,6 +65,9 @@ class CustomHandler(SimpleHTTPRequestHandler):
                 versioned_asset = Path(versioned_path)
                 if versioned_asset.exists():
                     return versioned_path
+                downloaded = self.download_assets(path)
+                if downloaded:
+                    return versioned_path
                 return original_path
 
         versioned_path = os.path.join(os.getcwd(), versioned_root, rel_path)
@@ -83,6 +87,27 @@ class CustomHandler(SimpleHTTPRequestHandler):
 
     def log_request(self, code='-', size='-'):
         pass  # Suppresses the "GET /path HTTP/1.1" 200 - logs
+
+    def download_assets(self, path: str) -> bool:
+        # TODO: lookup in asset index
+        # TODO: restructure asset download pipeline so
+        # lookup is not necessary in a typical case
+        print(f"Downloading asset: {path}")
+        base_url = "https://heroeswb-a-cdn.nextersglobal.com/envs/production/wb"
+        url = f"{base_url}{path}"
+        local_path = os.path.join(os.getcwd(), versioned_root, path)
+        print(local_path, url)
+        try:
+            response = requests.get(url, stream=True)
+            response.raise_for_status()
+        except Exception as e:
+            print("ERROR", e)
+            return False
+        temp_path = local_path + '.tmp'
+        with open(temp_path, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+        return True
 
 
 class SimpleHTTPServerWithRoutes(HTTPServer):
