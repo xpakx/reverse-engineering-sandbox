@@ -44,7 +44,29 @@ name = find_script_by_hash(hash, "heroes")
 print(name)
 extract_haxe_classes(
         name,
-        'symbols.json',
+        'symbols_game.json',
         ("game.",),
+        "k"
+)
+
+extract_haxe_classes(
+        name,
+        'symbols_engine.json',
+        ("engine.",),
+        "k"
+)
+
+extract_haxe_classes(
+        name,
+        'symbols_loader.json',
+        ("loader.",),
+        "k"
+)
+
+
+extract_haxe_classes(
+        name,
+        'symbols_js.json',
+        ("js.",),
         "k"
 )

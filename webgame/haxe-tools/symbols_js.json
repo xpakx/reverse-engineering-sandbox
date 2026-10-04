@@ -1,0 +1,21 @@
+{
+    "js.Boot": "qa",
+    "js.FinalizationRegistryFactory": "Qjc",
+    "js.JsMouseWheelHandler": "Skc",
+    "js.JsBrowserInfo": "Bi",
+    "js.popup.JsErrorModalPopup": "J7a",
+    "js.JsFullscreenAlignmentFix": "Ikc",
+    "js.Browser": "I2",
+    "js.JsFullscreenEventHandler": "Bt",
+    "js.JsWebGlRenderingMode": "Bw",
+    "js.JsBrowserFeatures": "ny",
+    "js.JsAudioAutoplayPolicyCheck": "P5b",
+    "js.JsLoadFontUtil": "mzb",
+    "js.JsUserAgentDataPolyfill": "e4b",
+    "js.JsPreventNativeEvents": "q9",
+    "js.Lib": "dpc",
+    "js.lib.HaxeIterator": "Xoc",
+    "js.Util": "TZb",
+    "js.JsCustomCallStack": "Ft",
+    "js.JsSafariAudioAutoplayPolicyCheck": "ABa"
+}
