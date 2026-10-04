@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<meta
+		title="Heroes"
+		package="com.sample.heroes"
+		version="686"
+		company="Company Name" />
+
+	<app main="Main" path="Export" file="heroeshx" build="5092" />
+
+	<window width="1400" 
+		height="640" 
+		fps="60" 
+		hardware="true" 
+		depth-buffer="true" 
+		stencil-buffer="true" 
+		background="#000000" 
+		resizable="true" />
+	
+	<source path="Source" />
+	
+	<haxelib name="openfl" />
+	<haxelib name="starling" />
+	
+	<haxeflag name="-dce no" />
+	
+</project>
