@@ -42,6 +42,8 @@ class CustomHandler(SimpleHTTPRequestHandler):
         # No route found - serve files
         if method == 'GET':
             super().do_GET()
+        elif method == 'OPTIONS':
+            self.do_OPTIONS()
         else:
             self.send_error(404, f"Endpoint {path} not found")
 
@@ -108,6 +110,21 @@ class CustomHandler(SimpleHTTPRequestHandler):
             for chunk in response.iter_content(chunk_size=8192):
                 f.write(chunk)
         return True
+
+    def end_headers(self):
+        origin = self.headers.get('Origin', '*')
+        req_headers = self.headers.get('Access-Control-Request-Headers', 'Content-Type, Authorization')
+        self.send_header('Access-Control-Allow-Origin', origin)
+        # self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Credentials', 'true')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', req_headers)
+        super().end_headers()
+
+    def do_OPTIONS(self):
+        self.send_response(204)
+        self.send_header('Content-Length', '0')
+        self.end_headers()
 
 
 class SimpleHTTPServerWithRoutes(HTTPServer):
