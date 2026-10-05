@@ -7,7 +7,7 @@ def stash_handler(request_handler):
     return (
         200,
         {'Content-Type': 'application/json'},
-        '{error: 0}'
+        '{"error": 0}'
     )
 
 
